@@ -1,0 +1,15 @@
+.account-content-container {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-evenly;
+    gap: 15px 8px;
+    margin-top: 20px;
+}
+
+.game-body {
+    margin-top: 25px;
+}
+
+.operation-content-container {
+    margin-top: 5px; /* Place holder */
+}

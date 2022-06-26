@@ -1,0 +1,24 @@
+.game-account {
+    width: 330px;
+    margin: 15px;
+}
+
+.account-title {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.account-name-input {
+    width: 300px;
+}
+
+.section-header {
+    display: flex;
+    flex-direction: row;
+}
+
+.section-title {
+    flex-grow: 20;
+}
+

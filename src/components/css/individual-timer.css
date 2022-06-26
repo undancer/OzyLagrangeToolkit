@@ -1,0 +1,53 @@
+.timer-container {
+    margin-top: 0.3rem;
+    margin-bottom: 0.3rem;
+    margin-left: 0.4em;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.timer-main-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.countdown-container {
+    margin-top: -7px;
+    margin-bottom: -7px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.time-string-spacing {
+    width: 20px;
+}
+
+.timer-front {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex-grow: 1;
+}
+
+.timer-back {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.remove-button {
+    width: 25px;
+    height: 25px;
+    padding: 0 0.5rem;
+    line-height: 1em;
+}
+
+.progress-bar-extra {
+    width: 100%;
+    margin-left: 10px;
+    margin-right: 10px;
+}

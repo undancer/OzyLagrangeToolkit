@@ -1,8 +1,8 @@
-import { addTimer, TimerType } from "../redux/actions/gameTimer";
-import { useAppDispatch } from "../redux/utils/hooks";
 import React, { useState } from "react";
 import { IconButton, TextField, ToggleButton, ToggleButtonGroup } from "@mui/material";
 import AlarmAddIcon from "@mui/icons-material/AlarmAdd";
+import { useAppDispatch } from "../redux/utils/hooks";
+import { addTimer, TimerType } from "../redux/actions/gameTimer";
 import "./css/timer-adder.css";
 import { TimerIcon } from "./timer-icon";
 
@@ -43,7 +43,7 @@ export function TimerAdder(props: timerAdder): JSX.Element {
         console.log(`Length: ${timeArray.length}`);
 
         if (timeArray.length >= 3) day = parseInt(timeArray[timeArray.length - 3]);
-        if (timeArray.length >= 2 ) hr = parseInt(timeArray[timeArray.length - 2]);
+        if (timeArray.length >= 2) hr = parseInt(timeArray[timeArray.length - 2]);
         min = parseInt(timeArray[timeArray.length - 1]);
 
         dispatch(addTimer(props.accountId, type, day * 60 * 24 + hr * 60 + min));

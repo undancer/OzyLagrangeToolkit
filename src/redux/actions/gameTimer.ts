@@ -8,7 +8,7 @@ export enum TimerType {
     miner = "miner",
     capitalship = "capitalship",
     research = "research",
-    agreement= "agreement",
+    agreement = "agreement",
 }
 
 export const addTimer = createAction("addGameTimer", (accountId: string, type: TimerType, minute: number) => {
@@ -18,15 +18,15 @@ export const addTimer = createAction("addGameTimer", (accountId: string, type: T
             type,
             id: uuidV4(),
             minute,
-        }
-    }
+        },
+    };
 });
 
 export const clearTimer = createAction("clearGameTimer", (accountId: string, timerId: string) => {
     return {
         payload: {
             accountId,
-            timerId
-        }
-    }
-})
+            timerId,
+        },
+    };
+});

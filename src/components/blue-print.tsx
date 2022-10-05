@@ -1,12 +1,10 @@
-import "./css/blue-print.css"
+import "./css/blue-print.css";
 import { Container } from "@mui/material";
 
 function BluePrint() {
     return (
         <Container maxWidth="xl">
-            <div className="account-content-container">
-                Place Holder
-            </div>
+            <div className="account-content-container">Place Holder</div>
         </Container>
     );
 }

@@ -9,7 +9,7 @@ export const saveState = (state: RootState) => {
     } catch {
         console.warn("Save state error.");
     }
-}
+};
 
 export function loadState() {
     try {
@@ -20,13 +20,14 @@ export function loadState() {
         }
         const parsedState = JSON.parse(serializedState);
         if (version === null) {
-            for(let key in parsedState.gameAccount) {
+            Object.keys(parsedState.gameAccount).forEach((key) => {
                 delete parsedState.gameAccount[key].battle;
                 parsedState.gameAccount[key].agreement = [];
-            }
+            });
         }
         return parsedState;
-    } catch(err) {
+    } catch (err) {
         console.warn("Error loading state.");
+        throw new Error("Failed to load app state");
     }
 }

@@ -1,35 +1,35 @@
 import SettingsSuggestIcon from "@mui/icons-material/SettingsSuggest";
-import FileUploadIcon from '@mui/icons-material/FileUpload';
-import LogoDevIcon from '@mui/icons-material/LogoDev';
+import FileUploadIcon from "@mui/icons-material/FileUpload";
+import LogoDevIcon from "@mui/icons-material/LogoDev";
+import ScienceIcon from "@mui/icons-material/Science";
 import { TimerType } from "../redux/actions/gameTimer";
 import { ShipIcon } from "./Icons/ship";
 import { BattleShipIcon } from "./Icons/battleship";
 import { CargoShipIcon } from "./Icons/cargoship";
-import ScienceIcon from '@mui/icons-material/Science';
 import { AgreementIcon } from "./Icons/agreement";
 
 interface TimerIconProps {
-    type: TimerType
+    type: TimerType;
 }
 
 export function TimerIcon(props: TimerIconProps): JSX.Element {
     switch (props.type) {
         case TimerType.construction:
-            return <SettingsSuggestIcon />
+            return <SettingsSuggestIcon />;
         case TimerType.baseUpgrade:
-            return <FileUploadIcon />
+            return <FileUploadIcon />;
         case TimerType.ship:
-            return <ShipIcon />
+            return <ShipIcon />;
         case TimerType.miner:
-            return <CargoShipIcon />
+            return <CargoShipIcon />;
         case TimerType.capitalship:
-            return <BattleShipIcon />
+            return <BattleShipIcon />;
         case TimerType.research:
-            return <ScienceIcon />
+            return <ScienceIcon />;
         case TimerType.agreement:
-            return <AgreementIcon />
+            return <AgreementIcon />;
         default:
             break;
     }
-    return <LogoDevIcon />
+    return <LogoDevIcon />;
 }

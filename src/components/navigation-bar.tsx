@@ -31,7 +31,7 @@ export function NavigationBar() {
     function openNavMenu(event: React.MouseEvent<HTMLElement>) {
         setAnchorElNav(event.currentTarget);
     }
-
+    
     function closeNavMenu() {
         setAnchorElNav(null);
     }

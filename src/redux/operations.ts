@@ -1,11 +1,11 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { v4 as uuidV4 } from "uuid";
 import { addTimer, clearTimer, OperationTimerType } from "./actions/operationTimer";
-import { v4 as uuidV4 } from "uuid"
 import { removeElementByValue } from "./utils/arrayhelper";
 import { RootState } from "./core/store";
 
 interface OperationState {
-    [index: string]: Participant
+    [index: string]: Participant;
 }
 
 interface Participant {
@@ -18,7 +18,7 @@ interface Participant {
     repair: string[];
 }
 
-const initialState: OperationState = {}
+const initialState: OperationState = {};
 
 export const operationTimerSlice = createSlice({
     name: "operationTimeStamp",
@@ -27,18 +27,18 @@ export const operationTimerSlice = createSlice({
         add: (state, action: PayloadAction<string>) => {
             const id = uuidV4();
             state[id] = {
-                id: id,
+                id,
                 name: action.payload,
                 move: [],
                 outpost: [],
                 platform: [],
                 reinforce: [],
-                repair: []
+                repair: [],
             };
         },
         remove: (state, action: PayloadAction<string>) => {
             if (state[action.payload]) delete state[action.payload];
-        }
+        },
     },
     extraReducers: (builder) => {
         builder.addCase(addTimer, (state, action) => {
@@ -63,7 +63,7 @@ export const operationTimerSlice = createSlice({
                 default:
                     console.log("Case not supported.");
             }
-        })
+        });
         builder.addCase(clearTimer, (state, action) => {
             const { participantId, timerId } = action.payload;
             const participant = state[participantId];
@@ -73,12 +73,12 @@ export const operationTimerSlice = createSlice({
             removeElementByValue(participant.platform, timerId);
             removeElementByValue(participant.reinforce, timerId);
             removeElementByValue(participant.repair, participantId);
-        })
-    }
+        });
+    },
 });
 
 export const { add, remove } = operationTimerSlice.actions;
 
-export const selectParticipant = (state: RootState, id: string) => state
+export const selectParticipant = (state: RootState) => state;
 
 export default operationTimerSlice.reducer;

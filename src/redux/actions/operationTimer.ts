@@ -6,25 +6,28 @@ export enum OperationTimerType {
     outpost = "outpost",
     platform = "platform",
     reinforce = "reinforce",
-    repair = "repair"
+    repair = "repair",
 }
 
-export const addTimer = createAction("addOperationTimer", (participantId: string, type: OperationTimerType, minute: number) => {
-    return {
-        payload: {
-            participantId,
-            type,
-            id: uuidV4(),
-            minute,
-        }
-    }
-});
+export const addTimer = createAction(
+    "addOperationTimer",
+    (participantId: string, type: OperationTimerType, minute: number) => {
+        return {
+            payload: {
+                participantId,
+                type,
+                id: uuidV4(),
+                minute,
+            },
+        };
+    },
+);
 
 export const clearTimer = createAction("clearOperationTimer", (participantId: string, timerId: string) => {
     return {
         payload: {
             participantId,
-            timerId
-        }
-    }
-})
+            timerId,
+        },
+    };
+});

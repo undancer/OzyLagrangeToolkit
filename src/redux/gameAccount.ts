@@ -1,11 +1,11 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit"
-import { RootState } from "./core/store"
-import { v4 as uuidV4 } from "uuid"
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { v4 as uuidV4 } from "uuid";
+import { RootState } from "./core/store";
 import { addTimer, clearTimer, TimerType } from "./actions/gameTimer";
 import { removeElementByValue } from "./utils/arrayhelper";
 
 interface GameAccountState {
-    [index: string]: GameAccount
+    [index: string]: GameAccount;
 }
 
 interface GameAccount {
@@ -27,10 +27,20 @@ interface GameAccount {
 }
 
 function emptyGameAccount(name: string, id: string): GameAccount {
-    return { id, name, construction: [], baseUpgrade: [], ship: [], miner: [], capitalShip: [], research: [], agreement: [] }
+    return {
+        id,
+        name,
+        construction: [],
+        baseUpgrade: [],
+        ship: [],
+        miner: [],
+        capitalShip: [],
+        research: [],
+        agreement: [],
+    };
 }
 
-const initialState: GameAccountState = {}
+const initialState: GameAccountState = {};
 
 export const gameAccountSlice = createSlice({
     name: "gameAccount",
@@ -45,7 +55,7 @@ export const gameAccountSlice = createSlice({
             // Find the accountId by user provided name, case doesn't matter
             const accountId = allAccountId.find((id) => state[id].name.toLowerCase() === action.payload.toLowerCase());
             if (accountId) delete state[accountId];
-        }
+        },
     },
     extraReducers: (builder) => {
         builder.addCase(addTimer, (state, action) => {
@@ -76,13 +86,13 @@ export const gameAccountSlice = createSlice({
                 default:
                     console.log("Case not supported.");
             }
-        })
+        });
         builder.addCase(clearTimer, (state, action) => {
             const { accountId, timerId } = action.payload;
             const account = state[accountId];
 
             if (!account) {
-                console.warn("ClearTimer with non-existing accountId: " + accountId);
+                console.warn(`ClearTimer with non-existing accountId: ${accountId}`);
                 return;
             }
 
@@ -98,13 +108,14 @@ export const gameAccountSlice = createSlice({
             // Research Category
             removeElementByValue(account.research, timerId);
             removeElementByValue(account.agreement, timerId);
-        })
-    }
+        });
+    },
 });
 
 export const { add, remove } = gameAccountSlice.actions;
 
-export const selectAllAccounts = (state: RootState) => Object.keys(state.gameAccount).map((key) => state.gameAccount[key]);
+export const selectAllAccounts = (state: RootState) =>
+    Object.keys(state.gameAccount).map((key) => state.gameAccount[key]);
 export const selectAccount = (state: RootState, id: string) => state.gameAccount[id];
 
 export default gameAccountSlice.reducer;

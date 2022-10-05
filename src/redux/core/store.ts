@@ -10,9 +10,9 @@ export const store = configureStore({
         gameAccount: gameAccountReducer,
         taskTimeStamp: taskTimeStampReducer,
         operation: operationReducer,
-        operationTimeStamp: operationTimeStampReducer
+        operationTimeStamp: operationTimeStampReducer,
     },
-    preloadedState: loadState()
+    preloadedState: loadState(),
 });
 
 store.subscribe(() => {
@@ -20,10 +20,10 @@ store.subscribe(() => {
         gameAccount: store.getState().gameAccount,
         taskTimeStamp: store.getState().taskTimeStamp,
         operation: store.getState().operation,
-        operationTimeStamp: store.getState().operationTimeStamp
-    })
-})
+        operationTimeStamp: store.getState().operationTimeStamp,
+    });
+});
 
-export type RootState = ReturnType<typeof store.getState>
+export type RootState = ReturnType<typeof store.getState>;
 
-export type AppDispatch = typeof store.dispatch
+export type AppDispatch = typeof store.dispatch;

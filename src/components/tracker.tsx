@@ -7,9 +7,11 @@ import { Container } from "@mui/material";
 function Tracker() {
     const gameAccounts = useAppSelector(state => selectAllAccounts(state))
 
-    const accountComponents = gameAccounts.map((account) => {
+    let accountComponents = gameAccounts.map((account) => {
         return <GameAccount key={account.id} accountId={account.id}/>
     });
+
+    if (gameAccounts.length <= 0) accountComponents = [<div>"还没有账号啊，点击右上添加一个吧。"</div>];
 
     return (
         <Container maxWidth="xl">

@@ -7,6 +7,7 @@ import IconButton from "@mui/material/IconButton";
 import Menu from "@mui/material/Menu";
 import MenuIcon from "@mui/icons-material/Menu";
 import MenuItem from "@mui/material/MenuItem";
+import { Link as RouterLink } from "react-router-dom";
 
 const pages = ["tracker", "blueprint", "builder"];
 
@@ -87,7 +88,8 @@ export function NavigationBar() {
                         {pages.map((page) => (
                         <Button
                             key={page}
-                            href={"/"+page} 
+                            component={RouterLink}
+                            to={"/"+page} 
                             onClick={handleCloseNavMenu}
                             sx={{ my: 2, color: 'black', display: 'block' }}
                         >

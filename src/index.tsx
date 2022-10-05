@@ -14,9 +14,9 @@ ReactDOM.render(
           <div className="game-body">
             <Routes>
               <Route path="/" element={<Tracker />} />
-              <Route path="blueprint" element={<BluePrint />} />
-              <Route path="tracker" element={<Tracker />} />
-              <Route path="builder" element={<Tracker />} />
+              <Route path="/blueprint" element={<BluePrint />} />
+              <Route path="/tracker" element={<Tracker />} />
+              <Route path="/builder" element={<Tracker />} />
             </Routes>
           </div>
       </div>

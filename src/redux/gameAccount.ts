@@ -41,7 +41,10 @@ export const gameAccountSlice = createSlice({
             state[id] = emptyGameAccount(action.payload, id);
         },
         remove: (state, action: PayloadAction<string>) => {
-            if (state[action.payload]) delete state[action.payload];
+            const allAccountId = Object.keys(state);
+            // Find the accountId by user provided name, case doesn't matter
+            const accountId = allAccountId.find((id) => state[id].name.toLowerCase() === action.payload.toLowerCase());
+            if (accountId) delete state[accountId];
         }
     },
     extraReducers: (builder) => {

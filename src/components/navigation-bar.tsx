@@ -1,6 +1,6 @@
 import { AppBar, Box, Button, Dialog, DialogActions, DialogTitle, TextField, Toolbar, Typography } from "@mui/material";
 import { useState } from "react";
-import { add } from "../redux/gameAccount";
+import { add, remove } from "../redux/gameAccount";
 import { useAppDispatch } from "../redux/utils/hooks";
 import { ClosedPackageIcon } from "./Icons/closedpackage";
 import IconButton from "@mui/material/IconButton";
@@ -11,9 +11,14 @@ import { Link as RouterLink } from "react-router-dom";
 
 const pages = ["计时器", "蓝图", "船队编辑器"];
 const path: { [index: string]: string } = {"计时器":"tracker", "蓝图":"blueprint", "船队编辑器":"fleetbuilder" };
+enum DialogType{
+    Add = "add",
+    Remove = "remove"
+}
 
 export function NavigationBar() {
-    const [open, setOpen] = useState(false);
+    const [addDialopOpen, setAddDialopOpen] = useState(false);
+    const [removeDialogOpen, setRemoveDialogOpen] = useState(false);
     const [name, setName] = useState("");
     const dispatch = useAppDispatch();
     const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
@@ -26,18 +31,37 @@ export function NavigationBar() {
         setAnchorElNav(null);
     };
 
-    function openDialog() {
-        setOpen(true);
+    function openDialog(type: DialogType) {
+        switch(type){
+            case DialogType.Add:
+                setAddDialopOpen(true);
+                break;
+            case DialogType.Remove:
+                setRemoveDialogOpen(true);
+                break;
+        }
     }
 
-    function handleClose() {
-        setOpen(false);
+    function handleClose(type: DialogType) {
+        switch(type){
+            case DialogType.Add:
+                setAddDialopOpen(false);
+                break;
+            case DialogType.Remove:
+                setRemoveDialogOpen(false);
+                break;
+        }
         setName("");
     }
 
     function addAccount() {
         dispatch(add(name));
-        handleClose();
+        handleClose(DialogType.Add);
+    }
+
+    function removeAccount() {
+        dispatch(remove(name));
+        handleClose(DialogType.Remove);
     }
 
     return (
@@ -98,21 +122,38 @@ export function NavigationBar() {
                         </Button>
                         ))}
                     </Box>
-                    <Button color="inherit" onClick={openDialog}>
+                    <Button color="inherit" onClick={() => openDialog(DialogType.Add)}>
                         添加账号
                     </Button>
-                    <Dialog open={open} onClose={handleClose}>
+                    <Button color="inherit" onClick={() => openDialog(DialogType.Remove)}>
+                        删除账号
+                    </Button>
+                    <Dialog open={addDialopOpen} onClose={() => handleClose(DialogType.Add)}>
                         <DialogTitle>添加账号</DialogTitle>
                         <TextField
                             autoFocus
                             fullWidth
-                            label="Section Name"
+                            label="账号名"
                             value={name}
                             onChange={(event) => setName(event.target.value)}
                         ></TextField>
                         <DialogActions>
-                            <Button onClick={handleClose}>取消</Button>
+                            <Button onClick={() => handleClose(DialogType.Add)}>取消</Button>
                             <Button onClick={addAccount}>加入</Button>
+                        </DialogActions>
+                    </Dialog>
+                    <Dialog open={removeDialogOpen} onClose={() => handleClose(DialogType.Remove)}>
+                        <DialogTitle>删除账号</DialogTitle>
+                        <TextField
+                            autoFocus
+                            fullWidth
+                            label="请输入要删除的账号名"
+                            value={name}
+                            onChange={(event) => setName(event.target.value)}
+                        ></TextField>
+                        <DialogActions>
+                            <Button onClick={() => handleClose(DialogType.Remove)}>取消</Button>
+                            <Button onClick={removeAccount}>删除</Button>
                         </DialogActions>
                     </Dialog>
                 </Toolbar>

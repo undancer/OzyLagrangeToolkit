@@ -35,14 +35,14 @@ export function TimerCategory(props: SectionProps): JSX.Element {
 
     switch (props.type) {
         case CategoryTypes.construction:
-            title = "Construction";
+            title = "建造";
             const constructionCategory = findSubCategory(props.subCategories, TimerType.construction);
             subCategoryIndicater.push(<div className="limit-indicater" key={0}>
                 <TimerIcon type={TimerType.construction} /> {constructionCategory.timerIds.length}/2
             </div>)
             break;
         case CategoryTypes.shipyard:
-            title = "Ship";
+            title = "造船";
             const shipCategory = findSubCategory(props.subCategories, TimerType.ship);
             const minerCategory = findSubCategory(props.subCategories, TimerType.miner);
             const capitalShipCategory = findSubCategory(props.subCategories, TimerType.capitalship);
@@ -55,7 +55,7 @@ export function TimerCategory(props: SectionProps): JSX.Element {
             </div>);
             break;
         case CategoryTypes.research:
-            title = "Research";
+            title = "研究";
             const researchCategory = findSubCategory(props.subCategories, TimerType.research);
             subCategoryIndicater.push(<div className="limit-indicater" key={0}>
                 <TimerIcon type={TimerType.research} /> {researchCategory.timerIds.length}/2

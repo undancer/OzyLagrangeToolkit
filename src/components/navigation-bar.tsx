@@ -10,10 +10,15 @@ import MenuItem from "@mui/material/MenuItem";
 import { Link as RouterLink } from "react-router-dom";
 
 const pages = ["计时器", "蓝图档案", "舰队计划", "保底研发"];
-const path: { [index: string]: string } = {"计时器":"tracker", "蓝图档案":"blueprint", "舰队计划":"fleetbuilder", "保底研发": "research" };
-enum DialogType{
+const path: { [index: string]: string } = {
+    计时器: "tracker",
+    蓝图档案: "blueprint",
+    舰队计划: "fleetbuilder",
+    保底研发: "research",
+};
+enum DialogType {
     Add = "add",
-    Remove = "remove"
+    Remove = "remove",
 }
 
 export function NavigationBar() {
@@ -23,16 +28,16 @@ export function NavigationBar() {
     const dispatch = useAppDispatch();
     const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
 
-    const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
+    function openNavMenu(event: React.MouseEvent<HTMLElement>) {
         setAnchorElNav(event.currentTarget);
-    };
+    }
 
-    const handleCloseNavMenu = () => {
+    function closeNavMenu() {
         setAnchorElNav(null);
-    };
+    }
 
     function openDialog(type: DialogType) {
-        switch(type){
+        switch (type) {
             case DialogType.Add:
                 setAddDialopOpen(true);
                 break;
@@ -42,8 +47,8 @@ export function NavigationBar() {
         }
     }
 
-    function handleClose(type: DialogType) {
-        switch(type){
+    function closeDialog(type: DialogType) {
+        switch (type) {
             case DialogType.Add:
                 setAddDialopOpen(false);
                 break;
@@ -56,12 +61,12 @@ export function NavigationBar() {
 
     function addAccount() {
         dispatch(add(name));
-        handleClose(DialogType.Add);
+        closeDialog(DialogType.Add);
     }
 
     function removeAccount() {
         dispatch(remove(name));
-        handleClose(DialogType.Remove);
+        closeDialog(DialogType.Remove);
     }
 
     return (
@@ -70,7 +75,7 @@ export function NavigationBar() {
                 <Toolbar>
                     <ClosedPackageIcon />
                     <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                        Ozy的拉格朗日工具箱
+                        Ozy的研发中心
                     </Typography>
 
                     <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
@@ -79,7 +84,7 @@ export function NavigationBar() {
                             aria-label="account of current user"
                             aria-controls="menu-appbar"
                             aria-haspopup="true"
-                            onClick={handleOpenNavMenu}
+                            onClick={openNavMenu}
                             color="inherit"
                         >
                             <MenuIcon />
@@ -97,29 +102,34 @@ export function NavigationBar() {
                                 horizontal: "left",
                             }}
                             open={Boolean(anchorElNav)}
-                            onClose={handleCloseNavMenu}
+                            onClose={closeNavMenu}
                             sx={{
                                 display: { xs: "block", md: "none" },
                             }}
                         >
                             {pages.map((page) => (
-                                <MenuItem component={RouterLink} to={"/"+path[page]} key={page} onClick={handleCloseNavMenu}>
+                                <MenuItem
+                                    component={RouterLink}
+                                    to={"/" + path[page]}
+                                    key={page}
+                                    onClick={closeNavMenu}
+                                >
                                     <Typography textAlign="center">{page}</Typography>
                                 </MenuItem>
                             ))}
                         </Menu>
                     </Box>
-                    <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+                    <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
                         {pages.map((page) => (
-                        <Button
-                            key={page}
-                            component={RouterLink}
-                            to={"/"+path[page]} 
-                            onClick={handleCloseNavMenu}
-                            sx={{ my: 2, color: 'black', display: 'block' }}
-                        >
-                            {page}
-                        </Button>
+                            <Button
+                                key={page}
+                                component={RouterLink}
+                                to={"/" + path[page]}
+                                onClick={closeNavMenu}
+                                sx={{ my: 2, color: "black", display: "block" }}
+                            >
+                                {page}
+                            </Button>
                         ))}
                     </Box>
                     <Button color="inherit" onClick={() => openDialog(DialogType.Add)}>
@@ -128,7 +138,7 @@ export function NavigationBar() {
                     <Button color="inherit" onClick={() => openDialog(DialogType.Remove)}>
                         删除账号
                     </Button>
-                    <Dialog open={addDialopOpen} onClose={() => handleClose(DialogType.Add)}>
+                    <Dialog open={addDialopOpen} onClose={() => closeDialog(DialogType.Add)}>
                         <DialogTitle>添加账号</DialogTitle>
                         <TextField
                             autoFocus
@@ -138,11 +148,11 @@ export function NavigationBar() {
                             onChange={(event) => setName(event.target.value)}
                         ></TextField>
                         <DialogActions>
-                            <Button onClick={() => handleClose(DialogType.Add)}>取消</Button>
+                            <Button onClick={() => closeDialog(DialogType.Add)}>取消</Button>
                             <Button onClick={addAccount}>加入</Button>
                         </DialogActions>
                     </Dialog>
-                    <Dialog open={removeDialogOpen} onClose={() => handleClose(DialogType.Remove)}>
+                    <Dialog open={removeDialogOpen} onClose={() => closeDialog(DialogType.Remove)}>
                         <DialogTitle>删除账号</DialogTitle>
                         <TextField
                             autoFocus
@@ -152,7 +162,7 @@ export function NavigationBar() {
                             onChange={(event) => setName(event.target.value)}
                         ></TextField>
                         <DialogActions>
-                            <Button onClick={() => handleClose(DialogType.Remove)}>取消</Button>
+                            <Button onClick={() => closeDialog(DialogType.Remove)}>取消</Button>
                             <Button onClick={removeAccount}>删除</Button>
                         </DialogActions>
                     </Dialog>

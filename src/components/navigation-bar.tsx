@@ -1,13 +1,13 @@
 import { AppBar, Box, Button, Dialog, DialogActions, DialogTitle, TextField, Toolbar, Typography } from "@mui/material";
 import { useState } from "react";
-import { add, remove } from "../redux/gameAccount";
-import { useAppDispatch } from "../redux/utils/hooks";
-import { ClosedPackageIcon } from "./Icons/closedpackage";
 import IconButton from "@mui/material/IconButton";
 import Menu from "@mui/material/Menu";
 import MenuIcon from "@mui/icons-material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import { Link as RouterLink } from "react-router-dom";
+import { ClosedPackageIcon } from "./Icons/closedpackage";
+import { useAppDispatch } from "../redux/utils/hooks";
+import { add, remove } from "../redux/gameAccount";
 
 const pages = ["计时器", "蓝图档案", "舰队计划", "保底研发"];
 const path: { [index: string]: string } = {
@@ -31,7 +31,7 @@ export function NavigationBar() {
     function openNavMenu(event: React.MouseEvent<HTMLElement>) {
         setAnchorElNav(event.currentTarget);
     }
-    
+
     function closeNavMenu() {
         setAnchorElNav(null);
     }
@@ -44,6 +44,9 @@ export function NavigationBar() {
             case DialogType.Remove:
                 setRemoveDialogOpen(true);
                 break;
+            default:
+                // Do nothing;
+                break;
         }
     }
 
@@ -54,6 +57,9 @@ export function NavigationBar() {
                 break;
             case DialogType.Remove:
                 setRemoveDialogOpen(false);
+                break;
+            default:
+                // Do nothing;
                 break;
         }
         setName("");
@@ -110,7 +116,7 @@ export function NavigationBar() {
                             {pages.map((page) => (
                                 <MenuItem
                                     component={RouterLink}
-                                    to={"/" + path[page]}
+                                    to={`/${path[page]}`}
                                     key={page}
                                     onClick={closeNavMenu}
                                 >
@@ -124,7 +130,7 @@ export function NavigationBar() {
                             <Button
                                 key={page}
                                 component={RouterLink}
-                                to={"/" + path[page]}
+                                to={`/${path[page]}`}
                                 onClick={closeNavMenu}
                                 sx={{ my: 2, color: "black", display: "block" }}
                             >

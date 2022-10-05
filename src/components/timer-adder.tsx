@@ -24,10 +24,10 @@ export function TimerAdder(props: timerAdder): JSX.Element {
         TimerType.agreement,
     ];
 
-    const timerChoiceButtons = timerTypes.map((type) => {
+    const timerChoiceButtons = timerTypes.map((timerType) => {
         return (
-            <ToggleButton value={type} key={type}>
-                <TimerIcon type={type} />
+            <ToggleButton value={timerType} key={timerType}>
+                <TimerIcon type={timerType} />
             </ToggleButton>
         );
     });
@@ -42,16 +42,16 @@ export function TimerAdder(props: timerAdder): JSX.Element {
         const timeArray = time.split(/[d:]/);
         console.log(`Length: ${timeArray.length}`);
 
-        if (timeArray.length >= 3) day = parseInt(timeArray[timeArray.length - 3]);
-        if (timeArray.length >= 2) hr = parseInt(timeArray[timeArray.length - 2]);
-        min = parseInt(timeArray[timeArray.length - 1]);
+        if (timeArray.length >= 3) day = parseInt(timeArray[timeArray.length - 3], 10);
+        if (timeArray.length >= 2) hr = parseInt(timeArray[timeArray.length - 2], 10);
+        min = parseInt(timeArray[timeArray.length - 1], 10);
 
         dispatch(addTimer(props.accountId, type, day * 60 * 24 + hr * 60 + min));
         setTime("");
     }
 
-    function handleTypeChange(event: React.MouseEvent<HTMLElement>, type: TimerType) {
-        setType(type);
+    function handleTypeChange(event: React.MouseEvent<HTMLElement>, timerType: TimerType) {
+        setType(timerType);
     }
 
     function handleKeyPress(event: React.KeyboardEvent<HTMLDivElement>) {

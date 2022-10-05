@@ -1,8 +1,7 @@
-
+import AnchorIcon from "@mui/icons-material/Anchor";
 import { TimerType } from "../redux/actions/gameTimer";
 import { IndividualTimer } from "./individual-timer";
 import { TimerIcon } from "./timer-icon";
-import AnchorIcon from '@mui/icons-material/Anchor';
 import "./css/account-section.css";
 
 export enum CategoryTypes {
@@ -18,9 +17,9 @@ interface SectionProps {
     subCategories: SubTimerCategory[];
 }
 
-export interface SubTimerCategory{
-    type: TimerType,
-    timerIds: string[]
+export interface SubTimerCategory {
+    type: TimerType;
+    timerIds: string[];
 }
 
 function findSubCategory(list: SubTimerCategory[], type: TimerType): SubTimerCategory {
@@ -37,9 +36,11 @@ export function TimerCategory(props: SectionProps): JSX.Element {
         case CategoryTypes.construction:
             title = "建造";
             const constructionCategory = findSubCategory(props.subCategories, TimerType.construction);
-            subCategoryIndicater.push(<div className="limit-indicater" key={0}>
-                <TimerIcon type={TimerType.construction} /> {constructionCategory.timerIds.length}/2
-            </div>)
+            subCategoryIndicater.push(
+                <div className="limit-indicater" key={0}>
+                    <TimerIcon type={TimerType.construction} /> {constructionCategory.timerIds.length}/2
+                </div>,
+            );
             break;
         case CategoryTypes.shipyard:
             title = "造船";
@@ -47,19 +48,25 @@ export function TimerCategory(props: SectionProps): JSX.Element {
             const minerCategory = findSubCategory(props.subCategories, TimerType.miner);
             const capitalShipCategory = findSubCategory(props.subCategories, TimerType.capitalship);
 
-            subCategoryIndicater.push(<div className="limit-indicater" key={0}>
-                <AnchorIcon /> {shipCategory.timerIds.length + minerCategory.timerIds.length}/3
-            </div>);            
-            subCategoryIndicater.push(<div className="limit-indicater" key={1}>
-                <TimerIcon type={TimerType.capitalship} /> {capitalShipCategory.timerIds.length}/1
-            </div>);
+            subCategoryIndicater.push(
+                <div className="limit-indicater" key={0}>
+                    <AnchorIcon /> {shipCategory.timerIds.length + minerCategory.timerIds.length}/3
+                </div>,
+            );
+            subCategoryIndicater.push(
+                <div className="limit-indicater" key={1}>
+                    <TimerIcon type={TimerType.capitalship} /> {capitalShipCategory.timerIds.length}/1
+                </div>,
+            );
             break;
         case CategoryTypes.research:
             title = "研究";
             const researchCategory = findSubCategory(props.subCategories, TimerType.research);
-            subCategoryIndicater.push(<div className="limit-indicater" key={0}>
-                <TimerIcon type={TimerType.research} /> {researchCategory.timerIds.length}/2
-            </div>)
+            subCategoryIndicater.push(
+                <div className="limit-indicater" key={0}>
+                    <TimerIcon type={TimerType.research} /> {researchCategory.timerIds.length}/2
+                </div>,
+            );
             break;
         default:
             break;
@@ -72,7 +79,7 @@ export function TimerCategory(props: SectionProps): JSX.Element {
             return <IndividualTimer key={timerId} id={timerId} accountId={props.accountId} type={category.type} />;
         });
         timerComponents = timerComponents.concat(categoryTimer);
-    })
+    });
 
     return (
         <div>

@@ -23,6 +23,7 @@ module.exports = {
         "no-new": "off", // AWS CDK rely on new Object to process
         "no-template-curly-in-string": "off", // AWS CDK uses template string in Fn functions
         "import/prefer-default-export": "off",
+        "no-case-declarations": "off",
         "import/extensions": "off",
         // Disabled for now to be fixed later if possible
         "import/no-cycle": "off",

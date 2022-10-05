@@ -50,7 +50,6 @@ export function IndividualTimer(props: IndividualTimerProps): JSX.Element {
         );
     } else {
         const val = Math.floor(timePassed/duration * 100);
-        console.log("Value is: " + val);
         progressBarCol = <BorderLinearProgress className="progress-bar-extra" variant="determinate" value={val}/>;
     }
 

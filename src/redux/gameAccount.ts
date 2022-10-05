@@ -97,7 +97,6 @@ export const gameAccountSlice = createSlice({
             removeElementByValue(account.agreement, timerId);
         })
     }
-
 });
 
 export const { add, remove } = gameAccountSlice.actions;

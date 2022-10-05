@@ -1,16 +1,25 @@
 import ReactDOM from 'react-dom';
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import InfiniteLagrangeTracker from "./components/tracker";
+import Tracker from "./components/tracker";
+import BluePrint from "./components/blue-print";
 import { store } from "./redux/core/store";
 import { Provider } from "react-redux";
+import { NavigationBar } from "./components/navigation-bar";
 
 ReactDOM.render(
   <Provider store={store}>
     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<InfiniteLagrangeTracker />} />
-        {/* <Route path="game" element={<InfiniteLagrangeTracker />} /> */}
-      </Routes>
+      <div>
+          <NavigationBar />
+          <div className="game-body">
+            <Routes>
+              <Route path="/" element={<Tracker />} />
+              <Route path="blueprint" element={<BluePrint />} />
+              <Route path="tracker" element={<Tracker />} />
+              <Route path="builder" element={<Tracker />} />
+            </Routes>
+          </div>
+      </div>
     </BrowserRouter>
   </Provider>,
   document.getElementById('root')

@@ -1,4 +1,4 @@
-import "./css/tracker.css"
+import "./css/blue-print.css"
 import { Container } from "@mui/material";
 
 function BluePrint() {

@@ -9,8 +9,8 @@ import MenuIcon from "@mui/icons-material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import { Link as RouterLink } from "react-router-dom";
 
-const pages = ["计时器", "蓝图目录", "舰队预览"];
-const path: { [index: string]: string } = {"计时器":"tracker", "蓝图目录":"blueprint", "舰队预览":"fleetbuilder" };
+const pages = ["计时器", "蓝图档案", "舰队计划", "保底研发"];
+const path: { [index: string]: string } = {"计时器":"tracker", "蓝图档案":"blueprint", "舰队计划":"fleetbuilder", "保底研发": "research" };
 enum DialogType{
     Add = "add",
     Remove = "remove"

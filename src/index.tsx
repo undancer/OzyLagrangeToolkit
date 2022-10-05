@@ -17,6 +17,7 @@ ReactDOM.render(
               <Route path="/tracker" element={<Tracker />} />
               <Route path="/blueprint" element={<BluePrint />} />
               <Route path="/fleetbuilder" element={<Tracker />} />
+              <Route path="/research" element={<Tracker />} />
             </Routes>
           </div>
       </div>

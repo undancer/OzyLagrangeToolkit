@@ -98,7 +98,7 @@ export function TimerAdder(props: timerAdder): JSX.Element {
             <div className="time-selector-container">
                 <TextField
                     variant="outlined"
-                    label="Time (hh:mm)"
+                    label="时间 (hh:mm)"
                     value={time}
                     onChange={setTimeAndValidate}
                     onKeyDown={handleKeyPress}

@@ -9,7 +9,8 @@ import MenuIcon from "@mui/icons-material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import { Link as RouterLink } from "react-router-dom";
 
-const pages = ["tracker", "blueprint", "builder"];
+const pages = ["计时器", "蓝图", "船队编辑器"];
+const path: { [index: string]: string } = {"计时器":"tracker", "蓝图":"blueprint", "船队编辑器":"fleetbuilder" };
 
 export function NavigationBar() {
     const [open, setOpen] = useState(false);
@@ -45,7 +46,7 @@ export function NavigationBar() {
                 <Toolbar>
                     <ClosedPackageIcon />
                     <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                        Ozy's Lagrange Toolkit
+                        Ozy的拉格朗日工具箱
                     </Typography>
 
                     <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
@@ -78,7 +79,7 @@ export function NavigationBar() {
                             }}
                         >
                             {pages.map((page) => (
-                                <MenuItem href={"/"+page} key={page} onClick={handleCloseNavMenu}>
+                                <MenuItem component={RouterLink} to={"/"+path[page]} key={page} onClick={handleCloseNavMenu}>
                                     <Typography textAlign="center">{page}</Typography>
                                 </MenuItem>
                             ))}
@@ -89,7 +90,7 @@ export function NavigationBar() {
                         <Button
                             key={page}
                             component={RouterLink}
-                            to={"/"+page} 
+                            to={"/"+path[page]} 
                             onClick={handleCloseNavMenu}
                             sx={{ my: 2, color: 'black', display: 'block' }}
                         >
@@ -98,10 +99,10 @@ export function NavigationBar() {
                         ))}
                     </Box>
                     <Button color="inherit" onClick={openDialog}>
-                        Add Account
+                        添加账号
                     </Button>
                     <Dialog open={open} onClose={handleClose}>
-                        <DialogTitle>Add Account</DialogTitle>
+                        <DialogTitle>添加账号</DialogTitle>
                         <TextField
                             autoFocus
                             fullWidth
@@ -110,8 +111,8 @@ export function NavigationBar() {
                             onChange={(event) => setName(event.target.value)}
                         ></TextField>
                         <DialogActions>
-                            <Button onClick={handleClose}>Cancel</Button>
-                            <Button onClick={addAccount}>Add</Button>
+                            <Button onClick={handleClose}>取消</Button>
+                            <Button onClick={addAccount}>加入</Button>
                         </DialogActions>
                     </Dialog>
                 </Toolbar>

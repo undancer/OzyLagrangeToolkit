@@ -81,7 +81,7 @@ export function NavigationBar() {
                 <Toolbar>
                     <ClosedPackageIcon />
                     <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                        Ozy的研发中心
+                        Ozy的拉格朗日工具组
                     </Typography>
 
                     <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>

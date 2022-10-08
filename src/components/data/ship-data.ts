@@ -5,6 +5,23 @@ export interface ShipData {
     variants: string[];
 }
 
+export interface SuperCapData {
+    id: string;
+    name: string;
+    type: string;
+    module: {
+        [key: string]: SuperCapModule;
+    };
+}
+
+export interface SuperCapModule {
+    id: string;
+    name: string;
+    shortName: string;
+}
+
+export const BATTLE_CRUISER_DATA: SuperCapData[] = [];
+
 export const CRUISER_DATA: ShipData[] = [
     { id: "c1", name: "卡利斯托級", type: "巡洋舰", variants: ["鱼雷型", "反舰型", "支援型"] },
     { id: "c2", name: "艾奥级", type: "巡洋舰", variants: ["离子炮", "反舰型", "攻城型"] },
@@ -19,7 +36,7 @@ export const CRUISER_DATA: ShipData[] = [
 
 export const DESTROYER_DATA: ShipData[] = [
     { id: "d1", name: "刺水母级", type: "护卫舰", variants: ["特种型", "防空型"] },
-    { id: "d1", name: "雷击亚特级", type: "护卫舰", variants: ["反舰型", "魚雷型", "隐身型"] },
+    { id: "d1", name: "雷里亚特级", type: "护卫舰", variants: ["反舰型", "魚雷型", "隐身型"] },
     { id: "d3", name: "红宝石级", type: "护卫舰", variants: ["轨道炮", "粒子炮", "防卫型"] },
     { id: "d4", name: "卡里莱恩级", type: "护卫舰", variants: ["侦查型", "重炮型", "特種型"] },
     { id: "d5", name: "澄海級", type: "护卫舰", variants: ["反舰型", "飞弹型", "防空型"] },

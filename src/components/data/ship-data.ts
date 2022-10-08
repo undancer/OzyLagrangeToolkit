@@ -43,15 +43,16 @@ export const FRIGATE_DATA: ShipData[] = [
 
 export const AIRCRAFT_DATA: ShipData[] = [
     // Medium fighters
-    { id: "a5", name: "密斯托拉", type: "中型机", variants: [" "] },
+    { id: "a1", name: "密斯托拉", type: "中型机", variants: [" "] },
     { id: "a2", name: "海氏追隨者型", type: "中型机", variants: [" "] },
-    { id: "a1", name: "林鴞A100", type: "中型机", variants: [" "] },
-    { id: "a9", name: "砂龙", type: "中型机", variants: [" "] },
-    { id: "a8", name: "維塔斯A021", type: "中型机", variants: [" "] },
-    { id: "a3", name: "平衡安德森", type: "中型机", variants: [" "] },
-    { id: "a4", name: "孢子A404", type: "中型机", variants: [" "] },
-    { id: "a7", name: "B192新大地", type: "中型机", variants: [" "] },
-    { id: "a6", name: "佩刀Aer410", type: "中型机", variants: [" "] },
+    { id: "a3", name: "林鴞A100", type: "中型机", variants: [" "] },
+    { id: "a4", name: "砂龙", type: "中型机", variants: [" "] },
+    { id: "a5", name: "維塔斯A021", type: "中型机", variants: [" "] },
+    { id: "a6", name: "平衡安德森", type: "中型机", variants: [" "] },
+    { id: "a7", name: "孢子A404", type: "中型机", variants: [" "] },
+    { id: "a8", name: "B192新大地", type: "中型机", variants: [" "] },
+    { id: "a9", name: "佩刀Aer410", type: "中型机", variants: [" "] },
+    { id: "a10", name: "SC002", type: "中型机", variants: [" "] },
     // large fighters
     { id: "b1", name: "維塔斯B010", type: "大型机", variants: [" "] },
     { id: "b2", name: "刺鰩", type: "大型机", variants: [" "] },

@@ -6,6 +6,6 @@
     margin-top: 20px;
 }
 
-.svg-fill {
-    filter: invert(30%) sepia(81%) saturate(1980%) hue-rotate(196deg) brightness(92%) contrast(81%);
+.card-ship-list {
+    min-width: 228px;
 }

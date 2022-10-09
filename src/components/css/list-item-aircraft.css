@@ -1,0 +1,27 @@
+.control-label-aircraft-variant {
+    margin-right: 0px !important;
+}
+
+.checkbox-aircraft-variant {
+    padding:0px !important; /* This will get overridden by another class somehow */
+    padding-left: 3px !important;
+}
+
+.input-box-tech-point {
+    width: 70px;
+}
+
+.svg-fill-tech-icon {
+    filter: invert(30%) sepia(81%) saturate(1980%) hue-rotate(196deg) brightness(92%) contrast(81%);
+}
+
+.list-item-aircraft-data {
+    padding-top: 2px !important;
+    padding-bottom: 4px !important;
+    min-height: 53px;
+    justify-content: space-between !important;
+}
+
+.ship-name-text {
+    margin-bottom: -2px !important;
+}

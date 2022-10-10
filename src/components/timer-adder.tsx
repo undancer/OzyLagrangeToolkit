@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { IconButton, TextField, ToggleButton, ToggleButtonGroup } from "@mui/material";
 import AlarmAddIcon from "@mui/icons-material/AlarmAdd";
 import { useAppDispatch } from "../redux/utils/hooks";
-import { addTimer, TimerType } from "../redux/actions/gameTimer";
+import { addTimer, TimerType } from "../redux/actions/game-timer";
 import "./css/timer-adder.css";
 import { TimerIcon } from "./timer-icon";
 

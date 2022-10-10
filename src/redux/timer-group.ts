@@ -1,16 +1,15 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { v4 as uuidV4 } from "uuid";
+import { createSlice } from "@reduxjs/toolkit";
 import { RootState } from "./core/store";
-import { addTimer, clearTimer, TimerType } from "./actions/gameTimer";
+import { addTimer, clearTimer, TimerType } from "./actions/game-timer";
+import { addAccount, removeAccount } from "./actions/game-account";
 import { removeElementByValue } from "./utils/arrayhelper";
 
-interface GameAccountState {
-    [index: string]: GameAccount;
+interface TimerGroupState {
+    [index: string]: TimerGroup;
 }
 
-interface GameAccount {
-    id: string;
-    name: string;
+interface TimerGroup {
+    accountId: string;
 
     // Construction Category
     construction: string[];
@@ -26,10 +25,9 @@ interface GameAccount {
     agreement: string[];
 }
 
-function emptyGameAccount(name: string, id: string): GameAccount {
+function emptyTimerGrup(id: string): TimerGroup {
     return {
-        id,
-        name,
+        accountId: id,
         construction: [],
         baseUpgrade: [],
         ship: [],
@@ -40,24 +38,21 @@ function emptyGameAccount(name: string, id: string): GameAccount {
     };
 }
 
-const initialState: GameAccountState = {};
+const initialState: TimerGroupState = {};
 
-export const gameAccountSlice = createSlice({
-    name: "gameAccount",
+export const timerGroupSlice = createSlice({
+    name: "timerGroup",
     initialState,
-    reducers: {
-        add: (state, action: PayloadAction<string>) => {
-            const id = uuidV4();
-            state[id] = emptyGameAccount(action.payload, id);
-        },
-        remove: (state, action: PayloadAction<string>) => {
-            const allAccountId = Object.keys(state);
-            // Find the accountId by user provided name, case doesn't matter
-            const accountId = allAccountId.find((id) => state[id].name.toLowerCase() === action.payload.toLowerCase());
-            if (accountId) delete state[accountId];
-        },
-    },
+    reducers: {},
     extraReducers: (builder) => {
+        builder.addCase(addAccount, (state, action) => {
+            const { id } = action.payload;
+            state[id] = emptyTimerGrup(id);
+        });
+        builder.addCase(removeAccount, (state, action) => {
+            const { id } = action.payload;
+            if (id) delete state[id];
+        });
         builder.addCase(addTimer, (state, action) => {
             const { accountId, type, id } = action.payload;
             const account = state[accountId];
@@ -112,10 +107,9 @@ export const gameAccountSlice = createSlice({
     },
 });
 
-export const { add, remove } = gameAccountSlice.actions;
+// Selectors
+export const selectAllTimerGroups = (state: RootState) =>
+    Object.keys(state.timerGroup).map((key) => state.timerGroup[key]);
+export const selectTimerGroup = (state: RootState, id: string) => state.timerGroup[id];
 
-export const selectAllAccounts = (state: RootState) =>
-    Object.keys(state.gameAccount).map((key) => state.gameAccount[key]);
-export const selectAccount = (state: RootState, id: string) => state.gameAccount[id];
-
-export default gameAccountSlice.reducer;
+export default timerGroupSlice.reducer;

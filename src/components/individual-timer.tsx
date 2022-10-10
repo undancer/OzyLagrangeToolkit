@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import HourglassDisabledIcon from "@mui/icons-material/HourglassDisabled";
 import { IconButton, LinearProgress, styled } from "@mui/material";
-import { clearTimer, TimerType } from "../redux/actions/gameTimer";
+import { clearTimer, TimerType } from "../redux/actions/game-timer";
 import { useAppDispatch, useAppSelector } from "../redux/utils/hooks";
-import { selectTimer } from "../redux/taskTimeStamp";
+import { selectTimer } from "../redux/task-time-stamp";
 import { finishingHourString, timeString } from "./utils/timeToString";
 import "./css/individual-timer.css";
 import { TimerIcon } from "./timer-icon";

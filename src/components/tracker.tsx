@@ -1,14 +1,14 @@
 import { Container } from "@mui/material";
 import { useAppSelector } from "../redux/utils/hooks";
-import { selectAllAccounts } from "../redux/gameAccount";
+import { selectAllAccounts } from "../redux/game-account";
 import "./css/tracker.css";
-import { GameAccount } from "./game-account";
+import { AccountTimerGroup } from "./game-account";
 
 function Tracker() {
     const gameAccounts = useAppSelector((state) => selectAllAccounts(state));
 
     let accountComponents = gameAccounts.map((account) => {
-        return <GameAccount key={account.id} accountId={account.id} />;
+        return <AccountTimerGroup key={account.id} accountId={account.id} />;
     });
 
     if (gameAccounts.length <= 0) accountComponents = [<div>"还没有账号啊，点击右上添加一个吧。"</div>];

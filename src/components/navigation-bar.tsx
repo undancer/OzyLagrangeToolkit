@@ -7,7 +7,7 @@ import MenuItem from "@mui/material/MenuItem";
 import { Link as RouterLink } from "react-router-dom";
 import { ClosedPackageIcon } from "./Icons/closedpackage";
 import { useAppDispatch } from "../redux/utils/hooks";
-import { add, remove } from "../redux/gameAccount";
+import { addAccount as add, removeAccount as remove } from "../redux/actions/game-account";
 
 const pages = ["计时器", "蓝图档案", "舰队计划", "保底研发"];
 const path: { [index: string]: string } = {

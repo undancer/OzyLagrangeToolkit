@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 import { createSlice } from "@reduxjs/toolkit";
 import { RootState } from "./core/store";
-import { addTimer, clearTimer } from "./actions/gameTimer";
+import { addTimer, clearTimer } from "./actions/game-timer";
 
 interface TaskTimeStampState {
     [index: string]: TaskTimeStamp;

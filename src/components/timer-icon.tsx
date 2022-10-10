@@ -2,7 +2,7 @@ import SettingsSuggestIcon from "@mui/icons-material/SettingsSuggest";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
 import LogoDevIcon from "@mui/icons-material/LogoDev";
 import ScienceIcon from "@mui/icons-material/Science";
-import { TimerType } from "../redux/actions/gameTimer";
+import { TimerType } from "../redux/actions/game-timer";
 import { ShipIcon } from "./Icons/ship";
 import { BattleShipIcon } from "./Icons/battleship";
 import { CargoShipIcon } from "./Icons/cargoship";

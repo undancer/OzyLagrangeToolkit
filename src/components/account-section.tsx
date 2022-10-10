@@ -1,5 +1,5 @@
 import AnchorIcon from "@mui/icons-material/Anchor";
-import { TimerType } from "../redux/actions/gameTimer";
+import { TimerType } from "../redux/actions/game-timer";
 import { IndividualTimer } from "./individual-timer";
 import { TimerIcon } from "./timer-icon";
 import "./css/account-section.css";

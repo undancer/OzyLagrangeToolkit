@@ -1,37 +1,39 @@
 import { Card, Typography } from "@mui/material";
 import "./css/game-account.css";
-import { selectAccount } from "../redux/gameAccount";
+import { selectTimerGroup } from "../redux/timer-group";
 import { useAppSelector } from "../redux/utils/hooks";
 import { TimerAdder } from "./timer-adder";
 import { CategoryTypes, SubTimerCategory, TimerCategory } from "./account-section";
-import { TimerType } from "../redux/actions/gameTimer";
+import { TimerType } from "../redux/actions/game-timer";
+import { selectAccount } from "../redux/game-account";
 
 interface GameAccountProps {
     accountId: string;
 }
 
-export function GameAccount(props: GameAccountProps): JSX.Element {
+export function AccountTimerGroup(props: GameAccountProps): JSX.Element {
     const { accountId } = props;
+    const timerGroup = useAppSelector((state) => selectTimerGroup(state, accountId));
     const account = useAppSelector((state) => selectAccount(state, accountId));
 
     const constructionSubrCategory: SubTimerCategory[] = [
-        { type: TimerType.baseUpgrade, timerIds: account.baseUpgrade },
-        { type: TimerType.construction, timerIds: account.construction },
+        { type: TimerType.baseUpgrade, timerIds: timerGroup.baseUpgrade },
+        { type: TimerType.construction, timerIds: timerGroup.construction },
     ];
 
     const shipyardSubCategory: SubTimerCategory[] = [
-        { type: TimerType.ship, timerIds: account.ship },
-        { type: TimerType.miner, timerIds: account.miner },
-        { type: TimerType.capitalship, timerIds: account.capitalShip },
+        { type: TimerType.ship, timerIds: timerGroup.ship },
+        { type: TimerType.miner, timerIds: timerGroup.miner },
+        { type: TimerType.capitalship, timerIds: timerGroup.capitalShip },
     ];
 
     const researchSubCategory: SubTimerCategory[] = [
-        { type: TimerType.agreement, timerIds: account.agreement },
-        { type: TimerType.research, timerIds: account.research },
+        { type: TimerType.agreement, timerIds: timerGroup.agreement },
+        { type: TimerType.research, timerIds: timerGroup.research },
     ];
 
     return (
-        <Card elevation={2} key={account.id}>
+        <Card elevation={2} key={timerGroup.accountId}>
             <div className="game-account">
                 <div className="account-title">
                     <Typography variant="h5" gutterBottom align="center">

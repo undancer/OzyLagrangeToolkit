@@ -31,6 +31,7 @@ export interface SuperCapModule {
     id: string;
     name: string;
     isBase: boolean;
+    important?: boolean;
     shortName: string;
 }
 

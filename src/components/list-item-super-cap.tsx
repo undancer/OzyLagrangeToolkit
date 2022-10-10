@@ -12,15 +12,20 @@ export function ModuleChip(props: { superCapModule: SuperCapModule }): JSX.Eleme
         setSelected(!selected);
     }
 
+    let chipColor: "default" | "primary" | "secondary" = "default";
+    if (superCapModule.important) chipColor = "primary";
+    else if (selected) chipColor = "default";
+
     const label = superCapModule.id.toUpperCase();
     return (
         <Chip
-            variant={selected ? "filled" : "outlined"}
+            variant={selected || superCapModule.isBase ? "filled" : "outlined"}
             avatar={<Avatar>{label}</Avatar>}
             label={superCapModule.shortName}
             size={"small"}
             onClick={handleClick}
-            color={selected ? "primary" : "default"}
+            color={chipColor}
+            disabled={superCapModule.isBase}
         />
     );
 }

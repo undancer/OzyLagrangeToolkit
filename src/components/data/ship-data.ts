@@ -135,7 +135,7 @@ const CRUISER_DATA: ShipData[] = [
     { id: "c9", name: "KCCPV2.0級", variants: ["綜合型", "载机型", "轨道炮", "脉冲型"] },
 ];
 
-const DESTROYER_DATA: ShipData[] = [
+const FRIGATE_DATA: ShipData[] = [
     { id: "d1", name: "刺水母级", variants: ["特种型", "防空型"] },
     { id: "d1", name: "雷里亚特级", variants: ["反舰型", "魚雷型", "隐身型"] },
     { id: "d3", name: "红宝石级", variants: ["轨道炮", "粒子炮", "防卫型"] },
@@ -147,7 +147,7 @@ const DESTROYER_DATA: ShipData[] = [
     { id: "d9", name: "FG300级", variants: ["多功能", "装甲型", "侦察型"] },
 ];
 
-const FRIGATE_DATA: ShipData[] = [
+const DESTROYER_DATA: ShipData[] = [
     { id: "f1", name: "苔原级", variants: ["支援型", "载机型"] },
     { id: "f2", name: "斗牛级", variants: ["攻击型", "突击型", "防御性"] },
     { id: "f3", name: "谷神星级", variants: ["载机型", "支援型", "战术型"] },

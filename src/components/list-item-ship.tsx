@@ -1,5 +1,5 @@
 import { List, ListItem, ListItemText, FormControlLabel, Checkbox, TextField, InputAdornment } from "@mui/material";
-import { ShipData } from "./data/ship-data";
+import { ShipData } from "./data/ship-data-types";
 import { TechIcon } from "./Icons/tech";
 import "./css/list-item-ship.css";
 
@@ -42,7 +42,6 @@ export function ListItemShip(props: { data: ShipData }): JSX.Element {
                         size="small"
                         color="primary"
                         variant="standard"
-                        focused
                     />
                 </ListItem>
             </List>

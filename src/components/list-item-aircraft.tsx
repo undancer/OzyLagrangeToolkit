@@ -1,32 +1,18 @@
-import { List, ListItem, ListItemText, FormControlLabel, Checkbox, TextField, InputAdornment } from "@mui/material";
-import { ShipData } from "./data/ship-data";
+import { List, ListItem, ListItemText, Checkbox, TextField, InputAdornment } from "@mui/material";
+import { AircraftData } from "./data/ship-data-types";
 import { TechIcon } from "./Icons/tech";
 import "./css/list-item-aircraft.css";
 
-export function ListItemAircraft(props: { data: ShipData }): JSX.Element {
+export function ListItemAircraft(props: { data: AircraftData }): JSX.Element {
     const { data } = props;
     const aircraftList: JSX.Element[] = [];
-    data.variants.forEach((variant) => {
-        let checkBox = <Checkbox className="checkbox-aircraft-variant" color="success" />;
-        if (variant.length > 0) {
-            checkBox = (
-                <FormControlLabel
-                    value="start"
-                    className="control-label-aircraft-variant"
-                    control={<Checkbox className="checkbox-ship-variant" color="success" />}
-                    label={variant}
-                    labelPlacement="start"
-                    sx={{ color: variant === "看不到" ? "white" : "black" }}
-                />
-            );
-        }
-        aircraftList.push(<ListItem disablePadding>{checkBox}</ListItem>);
-    });
+    const checkBox = <Checkbox className="checkbox-aircraft-variant" color="success" />;
+    aircraftList.push(<ListItem disablePadding>{checkBox}</ListItem>);
 
     return (
         <ListItem className="list-item-aircraft-data">
             <ListItem disablePadding>
-                <ListItemText primary={data.name} className="ship-name-text" />
+                <ListItemText primary={data.name} />
             </ListItem>
             <ListItem disablePadding>
                 <TextField
@@ -43,7 +29,6 @@ export function ListItemAircraft(props: { data: ShipData }): JSX.Element {
                     size="small"
                     color="primary"
                     variant="standard"
-                    focused
                 />
             </ListItem>
             <List disablePadding>{aircraftList}</List>

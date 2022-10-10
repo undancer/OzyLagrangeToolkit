@@ -1,5 +1,53 @@
 import { AircraftData, ShipData, ShipTypes, SuperCapData, UnitDataBase } from "./ship-data-types";
 
+export const CARRIER_DATA: SuperCapData[] = [
+    {
+        id: "cr1",
+        name: "CV3000",
+        modules: {
+            m1: { id: "m1", isBase: true, name: "综合舰载机搭载平台", shortName: "综合战机" },
+            m2: { id: "m2", isBase: false, name: "综合战机系统", shortName: "综合平台" },
+            m3: { id: "m3", isBase: false, name: "大型舰载机平台", shortName: "大型机仓", important: true },
+            a1: { id: "a1", isBase: true, name: "龙石火炮系统", shortName: "龙石火炮" },
+            a2: { id: "a2", isBase: false, name: "防空导弹平台", shortName: "防空导弹" },
+            b1: { id: "b1", isBase: false, name: "导弹防御系统", shortName: "导弹防御" },
+            b2: { id: "b2", isBase: false, name: "护航艇搭载平台", shortName: "炮艇平台", important: true },
+            b3: { id: "b3", isBase: false, name: "信息无人机支援平台", shortName: "无人机台" },
+        },
+    },
+    {
+        id: "cr2",
+        name: "太阳鲸",
+        modules: {
+            m1: { id: "m1", isBase: true, name: "护航艇坞仓", shortName: "护航艇仓" },
+            m2: { id: "m2", isBase: false, name: "大型载机系统", shortName: "大型载机", important: true },
+            a1: { id: "a1", isBase: true, name: "综合武器库", shortName: "综合武器" },
+            a2: { id: "a2", isBase: false, name: "投射武器平台", shortName: "投射平台" },
+            a3: { id: "a3", isBase: false, name: "综合火炮平台", shortName: "综合火炮" },
+            b1: { id: "b1", isBase: false, name: "舰载机维护系统", shortName: "载机维护" },
+            b2: { id: "b2", isBase: false, name: "护航艇搭载平台", shortName: "炮艇平台", important: true },
+            c1: { id: "c1", isBase: false, name: "舰载机平台", shortName: "载机平台", important: true },
+            c2: { id: "c2", isBase: false, name: "攻城无人机", shortName: "攻城飞机" },
+            c3: { id: "c3", isBase: false, name: "防空导弹平台", shortName: "防空导弹" },
+        },
+    },
+    {
+        id: "cr2",
+        name: "南十字元帅级",
+        modules: {
+            m1: { id: "m1", isBase: true, name: "白色闪光综合武器库", shortName: "综合武器" },
+            m2: { id: "m2", isBase: false, name: "白色闪光综合武器库", shortName: "综合武器" },
+            a1: { id: "a1", isBase: true, name: "综合舰载机平台", shortName: "载机平台" },
+            a2: { id: "a2", isBase: false, name: "护航艇坞仓", shortName: "护航艇仓", important: true },
+            b1: { id: "b1", isBase: false, name: "附加舰载机搭载平台", shortName: "载机平台", important: true },
+            b2: { id: "b2", isBase: false, name: "导弹防御系统", shortName: "导弹防御" },
+            b3: { id: "b3", isBase: false, name: "侦查无人机系统", shortName: "侦查飞机" },
+            c1: { id: "c1", isBase: true, name: "附加能源系统", shortName: "能源系统" },
+            c2: { id: "c2", isBase: false, name: "火控辅助校准系统", shortName: "火控辅助" },
+        },
+    },
+];
+
 export const BATTLE_CRUISER_DATA: SuperCapData[] = [
     {
         id: "bc1",
@@ -142,6 +190,7 @@ const CORVETTE_DATA: ShipData[] = [
 ];
 
 export const UNIT_DATA_BASE: UnitDataBase = {
+    carriers: { label: "航空母舰", type: ShipTypes.carrier, list: CARRIER_DATA },
     battleCruisers: { label: "战斗巡洋舰", type: ShipTypes.battleCruiser, list: BATTLE_CRUISER_DATA },
     cruisers: { label: "巡洋舰", type: ShipTypes.cruiser, list: CRUISER_DATA },
     destroyers: { label: "驱逐舰", type: ShipTypes.destroyer, list: DESTROYER_DATA },

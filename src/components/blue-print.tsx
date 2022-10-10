@@ -25,6 +25,7 @@ function cardListDataGroup(data: UnitDataGroup): JSX.Element {
             });
             break;
         case ShipTypes.battleCruiser:
+        case ShipTypes.carrier:
             data.list.forEach((ship, index) => {
                 if (index > 0) ships.push(<Divider />);
                 ships.push(<ListItemSuperCap data={ship} />);
@@ -33,8 +34,10 @@ function cardListDataGroup(data: UnitDataGroup): JSX.Element {
         default:
         // Do nothing
     }
+    let cardListClass = "card-ship-list";
+    if (data.type === ShipTypes.battleCruiser || data.type === ShipTypes.carrier) cardListClass = "card-super-cap-list";
     return (
-        <Card elevation={2} className="card-ship-list">
+        <Card elevation={2} className={cardListClass}>
             <List
                 aria-aria-labelledby="nested-list-subheader"
                 component="nav"
@@ -48,8 +51,9 @@ function cardListDataGroup(data: UnitDataGroup): JSX.Element {
 
 function BluePrint() {
     return (
-        <Container maxWidth="xl">
+        <Container maxWidth={false} className={"container-main-blue-print"}>
             <div className="account-content-container">
+                {cardListDataGroup(UNIT_DATA_BASE.carriers)}
                 {cardListDataGroup(UNIT_DATA_BASE.battleCruisers)}
                 {cardListDataGroup(UNIT_DATA_BASE.cruisers)}
                 {cardListDataGroup(UNIT_DATA_BASE.destroyers)}

@@ -1,4 +1,5 @@
 export enum ShipTypes {
+    carrier,
     battleCruiser,
     cruiser,
     destroyer,
@@ -45,7 +46,7 @@ interface ShipDataGroup {
 
 interface SuperCapDataGroup {
     label: string;
-    type: ShipTypes.battleCruiser;
+    type: ShipTypes.battleCruiser | ShipTypes.carrier;
     list: SuperCapData[];
 }
 
@@ -56,6 +57,7 @@ interface AircraftDataGroup {
 }
 
 export interface UnitDataBase {
+    carriers: SuperCapDataGroup;
     battleCruisers: SuperCapDataGroup;
     cruisers: ShipDataGroup;
     destroyers: ShipDataGroup;

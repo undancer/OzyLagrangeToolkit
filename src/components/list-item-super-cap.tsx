@@ -4,7 +4,7 @@ import { TechIcon } from "./Icons/tech";
 import "./css/list-item-super-cap.css";
 import { SuperCapData, SuperCapModule } from "./data/ship-data-types";
 
-export function ModuleChip(props: { superCapModule: SuperCapModule }): JSX.Element {
+function ModuleChip(props: { superCapModule: SuperCapModule }): JSX.Element {
     const { superCapModule } = props;
     const [selected, setSelected] = React.useState(false);
 
@@ -13,13 +13,13 @@ export function ModuleChip(props: { superCapModule: SuperCapModule }): JSX.Eleme
     }
 
     let chipColor: "default" | "primary" | "secondary" = "default";
-    if (superCapModule.important) chipColor = "primary";
-    else if (selected) chipColor = "default";
+    if (superCapModule.important) chipColor = "secondary";
+    else if (selected) chipColor = "primary";
 
     const label = superCapModule.id.toUpperCase();
     return (
         <Chip
-            variant={selected || superCapModule.isBase ? "filled" : "outlined"}
+            variant={selected ? "filled" : "outlined"}
             avatar={<Avatar>{label}</Avatar>}
             label={superCapModule.shortName}
             size={"small"}
@@ -30,25 +30,55 @@ export function ModuleChip(props: { superCapModule: SuperCapModule }): JSX.Eleme
     );
 }
 
-export function ListItemSuperCap(props: { data: SuperCapData }): JSX.Element {
-    const { data } = props;
-    const aircraftList: JSX.Element[] = [];
-    const checkBox = <Checkbox className="checkbox-aircraft-variant" color="success" />;
-    aircraftList.push(<ListItem disablePadding>{checkBox}</ListItem>);
-
+function ModuleListItems(props: { superCapModules: { [key: string]: SuperCapModule } }): JSX.Element {
+    const { superCapModules } = props;
     const mainModules: JSX.Element[] = [];
     const typeAModules: JSX.Element[] = [];
     const typeBModules: JSX.Element[] = [];
     const typeCModules: JSX.Element[] = [];
     const typeDModules: JSX.Element[] = [];
-    Object.keys(data.modules).forEach((key) => {
-        const superCapModule = data.modules[key];
+    Object.keys(superCapModules).forEach((key) => {
+        const superCapModule = superCapModules[key];
         if (key.startsWith("m")) mainModules.push(<ModuleChip superCapModule={superCapModule} />);
         if (key.startsWith("a")) typeAModules.push(<ModuleChip superCapModule={superCapModule} />);
         if (key.startsWith("b")) typeBModules.push(<ModuleChip superCapModule={superCapModule} />);
         if (key.startsWith("c")) typeCModules.push(<ModuleChip superCapModule={superCapModule} />);
         if (key.startsWith("d")) typeDModules.push(<ModuleChip superCapModule={superCapModule} />);
     });
+
+    return (
+        <React.Fragment>
+            <ListItem disablePadding className="list-item-module-holder">
+                {mainModules}
+            </ListItem>
+            <ListItem disablePadding className="list-item-module-holder">
+                {typeAModules}
+            </ListItem>
+            <ListItem disablePadding className="list-item-module-holder">
+                {typeBModules}
+            </ListItem>
+            <ListItem disablePadding className="list-item-module-holder">
+                {typeCModules}
+            </ListItem>
+            <ListItem disablePadding className="list-item-module-holder">
+                {typeDModules}
+            </ListItem>
+        </React.Fragment>
+    );
+}
+
+export function ListItemSuperCap(props: { data: SuperCapData }): JSX.Element {
+    const { data } = props;
+    const [checked, setChecked] = React.useState(false);
+    const aircraftList: JSX.Element[] = [];
+    const checkBox = (
+        <Checkbox checked={checked} className="checkbox-aircraft-variant" color="success" onClick={handleClick} />
+    );
+    aircraftList.push(<ListItem disablePadding>{checkBox}</ListItem>);
+
+    function handleClick() {
+        setChecked(!checked);
+    }
 
     return (
         <React.Fragment>
@@ -75,21 +105,7 @@ export function ListItemSuperCap(props: { data: SuperCapData }): JSX.Element {
                 </ListItem>
                 <List disablePadding>{aircraftList}</List>
             </ListItem>
-            <ListItem disablePadding className="list-item-module-holder">
-                {mainModules}
-            </ListItem>
-            <ListItem disablePadding className="list-item-module-holder">
-                {typeAModules}
-            </ListItem>
-            <ListItem disablePadding className="list-item-module-holder">
-                {typeBModules}
-            </ListItem>
-            <ListItem disablePadding className="list-item-module-holder">
-                {typeCModules}
-            </ListItem>
-            <ListItem disablePadding className="list-item-module-holder">
-                {typeDModules}
-            </ListItem>
+            {checked ? <ModuleListItems superCapModules={data.modules} /> : null}
         </React.Fragment>
     );
 }

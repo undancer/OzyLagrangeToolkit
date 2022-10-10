@@ -3,7 +3,6 @@ import { RootState } from "../core/store";
 
 export const saveState = (state: RootState) => {
     try {
-        console.log("Saving state");
         const serializedState = JSON.stringify(state);
         localStorage.setItem("state", serializedState);
         localStorage.setItem("stateVersion", "2");
@@ -50,6 +49,4 @@ function updateState(currentVersion: string | null, state: any): any {
             state.gameAccount[key] = newAccountState;
         });
     }
-    console.log("Finished state:");
-    console.log(state);
 }

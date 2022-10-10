@@ -11,26 +11,22 @@ export function ListItemAircraft(props: { data: AircraftData }): JSX.Element {
 
     return (
         <ListItem className="list-item-aircraft-data">
-            <ListItem disablePadding>
-                <ListItemText primary={data.name} />
-            </ListItem>
-            <ListItem disablePadding>
-                <TextField
-                    id="temp"
-                    InputLabelProps={{ shrink: true }}
-                    InputProps={{
-                        startAdornment: (
-                            <InputAdornment position="start">
-                                <TechIcon />
-                            </InputAdornment>
-                        ),
-                    }}
-                    className="input-box-tech-point"
-                    size="small"
-                    color="primary"
-                    variant="standard"
-                />
-            </ListItem>
+            <ListItemText primary={data.name} />
+            <TextField
+                id="temp"
+                InputLabelProps={{ shrink: true }}
+                InputProps={{
+                    startAdornment: (
+                        <InputAdornment position="start">
+                            <TechIcon />
+                        </InputAdornment>
+                    ),
+                }}
+                className="input-box-tech-point"
+                size="small"
+                color="primary"
+                variant="standard"
+            />
             <List disablePadding>{aircraftList}</List>
         </ListItem>
     );

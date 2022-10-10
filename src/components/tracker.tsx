@@ -2,7 +2,7 @@ import { Container } from "@mui/material";
 import { useAppSelector } from "../redux/utils/hooks";
 import { selectAllAccounts } from "../redux/game-account";
 import "./css/tracker.css";
-import { AccountTimerGroup } from "./game-account";
+import { AccountTimerGroup } from "./account-timer-group";
 
 function Tracker() {
     const gameAccounts = useAppSelector((state) => selectAllAccounts(state));

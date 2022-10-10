@@ -13,8 +13,8 @@ function ModuleChip(props: { superCapModule: SuperCapModule }): JSX.Element {
     }
 
     let chipColor: "default" | "primary" | "secondary" = "default";
-    if (superCapModule.important) chipColor = "secondary";
-    else if (selected) chipColor = "primary";
+    if (superCapModule.important && selected) chipColor = "primary";
+    else if (selected) chipColor = "secondary";
 
     const label = superCapModule.id.toUpperCase();
     return (
@@ -48,19 +48,19 @@ function ModuleListItems(props: { superCapModules: { [key: string]: SuperCapModu
 
     return (
         <React.Fragment>
-            <ListItem disablePadding className="list-item-module-holder">
+            <ListItem disablePadding className="list-item-module-holder" key="m">
                 {mainModules}
             </ListItem>
-            <ListItem disablePadding className="list-item-module-holder">
+            <ListItem disablePadding className="list-item-module-holder" key="a">
                 {typeAModules}
             </ListItem>
-            <ListItem disablePadding className="list-item-module-holder">
+            <ListItem disablePadding className="list-item-module-holder" key="b">
                 {typeBModules}
             </ListItem>
-            <ListItem disablePadding className="list-item-module-holder">
+            <ListItem disablePadding className="list-item-module-holder" key="c">
                 {typeCModules}
             </ListItem>
-            <ListItem disablePadding className="list-item-module-holder">
+            <ListItem disablePadding className="list-item-module-holder" key="d">
                 {typeDModules}
             </ListItem>
         </React.Fragment>
@@ -83,26 +83,22 @@ export function ListItemSuperCap(props: { data: SuperCapData }): JSX.Element {
     return (
         <React.Fragment>
             <ListItem className="list-item-aircraft-data">
-                <ListItem disablePadding>
-                    <ListItemText primary={data.name} />
-                </ListItem>
-                <ListItem disablePadding>
-                    <TextField
-                        id="temp"
-                        InputLabelProps={{ shrink: true }}
-                        InputProps={{
-                            startAdornment: (
-                                <InputAdornment position="start">
-                                    <TechIcon />
-                                </InputAdornment>
-                            ),
-                        }}
-                        className="input-box-tech-point"
-                        size="small"
-                        color="primary"
-                        variant="standard"
-                    />
-                </ListItem>
+                <ListItemText primary={data.name} />
+                <TextField
+                    id="temp"
+                    InputLabelProps={{ shrink: true }}
+                    InputProps={{
+                        startAdornment: (
+                            <InputAdornment position="start">
+                                <TechIcon />
+                            </InputAdornment>
+                        ),
+                    }}
+                    className="input-box-tech-point"
+                    size="small"
+                    color="primary"
+                    variant="standard"
+                />
                 <List disablePadding>{aircraftList}</List>
             </ListItem>
             {checked ? <ModuleListItems superCapModules={data.modules} /> : null}

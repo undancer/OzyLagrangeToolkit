@@ -7,11 +7,7 @@ import { CategoryTypes, SubTimerCategory, TimerCategory } from "./account-sectio
 import { TimerType } from "../redux/actions/game-timer";
 import { selectAccount } from "../redux/game-account";
 
-interface GameAccountProps {
-    accountId: string;
-}
-
-export function AccountTimerGroup(props: GameAccountProps): JSX.Element {
+export function AccountTimerGroup(props: { accountId: string }): JSX.Element {
     const { accountId } = props;
     const timerGroup = useAppSelector((state) => selectTimerGroup(state, accountId));
     const account = useAppSelector((state) => selectAccount(state, accountId));

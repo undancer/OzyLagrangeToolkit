@@ -1,13 +1,29 @@
-import { AppBar, Box, Button, Dialog, DialogActions, DialogTitle, TextField, Toolbar, Typography } from "@mui/material";
+import {
+    AppBar,
+    Box,
+    Button,
+    Dialog,
+    DialogActions,
+    TextField,
+    Toolbar,
+    Typography,
+    List,
+    ListItem,
+    ListSubheader,
+    IconButton,
+} from "@mui/material";
 import { useState } from "react";
-import IconButton from "@mui/material/IconButton";
 import Menu from "@mui/material/Menu";
 import MenuIcon from "@mui/icons-material/Menu";
 import MenuItem from "@mui/material/MenuItem";
+import DeleteIcon from "@mui/icons-material/Delete";
+import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import { Link as RouterLink } from "react-router-dom";
 import { ClosedPackageIcon } from "./Icons/closedpackage";
-import { useAppDispatch } from "../redux/utils/hooks";
+import { useAppSelector, useAppDispatch } from "../redux/utils/hooks";
+import { selectAllAccounts } from "../redux/game-account";
 import { addAccount as add, removeAccount as remove } from "../redux/actions/game-account";
+import "./css/navigation-bar.css";
 
 const pages = ["计时器", "蓝图档案", "舰队计划", "保底研发"];
 const path: { [index: string]: string } = {
@@ -16,16 +32,63 @@ const path: { [index: string]: string } = {
     舰队计划: "fleetbuilder",
     保底研发: "research",
 };
-enum DialogType {
-    Add = "add",
-    Remove = "remove",
+
+function AccountDialog(props: { open: boolean; onClose: () => void }): JSX.Element {
+    const { open, onClose } = props;
+    const [name, setName] = useState("");
+    const gameAccounts = useAppSelector((state) => selectAllAccounts(state));
+    const dispatch = useAppDispatch();
+
+    function addAccount() {
+        dispatch(add(name));
+        setName("");
+    }
+
+    function removeAccount(id: string) {
+        dispatch(remove(id));
+    }
+
+    const accountListItems = gameAccounts.map((account) => {
+        return (
+            <ListItem
+                secondaryAction={
+                    <IconButton edge="end" aria-label="delete" onClick={() => removeAccount(account.id)}>
+                        <DeleteIcon />
+                    </IconButton>
+                }
+                key={account.id}
+            >
+                {account.name}
+            </ListItem>
+        );
+    });
+
+    return (
+        <Dialog open={open} onClose={onClose}>
+            <List subheader={<ListSubheader id="account-list-subheader">现有账号</ListSubheader>}>
+                {accountListItems}
+            </List>
+            <div className="container-add-account">
+                <TextField
+                    label="添加账号"
+                    variant="standard"
+                    value={name}
+                    onChange={(event) => setName(event.target.value)}
+                ></TextField>
+                <IconButton className="button-add-account" onClick={addAccount}>
+                    <PersonAddIcon />
+                </IconButton>
+            </div>
+            <DialogActions>
+                <Button onClick={onClose}>关闭</Button>
+            </DialogActions>
+        </Dialog>
+    );
 }
 
 export function NavigationBar() {
-    const [addDialopOpen, setAddDialopOpen] = useState(false);
-    const [removeDialogOpen, setRemoveDialogOpen] = useState(false);
-    const [name, setName] = useState("");
-    const dispatch = useAppDispatch();
+    const [dialogOpen, setDialogOpen] = useState(false);
+
     const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
 
     function openNavMenu(event: React.MouseEvent<HTMLElement>) {
@@ -36,43 +99,12 @@ export function NavigationBar() {
         setAnchorElNav(null);
     }
 
-    function openDialog(type: DialogType) {
-        switch (type) {
-            case DialogType.Add:
-                setAddDialopOpen(true);
-                break;
-            case DialogType.Remove:
-                setRemoveDialogOpen(true);
-                break;
-            default:
-                // Do nothing;
-                break;
-        }
+    function openDialog() {
+        setDialogOpen(true);
     }
 
-    function closeDialog(type: DialogType) {
-        switch (type) {
-            case DialogType.Add:
-                setAddDialopOpen(false);
-                break;
-            case DialogType.Remove:
-                setRemoveDialogOpen(false);
-                break;
-            default:
-                // Do nothing;
-                break;
-        }
-        setName("");
-    }
-
-    function addAccount() {
-        dispatch(add(name));
-        closeDialog(DialogType.Add);
-    }
-
-    function removeAccount() {
-        dispatch(remove(name));
-        closeDialog(DialogType.Remove);
+    function closeDialog() {
+        setDialogOpen(false);
     }
 
     return (
@@ -84,6 +116,7 @@ export function NavigationBar() {
                         Ozy的拉格朗日工具组
                     </Typography>
 
+                    {/* mobile menu */}
                     <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
                         <IconButton
                             size="large"
@@ -125,6 +158,8 @@ export function NavigationBar() {
                             ))}
                         </Menu>
                     </Box>
+
+                    {/* desktop menu */}
                     <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
                         {pages.map((page) => (
                             <Button
@@ -138,40 +173,10 @@ export function NavigationBar() {
                             </Button>
                         ))}
                     </Box>
-                    <Button color="inherit" onClick={() => openDialog(DialogType.Add)}>
-                        添加账号
+                    <Button color="inherit" onClick={openDialog}>
+                        账号管理
                     </Button>
-                    <Button color="inherit" onClick={() => openDialog(DialogType.Remove)}>
-                        删除账号
-                    </Button>
-                    <Dialog open={addDialopOpen} onClose={() => closeDialog(DialogType.Add)}>
-                        <DialogTitle>添加账号</DialogTitle>
-                        <TextField
-                            autoFocus
-                            fullWidth
-                            label="账号名"
-                            value={name}
-                            onChange={(event) => setName(event.target.value)}
-                        ></TextField>
-                        <DialogActions>
-                            <Button onClick={() => closeDialog(DialogType.Add)}>取消</Button>
-                            <Button onClick={addAccount}>加入</Button>
-                        </DialogActions>
-                    </Dialog>
-                    <Dialog open={removeDialogOpen} onClose={() => closeDialog(DialogType.Remove)}>
-                        <DialogTitle>删除账号</DialogTitle>
-                        <TextField
-                            autoFocus
-                            fullWidth
-                            label="请输入要删除的账号名"
-                            value={name}
-                            onChange={(event) => setName(event.target.value)}
-                        ></TextField>
-                        <DialogActions>
-                            <Button onClick={() => closeDialog(DialogType.Remove)}>取消</Button>
-                            <Button onClick={removeAccount}>删除</Button>
-                        </DialogActions>
-                    </Dialog>
+                    <AccountDialog open={dialogOpen} onClose={closeDialog} />
                 </Toolbar>
             </AppBar>
         </Box>

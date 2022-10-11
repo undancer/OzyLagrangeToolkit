@@ -5,7 +5,7 @@ export const saveState = (state: RootState) => {
     try {
         const serializedState = JSON.stringify(state);
         localStorage.setItem("state", serializedState);
-        localStorage.setItem("stateVersion", "2");
+        localStorage.setItem("stateVersion", "3");
     } catch {
         console.warn("Save state error.");
     }
@@ -47,6 +47,19 @@ function updateState(currentVersion: string | null, state: any): any {
             const newAccountState = { id: account.id, name: account.name };
             state.timerGroup[key] = timerGroup;
             state.gameAccount[key] = newAccountState;
+        });
+    }
+    if (version === "2") {
+        if (state.acquiredBluePrint === undefined) state.acquiredBluePrint = {};
+        Object.keys(state.gameAccount).forEach((key) => {
+            if (state.acquiredBluePrint[key]) return;
+            const { id } = state.gameAccount[key];
+            state.acquiredBluePrint[key] = {
+                accountId: id,
+                superCapitals: [],
+                ships: [],
+                aircraft: [],
+            };
         });
     }
 }

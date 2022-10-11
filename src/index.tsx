@@ -1,4 +1,4 @@
-import ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Provider } from "react-redux";
 import Tracker from "./components/tracker";
@@ -7,7 +7,13 @@ import InDevelopment from "./components/in-development";
 import { store } from "./redux/core/store";
 import { NavigationBar } from "./components/navigation-bar";
 
-ReactDOM.render(
+const container = document.getElementById("root");
+// This line is suggested by officla React Website
+// https://reactjs.org/blog/2022/03/08/react-18-upgrade-guide.html#updates-to-client-rendering-apis
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+const root = createRoot(container!);
+
+root.render(
     <Provider store={store}>
         <BrowserRouter>
             <div>
@@ -24,5 +30,4 @@ ReactDOM.render(
             </div>
         </BrowserRouter>
     </Provider>,
-    document.getElementById("root"),
 );

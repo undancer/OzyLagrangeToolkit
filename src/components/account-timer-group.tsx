@@ -3,7 +3,7 @@ import "./css/game-account.css";
 import { selectTimerGroup } from "../redux/timer-group";
 import { useAppSelector } from "../redux/utils/hooks";
 import { TimerAdder } from "./timer-adder";
-import { CategoryTypes, SubTimerCategory, TimerCategory } from "./account-section";
+import { CategoryTypes, SubTimerCategory, TimerCategory } from "./timer-category";
 import { TimerType } from "../redux/actions/game-timer";
 import { selectAccount } from "../redux/game-account";
 

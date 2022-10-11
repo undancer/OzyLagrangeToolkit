@@ -5,8 +5,11 @@ import { ListItemShip } from "./list-item-ship";
 import { ListItemAircraft } from "./list-item-aircraft";
 import { ListItemSuperCap } from "./list-item-super-cap";
 import { ShipTypes, UnitDataGroup } from "./data/ship-data-types";
+import { useAppSelector } from "../redux/utils/hooks";
+import { selectAccount, selectAllAccounts } from "../redux/game-account";
 
-function cardListDataGroup(data: UnitDataGroup): JSX.Element {
+function CardListDataGroup(props: { data: UnitDataGroup; accountId: string }): JSX.Element {
+    const { data, accountId } = props;
     const ships: JSX.Element[] = [];
     switch (data.type) {
         case ShipTypes.cruiser:
@@ -14,21 +17,21 @@ function cardListDataGroup(data: UnitDataGroup): JSX.Element {
         case ShipTypes.frigate:
         case ShipTypes.corvette:
             data.list.forEach((ship, index) => {
-                if (index > 0) ships.push(<Divider />);
-                ships.push(<ListItemShip data={ship} />);
+                if (index > 0) ships.push(<Divider key={`${ship.id}-div`} />);
+                ships.push(<ListItemShip data={ship} key={ship.id} accountId={accountId} />);
             });
             break;
         case ShipTypes.aircraft:
             data.list.forEach((ship, index) => {
-                if (index > 0) ships.push(<Divider />);
-                ships.push(<ListItemAircraft data={ship} />);
+                if (index > 0) ships.push(<Divider key={`${ship.id}-div`} />);
+                ships.push(<ListItemAircraft data={ship} key={ship.id} accountId={accountId} />);
             });
             break;
         case ShipTypes.battleCruiser:
         case ShipTypes.carrier:
             data.list.forEach((ship, index) => {
-                if (index > 0) ships.push(<Divider />);
-                ships.push(<ListItemSuperCap data={ship} />);
+                if (index > 0) ships.push(<Divider key={`${ship.id}-div`} />);
+                ships.push(<ListItemSuperCap data={ship} key={ship.id} />);
             });
             break;
         default:
@@ -38,11 +41,7 @@ function cardListDataGroup(data: UnitDataGroup): JSX.Element {
     if (data.type === ShipTypes.battleCruiser || data.type === ShipTypes.carrier) cardListClass = "card-super-cap-list";
     return (
         <Card elevation={2} className={cardListClass}>
-            <List
-                aria-aria-labelledby="nested-list-subheader"
-                component="nav"
-                subheader={<ListSubheader component="div">{data.label}</ListSubheader>}
-            >
+            <List component="nav" subheader={<ListSubheader component="div">{data.label}</ListSubheader>}>
                 {ships}
             </List>
         </Card>
@@ -50,16 +49,19 @@ function cardListDataGroup(data: UnitDataGroup): JSX.Element {
 }
 
 function BluePrint() {
+    const gameAccounts = useAppSelector((state) => selectAllAccounts(state));
+    const firstAccount = useAppSelector((state) => selectAccount(state, gameAccounts[0].id));
+    const { id } = firstAccount;
     return (
         <Container maxWidth={false} className={"container-main-blue-print"}>
             <div className="account-content-container">
-                {cardListDataGroup(UNIT_DATA_BASE.carriers)}
-                {cardListDataGroup(UNIT_DATA_BASE.battleCruisers)}
-                {cardListDataGroup(UNIT_DATA_BASE.cruisers)}
-                {cardListDataGroup(UNIT_DATA_BASE.destroyers)}
-                {cardListDataGroup(UNIT_DATA_BASE.frigates)}
-                {cardListDataGroup(UNIT_DATA_BASE.corvettes)}
-                {cardListDataGroup(UNIT_DATA_BASE.aircrafts)}
+                <CardListDataGroup data={UNIT_DATA_BASE.carriers} accountId={id} />
+                <CardListDataGroup data={UNIT_DATA_BASE.battleCruisers} accountId={id} />
+                <CardListDataGroup data={UNIT_DATA_BASE.cruisers} accountId={id} />
+                <CardListDataGroup data={UNIT_DATA_BASE.destroyers} accountId={id} />
+                <CardListDataGroup data={UNIT_DATA_BASE.frigates} accountId={id} />
+                <CardListDataGroup data={UNIT_DATA_BASE.corvettes} accountId={id} />
+                <CardListDataGroup data={UNIT_DATA_BASE.aircrafts} accountId={id} />
             </div>
         </Container>
     );

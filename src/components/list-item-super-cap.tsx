@@ -39,11 +39,11 @@ function ModuleListItems(props: { superCapModules: { [key: string]: SuperCapModu
     const typeDModules: JSX.Element[] = [];
     Object.keys(superCapModules).forEach((key) => {
         const superCapModule = superCapModules[key];
-        if (key.startsWith("m")) mainModules.push(<ModuleChip superCapModule={superCapModule} />);
-        if (key.startsWith("a")) typeAModules.push(<ModuleChip superCapModule={superCapModule} />);
-        if (key.startsWith("b")) typeBModules.push(<ModuleChip superCapModule={superCapModule} />);
-        if (key.startsWith("c")) typeCModules.push(<ModuleChip superCapModule={superCapModule} />);
-        if (key.startsWith("d")) typeDModules.push(<ModuleChip superCapModule={superCapModule} />);
+        if (key.startsWith("m")) mainModules.push(<ModuleChip superCapModule={superCapModule} key={key} />);
+        if (key.startsWith("a")) typeAModules.push(<ModuleChip superCapModule={superCapModule} key={key} />);
+        if (key.startsWith("b")) typeBModules.push(<ModuleChip superCapModule={superCapModule} key={key} />);
+        if (key.startsWith("c")) typeCModules.push(<ModuleChip superCapModule={superCapModule} key={key} />);
+        if (key.startsWith("d")) typeDModules.push(<ModuleChip superCapModule={superCapModule} key={key} />);
     });
 
     return (
@@ -70,11 +70,15 @@ function ModuleListItems(props: { superCapModules: { [key: string]: SuperCapModu
 export function ListItemSuperCap(props: { data: SuperCapData }): JSX.Element {
     const { data } = props;
     const [checked, setChecked] = React.useState(false);
-    const aircraftList: JSX.Element[] = [];
+    const superCapList: JSX.Element[] = [];
     const checkBox = (
         <Checkbox checked={checked} className="checkbox-aircraft-variant" color="success" onClick={handleClick} />
     );
-    aircraftList.push(<ListItem disablePadding>{checkBox}</ListItem>);
+    superCapList.push(
+        <ListItem disablePadding key={data.id}>
+            {checkBox}
+        </ListItem>,
+    );
 
     function handleClick() {
         setChecked(!checked);
@@ -99,7 +103,7 @@ export function ListItemSuperCap(props: { data: SuperCapData }): JSX.Element {
                     color="primary"
                     variant="standard"
                 />
-                <List disablePadding>{aircraftList}</List>
+                <List disablePadding>{superCapList}</List>
             </ListItem>
             {checked ? <ModuleListItems superCapModules={data.modules} /> : null}
         </React.Fragment>

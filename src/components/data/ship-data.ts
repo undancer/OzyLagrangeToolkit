@@ -32,7 +32,7 @@ export const CARRIER_DATA: SuperCapData[] = [
         },
     },
     {
-        id: "cr2",
+        id: "cr3",
         name: "南十字元帅级",
         modules: {
             m1: { id: "m1", isBase: true, name: "白色闪光综合武器库", shortName: "综合武器" },
@@ -137,7 +137,7 @@ const CRUISER_DATA: ShipData[] = [
 
 const FRIGATE_DATA: ShipData[] = [
     { id: "d1", name: "刺水母级", variants: ["特种型", "防空型"] },
-    { id: "d1", name: "雷里亚特级", variants: ["反舰型", "魚雷型", "隐身型"] },
+    { id: "d2", name: "雷里亚特级", variants: ["反舰型", "魚雷型", "隐身型"] },
     { id: "d3", name: "红宝石级", variants: ["轨道炮", "粒子炮", "防卫型"] },
     { id: "d4", name: "卡里莱恩级", variants: ["侦查型", "重炮型", "特種型"] },
     { id: "d5", name: "澄海級", variants: ["反舰型", "飞弹型", "防空型"] },
@@ -180,13 +180,13 @@ const AIRCRAFT_DATA: AircraftData[] = [
 const CORVETTE_DATA: ShipData[] = [
     { id: "e1", name: "星云追逐者", variants: ["弹炮型", "脉冲型"] },
     { id: "e2", name: "CV-T800", variants: [""] },
-    { id: "e2", name: "蜂巢守卫者", variants: [""] },
-    { id: "e2", name: "S-列维9号", variants: [""] },
-    { id: "e2", name: "虚灵", variants: [""] },
-    { id: "e2", name: "RB7-13", variants: [""] },
-    { id: "e2", name: "鳐", variants: [""] },
-    { id: "e2", name: "CV-M011", variants: ["导弹型", "火炮型"] },
-    { id: "e2", name: "CV-II003", variants: [""] },
+    { id: "e3", name: "蜂巢守卫者", variants: [""] },
+    { id: "e4", name: "S-列维9号", variants: [""] },
+    { id: "e5", name: "虚灵", variants: [""] },
+    { id: "e6", name: "RB7-13", variants: [""] },
+    { id: "e7", name: "鳐", variants: [""] },
+    { id: "e8", name: "CV-M011", variants: ["导弹型", "火炮型"] },
+    { id: "e9", name: "CV-II003", variants: [""] },
 ];
 
 export const UNIT_DATA_BASE: UnitDataBase = {

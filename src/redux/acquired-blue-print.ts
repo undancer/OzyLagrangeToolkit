@@ -313,7 +313,7 @@ export function techPointByShipType(state: RootState, type: ShipTypes): BluePrin
             break;
         case ShipTypes.carrier:
             UNIT_DATA_BASE.carriers.list.forEach((ship) => shipIds.push(ship.id));
-            result.totalBluePrint += UNIT_DATA_BASE.aircrafts.list.length;
+            result.totalBluePrint += UNIT_DATA_BASE.carriers.list.length;
             break;
         default:
         // Do nothing

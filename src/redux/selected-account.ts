@@ -14,6 +14,7 @@ export const selectedAccountSlice = createSlice({
     initialState,
     reducers: {
         changeSelectedAccount: (state, action: PayloadAction<string>) => {
+            if (action.payload === null) return;
             state.accountId = action.payload;
         },
     },

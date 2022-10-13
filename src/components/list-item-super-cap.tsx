@@ -22,7 +22,7 @@ function ModuleChip(props: { superCapModule: SuperCapModule; accountId: string; 
     const moduleId = superCapModule.id;
 
     const dispatch = useAppDispatch();
-    const checked = useAppSelector((state) => hasModule(state, accountId, superCapId, superCapModule.id));
+    const checked = useAppSelector((state) => hasModule(state, superCapId, superCapModule.id));
 
     function handleClick() {
         if (checked) dispatch(removeModel({ accountId, superCapId, moduleId }));
@@ -94,7 +94,7 @@ function ModuleListItems(props: {
 function SuperCapCheckBox(props: { accountId: string; superCapId: string }): JSX.Element {
     const { accountId, superCapId } = props;
     const dispatch = useAppDispatch();
-    const checked = useAppSelector((state) => hasSuperCap(state, accountId, superCapId));
+    const checked = useAppSelector((state) => hasSuperCap(state, superCapId));
 
     function handleChange() {
         if (checked) dispatch(removeSuperCap({ accountId, superCapId }));
@@ -111,8 +111,8 @@ function SuperCapCheckBox(props: { accountId: string; superCapId: string }): JSX
 function InputSuperCapTechPoint(props: { accountId: string; superCapId: string }): JSX.Element {
     const { accountId, superCapId } = props;
     const dispatch = useAppDispatch();
-    const checked = useAppSelector((state) => hasSuperCap(state, accountId, superCapId));
-    const points = useAppSelector((state) => techPointsByShip(state, accountId, ShipTypes.carrier, superCapId));
+    const checked = useAppSelector((state) => hasSuperCap(state, superCapId));
+    const points = useAppSelector((state) => techPointsByShip(state, ShipTypes.carrier, superCapId));
 
     function handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
         if (!checked) return;
@@ -143,7 +143,7 @@ function InputSuperCapTechPoint(props: { accountId: string; superCapId: string }
 
 export function ListItemSuperCap(props: { data: SuperCapData; accountId: string }): JSX.Element {
     const { data, accountId } = props;
-    const checked = useAppSelector((state) => hasSuperCap(state, accountId, data.id));
+    const checked = useAppSelector((state) => hasSuperCap(state, data.id));
 
     return (
         <React.Fragment>

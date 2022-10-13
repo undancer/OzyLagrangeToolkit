@@ -28,7 +28,7 @@ function CardListDataGroup(props: { data: UnitDataGroup; accountId: string }): J
     const { data, accountId } = props;
     const ships: JSX.Element[] = [];
     const { totalTechPoint, totalBluePrint, acquiredBluePrint } = useAppSelector((state) =>
-        techPointByShipType(state, accountId, data.type),
+        techPointByShipType(state, data.type),
     );
     switch (data.type) {
         case ShipTypes.cruiser:

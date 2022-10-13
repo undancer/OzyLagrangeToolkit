@@ -16,7 +16,7 @@ function ShipVariantCheckBox(props: {
     const { accountId, shipId, variant, label } = props;
 
     const dispatch = useAppDispatch();
-    const checked = useAppSelector((state) => hasShipVariant(state, accountId, shipId, variant));
+    const checked = useAppSelector((state) => hasShipVariant(state, shipId, variant));
 
     function handleChange() {
         if (checked) dispatch(removeShip({ accountId, shipId, variant }));
@@ -40,7 +40,7 @@ function ShipVariantCheckBox(props: {
 function InputShipTechPoint(props: { accountId: string; shipId: string }): JSX.Element {
     const { accountId, shipId } = props;
     const dispatch = useAppDispatch();
-    const points = useAppSelector((state) => techPointsByShip(state, accountId, ShipTypes.destroyer, shipId));
+    const points = useAppSelector((state) => techPointsByShip(state, ShipTypes.destroyer, shipId));
     const checked = points >= 0;
 
     function handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
@@ -72,7 +72,7 @@ function InputShipTechPoint(props: { accountId: string; shipId: string }): JSX.E
 
 export function ListItemShip(props: { data: ShipData; accountId: string }): JSX.Element {
     const { data, accountId } = props;
-    const points = useAppSelector((state) => techPointsByShip(state, accountId, ShipTypes.destroyer, data.id));
+    const points = useAppSelector((state) => techPointsByShip(state, ShipTypes.destroyer, data.id));
     const checked = points >= 0;
 
     const shipList: JSX.Element[] = [];

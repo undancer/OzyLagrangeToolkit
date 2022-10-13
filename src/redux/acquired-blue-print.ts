@@ -219,8 +219,9 @@ export const selectAllAcquiredBluePrints = (state: RootState) =>
     Object.keys(state.acquiredBluePrint).map((key) => state.acquiredBluePrint[key]);
 export const selectAcquiredBluePrint = (state: RootState, id: string) => state.acquiredBluePrint[id];
 
-export function hasShipVariant(state: RootState, accountId: string, shipId: string, variant: number) {
+export function hasShipVariant(state: RootState, shipId: string, variant: number) {
     const localState = state.acquiredBluePrint;
+    const { accountId } = state.selectedAccount;
     // Verify account exist
     const bluePrints = localState[accountId];
     if (bluePrints === undefined) return false;
@@ -234,8 +235,9 @@ export function hasShipVariant(state: RootState, accountId: string, shipId: stri
     return true;
 }
 
-export function hasAircraft(state: RootState, accountId: string, aircraftId: string) {
+export function hasAircraft(state: RootState, aircraftId: string) {
     const localState = state.acquiredBluePrint;
+    const { accountId } = state.selectedAccount;
     // Verify account exist
     const bluePrints = localState[accountId];
     if (bluePrints === undefined) return false;
@@ -245,8 +247,9 @@ export function hasAircraft(state: RootState, accountId: string, aircraftId: str
     return true;
 }
 
-export function hasSuperCap(state: RootState, accountId: string, superCapId: string) {
+export function hasSuperCap(state: RootState, superCapId: string) {
     const localState = state.acquiredBluePrint;
+    const { accountId } = state.selectedAccount;
     // Verify account exist
     const bluePrints = localState[accountId];
     if (bluePrints === undefined) return false;
@@ -256,8 +259,9 @@ export function hasSuperCap(state: RootState, accountId: string, superCapId: str
     return true;
 }
 
-export function hasModule(state: RootState, accountId: string, superCapId: string, moduleId: string) {
+export function hasModule(state: RootState, superCapId: string, moduleId: string) {
     const localState = state.acquiredBluePrint;
+    const { accountId } = state.selectedAccount;
 
     const account = getAccountByAccountId(localState, accountId);
     if (!account) return false;
@@ -276,8 +280,9 @@ function cumulate(shipIds: string[], result: BluePrintReport, ship: ShipData) {
     result.totalBluePrint += ship.variants.length;
 }
 
-export function techPointByShipType(state: RootState, accountId: string, type: ShipTypes): BluePrintReport {
+export function techPointByShipType(state: RootState, type: ShipTypes): BluePrintReport {
     const localState = state.acquiredBluePrint;
+    const { accountId } = state.selectedAccount;
 
     const account = getAccountByAccountId(localState, accountId);
     const result = { totalTechPoint: 0, acquiredBluePrint: 0, totalBluePrint: 0 };
@@ -351,8 +356,9 @@ export function techPointByShipType(state: RootState, accountId: string, type: S
     return result;
 }
 
-export function techPointsByShip(state: RootState, accountId: string, type: ShipTypes, shipId: string) {
+export function techPointsByShip(state: RootState, type: ShipTypes, shipId: string) {
     const localState = state.acquiredBluePrint;
+    const { accountId } = state.selectedAccount;
 
     const account = getAccountByAccountId(localState, accountId);
     if (!account) return 0;

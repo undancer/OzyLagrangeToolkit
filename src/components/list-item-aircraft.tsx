@@ -16,7 +16,7 @@ import { UpdateTechPoint } from "../redux/types/acquired-blue-print.type";
 function AircraftCheckBox(props: { accountId: string; aircraftId: string }): JSX.Element {
     const { accountId, aircraftId } = props;
     const dispatch = useAppDispatch();
-    const checked = useAppSelector((state) => hasAircraft(state, accountId, aircraftId));
+    const checked = useAppSelector((state) => hasAircraft(state, aircraftId));
 
     function handleChange() {
         if (checked) dispatch(removeAircraft({ accountId, aircraftId }));
@@ -33,8 +33,8 @@ function AircraftCheckBox(props: { accountId: string; aircraftId: string }): JSX
 function InputAircraftTechPoint(props: { accountId: string; aircraftId: string }): JSX.Element {
     const { accountId, aircraftId } = props;
     const dispatch = useAppDispatch();
-    const checked = useAppSelector((state) => hasAircraft(state, accountId, aircraftId));
-    const points = useAppSelector((state) => techPointsByShip(state, accountId, ShipTypes.aircraft, aircraftId));
+    const checked = useAppSelector((state) => hasAircraft(state, aircraftId));
+    const points = useAppSelector((state) => techPointsByShip(state, ShipTypes.aircraft, aircraftId));
 
     function handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
         if (!checked) return;
@@ -67,7 +67,7 @@ export function ListItemAircraft(props: { data: AircraftData; accountId: string 
     const { data, accountId } = props;
     const aircraftList: JSX.Element[] = [];
     aircraftList.push(<AircraftCheckBox accountId={accountId} aircraftId={data.id} key={data.id} />);
-    const checked = useAppSelector((state) => hasAircraft(state, accountId, data.id));
+    const checked = useAppSelector((state) => hasAircraft(state, data.id));
 
     return (
         <ListItem className="list-item-aircraft-data">

@@ -45,3 +45,9 @@ export interface UpdateTechPoint {
     shipType: ShipTypes;
     techPoint: number;
 }
+
+export interface BluePrintReport {
+    totalTechPoint: number;
+    acquiredBluePrint: number;
+    totalBluePrint: number;
+}

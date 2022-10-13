@@ -10,6 +10,7 @@ import {
     Typography,
     Button,
 } from "@mui/material";
+import TaskIcon from "@mui/icons-material/Task";
 import { UNIT_DATA_BASE } from "./data/ship-data";
 import { ListItemShip } from "./list-item-ship";
 import { ListItemAircraft } from "./list-item-aircraft";
@@ -21,10 +22,14 @@ import { addAccount } from "../redux/actions/game-account";
 import { getSelectedAccountId, changeSelectedAccount } from "../redux/selected-account";
 import { randomName } from "./utils/randomName";
 import { TechIcon } from "./Icons/tech";
+import { reportForSelectedAccount, techPointByShipType } from "../redux/acquired-blue-print";
 
 function CardListDataGroup(props: { data: UnitDataGroup; accountId: string }): JSX.Element {
     const { data, accountId } = props;
     const ships: JSX.Element[] = [];
+    const { totalTechPoint, totalBluePrint, acquiredBluePrint } = useAppSelector((state) =>
+        techPointByShipType(state, accountId, data.type),
+    );
     switch (data.type) {
         case ShipTypes.cruiser:
         case ShipTypes.destroyer:
@@ -53,11 +58,27 @@ function CardListDataGroup(props: { data: UnitDataGroup; accountId: string }): J
     }
     let cardListClass = "card-ship-list";
     if (data.type === ShipTypes.battleCruiser || data.type === ShipTypes.carrier) cardListClass = "card-super-cap-list";
+
+    const percent = Math.floor((acquiredBluePrint / totalBluePrint) * 100);
+    const percentReport =
+        acquiredBluePrint > 0 ? (
+            <div>
+                <TaskIcon className="subheader-blueprint-icon svg-fill-tech-icon" /> {percent}%
+            </div>
+        ) : null;
+
+    const techReport =
+        totalTechPoint > 0 ? (
+            <div>
+                <TechIcon className="subheader-icon  svg-fill-tech-icon" /> {totalTechPoint}
+            </div>
+        ) : null;
+
     const subHeader: JSX.Element = (
         <ListSubheader component="div" className="subheader-card">
             <div>{data.label}</div>
-            <div>
-                <TechIcon className="subheader-icon  svg-fill-tech-icon" /> 29
+            <div className="subheader-right-div">
+                {percentReport} {techReport}
             </div>
         </ListSubheader>
     );
@@ -74,6 +95,8 @@ function BluePrint() {
     const gameAccounts = useAppSelector(selectAllAccounts);
     const accountId = useAppSelector(getSelectedAccountId);
     const dispatch = useAppDispatch();
+    const { totalBluePrint, totalTechPoint, acquiredBluePrint } = useAppSelector(reportForSelectedAccount);
+    const percent = Math.floor((acquiredBluePrint / totalBluePrint) * 100);
 
     const noAccount = gameAccounts.length === 0;
 
@@ -120,6 +143,14 @@ function BluePrint() {
                         </ToggleButtonGroup>
                     </Card>
                 ) : null}
+                <Card className="account-title-card">
+                    <Typography variant="h4" gutterBottom>
+                        全蓝图收集: <TaskIcon fontSize="large" className="svg-fill-tech-icon header-icon" />
+                        {percent}% &nbsp;&nbsp;总科技点:&nbsp;
+                        <TechIcon fontSize="large" className="svg-fill-tech-icon header-icon" />
+                        {totalTechPoint}
+                    </Typography>
+                </Card>
                 <CardListDataGroup data={UNIT_DATA_BASE.carriers} accountId={accountId} />
                 <CardListDataGroup data={UNIT_DATA_BASE.battleCruisers} accountId={accountId} />
                 <CardListDataGroup data={UNIT_DATA_BASE.cruisers} accountId={accountId} />

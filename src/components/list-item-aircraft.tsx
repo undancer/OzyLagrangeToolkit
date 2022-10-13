@@ -7,7 +7,7 @@ import {
     addAircraft,
     hasAircraft,
     removeAircraft,
-    techpointByAccount,
+    techPointsByShip,
     updateTechPoint,
 } from "../redux/acquired-blue-print";
 import { stringToTech } from "../redux/utils/tech-cal";
@@ -34,7 +34,7 @@ function InputAircraftTechPoint(props: { accountId: string; aircraftId: string }
     const { accountId, aircraftId } = props;
     const dispatch = useAppDispatch();
     const checked = useAppSelector((state) => hasAircraft(state, accountId, aircraftId));
-    const points = useAppSelector((state) => techpointByAccount(state, accountId, ShipTypes.aircraft, aircraftId));
+    const points = useAppSelector((state) => techPointsByShip(state, accountId, ShipTypes.aircraft, aircraftId));
 
     function handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
         if (!checked) return;
@@ -50,7 +50,7 @@ function InputAircraftTechPoint(props: { accountId: string; aircraftId: string }
             InputProps={{
                 startAdornment: (
                     <InputAdornment position="start">
-                        <TechIcon />
+                        <TechIcon className="svg-fill-tech-icon" />
                     </InputAdornment>
                 ),
             }}

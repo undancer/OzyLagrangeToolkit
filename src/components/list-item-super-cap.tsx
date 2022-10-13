@@ -11,7 +11,7 @@ import {
     hasSuperCap,
     removeModel,
     removeSuperCap,
-    techpointByAccount,
+    techPointsByShip,
     updateTechPoint,
 } from "../redux/acquired-blue-print";
 import { UpdateTechPoint } from "../redux/types/acquired-blue-print.type";
@@ -112,7 +112,7 @@ function InputSuperCapTechPoint(props: { accountId: string; superCapId: string }
     const { accountId, superCapId } = props;
     const dispatch = useAppDispatch();
     const checked = useAppSelector((state) => hasSuperCap(state, accountId, superCapId));
-    const points = useAppSelector((state) => techpointByAccount(state, accountId, ShipTypes.carrier, superCapId));
+    const points = useAppSelector((state) => techPointsByShip(state, accountId, ShipTypes.carrier, superCapId));
 
     function handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
         if (!checked) return;
@@ -128,7 +128,7 @@ function InputSuperCapTechPoint(props: { accountId: string; superCapId: string }
             InputProps={{
                 startAdornment: (
                     <InputAdornment position="start">
-                        <TechIcon />
+                        <TechIcon className="svg-fill-tech-icon" />
                     </InputAdornment>
                 ),
             }}

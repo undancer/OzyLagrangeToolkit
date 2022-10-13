@@ -9,9 +9,11 @@ import {
     AddRemoveModel,
     AddRemoveShipAction,
     AddRemoveSuperCapAction,
+    BluePrintReport,
     UpdateTechPoint,
 } from "./types/acquired-blue-print.type";
-import { ShipTypes } from "../components/data/ship-data-types";
+import { ShipData, ShipTypes } from "../components/data/ship-data-types";
+import { UNIT_DATA_BASE } from "../components/data/ship-data";
 
 interface AcquiredBluePrintsState {
     [index: string]: AcquiredBluePrints;
@@ -269,7 +271,87 @@ export function hasModule(state: RootState, accountId: string, superCapId: strin
     return true;
 }
 
-export function techpointByAccount(state: RootState, accountId: string, type: ShipTypes, shipId: string) {
+function cumulate(shipIds: string[], result: BluePrintReport, ship: ShipData) {
+    shipIds.push(ship.id);
+    result.totalBluePrint += ship.variants.length;
+}
+
+export function techPointByShipType(state: RootState, accountId: string, type: ShipTypes): BluePrintReport {
+    const localState = state.acquiredBluePrint;
+
+    const account = getAccountByAccountId(localState, accountId);
+    const result = { totalTechPoint: 0, acquiredBluePrint: 0, totalBluePrint: 0 };
+    if (!account) return result;
+
+    const shipIds: string[] = [];
+
+    switch (type) {
+        case ShipTypes.cruiser:
+            UNIT_DATA_BASE.cruisers.list.forEach((ship) => cumulate(shipIds, result, ship));
+            break;
+        case ShipTypes.destroyer:
+            UNIT_DATA_BASE.destroyers.list.forEach((ship) => cumulate(shipIds, result, ship));
+            break;
+        case ShipTypes.frigate:
+            UNIT_DATA_BASE.frigates.list.forEach((ship) => cumulate(shipIds, result, ship));
+            break;
+        case ShipTypes.corvette:
+            UNIT_DATA_BASE.corvettes.list.forEach((ship) => cumulate(shipIds, result, ship));
+            break;
+        case ShipTypes.aircraft:
+            UNIT_DATA_BASE.aircrafts.list.forEach((ship) => shipIds.push(ship.id));
+            result.totalBluePrint += UNIT_DATA_BASE.aircrafts.list.length;
+            break;
+        case ShipTypes.battleCruiser:
+            UNIT_DATA_BASE.battleCruisers.list.forEach((ship) => shipIds.push(ship.id));
+            result.totalBluePrint += UNIT_DATA_BASE.battleCruisers.list.length;
+            break;
+        case ShipTypes.carrier:
+            UNIT_DATA_BASE.carriers.list.forEach((ship) => shipIds.push(ship.id));
+            result.totalBluePrint += UNIT_DATA_BASE.aircrafts.list.length;
+            break;
+        default:
+        // Do nothing
+    }
+
+    switch (type) {
+        case ShipTypes.cruiser:
+        case ShipTypes.destroyer:
+        case ShipTypes.frigate:
+        case ShipTypes.corvette:
+            account.ships.forEach((ship) => {
+                const index = shipIds.findIndex((id) => id === ship.id);
+                if (index !== -1) {
+                    result.totalTechPoint += ship.techPoint;
+                    result.acquiredBluePrint += ship.variants.length;
+                }
+            });
+            break;
+        case ShipTypes.aircraft:
+            account.aircraft.forEach((ship) => {
+                const index = shipIds.findIndex((id) => id === ship.id);
+                if (index !== -1) {
+                    result.totalTechPoint += ship.techPoint;
+                    result.acquiredBluePrint += 1;
+                }
+            });
+            break;
+        case ShipTypes.battleCruiser:
+        case ShipTypes.carrier:
+            account.superCapitals.forEach((ship) => {
+                const index = shipIds.findIndex((id) => id === ship.id);
+                if (index !== -1) {
+                    result.totalTechPoint += ship.techPoint;
+                    result.acquiredBluePrint += 1;
+                }
+            });
+            break;
+        default:
+    }
+    return result;
+}
+
+export function techPointsByShip(state: RootState, accountId: string, type: ShipTypes, shipId: string) {
     const localState = state.acquiredBluePrint;
 
     const account = getAccountByAccountId(localState, accountId);
@@ -303,6 +385,42 @@ export function techpointByAccount(state: RootState, accountId: string, type: Sh
     if (bluePrint === undefined) return -1;
 
     return bluePrint.techPoint;
+}
+
+export function reportForSelectedAccount(state: RootState): BluePrintReport {
+    const localState = state.acquiredBluePrint;
+    const { accountId } = state.selectedAccount;
+
+    const account = getAccountByAccountId(localState, accountId);
+    const result = { totalTechPoint: 0, acquiredBluePrint: 0, totalBluePrint: 0 };
+    if (!account) return result;
+
+    // eslint-disable-next-line no-return-assign
+    account.aircraft.forEach((aircraft) => (result.totalTechPoint += aircraft.techPoint));
+    result.acquiredBluePrint += account.aircraft.length;
+
+    // eslint-disable-next-line no-return-assign
+    account.superCapitals.forEach((superCap) => (result.totalTechPoint += superCap.techPoint));
+    result.acquiredBluePrint += account.superCapitals.length;
+
+    account.ships.forEach((ship) => {
+        result.totalTechPoint += ship.techPoint;
+        result.acquiredBluePrint += ship.variants.length;
+    });
+
+    result.totalBluePrint += UNIT_DATA_BASE.aircrafts.list.length;
+    result.totalBluePrint += UNIT_DATA_BASE.battleCruisers.list.length;
+    result.totalBluePrint += UNIT_DATA_BASE.carriers.list.length;
+    // eslint-disable-next-line no-return-assign
+    UNIT_DATA_BASE.cruisers.list.forEach((ship) => (result.totalBluePrint += ship.variants.length));
+    // eslint-disable-next-line no-return-assign
+    UNIT_DATA_BASE.destroyers.list.forEach((ship) => (result.totalBluePrint += ship.variants.length));
+    // eslint-disable-next-line no-return-assign
+    UNIT_DATA_BASE.frigates.list.forEach((ship) => (result.totalBluePrint += ship.variants.length));
+    // eslint-disable-next-line no-return-assign
+    UNIT_DATA_BASE.corvettes.list.forEach((ship) => (result.totalBluePrint += ship.variants.length));
+
+    return result;
 }
 
 // Action exports

@@ -45,4 +45,18 @@
 
 .subheader-icon {
     margin-bottom: -7px;
+    margin-left: 7px;
+}
+
+.subheader-blueprint-icon {
+    margin-bottom: -7px;
+}
+
+.subheader-right-div {
+    display: flex;
+    flex-direction: row;
+}
+
+.header-icon {
+    margin-bottom: -5px;
 }

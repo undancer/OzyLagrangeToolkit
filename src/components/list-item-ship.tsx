@@ -1,7 +1,7 @@
 import { List, ListItem, ListItemText, FormControlLabel, Checkbox, TextField, InputAdornment } from "@mui/material";
 import { ShipData, ShipTypes } from "./data/ship-data-types";
 import { useAppDispatch, useAppSelector } from "../redux/utils/hooks";
-import { addShip, hasShipVariant, removeShip, techpointByAccount, updateTechPoint } from "../redux/acquired-blue-print";
+import { addShip, hasShipVariant, removeShip, techPointsByShip, updateTechPoint } from "../redux/acquired-blue-print";
 import { TechIcon } from "./Icons/tech";
 import "./css/list-item-ship.css";
 import { stringToTech } from "../redux/utils/tech-cal";
@@ -40,7 +40,7 @@ function ShipVariantCheckBox(props: {
 function InputShipTechPoint(props: { accountId: string; shipId: string }): JSX.Element {
     const { accountId, shipId } = props;
     const dispatch = useAppDispatch();
-    const points = useAppSelector((state) => techpointByAccount(state, accountId, ShipTypes.destroyer, shipId));
+    const points = useAppSelector((state) => techPointsByShip(state, accountId, ShipTypes.destroyer, shipId));
     const checked = points >= 0;
 
     function handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
@@ -57,7 +57,7 @@ function InputShipTechPoint(props: { accountId: string; shipId: string }): JSX.E
             InputProps={{
                 startAdornment: (
                     <InputAdornment position="start">
-                        <TechIcon />
+                        <TechIcon className="svg-fill-tech-icon" />
                     </InputAdornment>
                 ),
             }}
@@ -72,7 +72,7 @@ function InputShipTechPoint(props: { accountId: string; shipId: string }): JSX.E
 
 export function ListItemShip(props: { data: ShipData; accountId: string }): JSX.Element {
     const { data, accountId } = props;
-    const points = useAppSelector((state) => techpointByAccount(state, accountId, ShipTypes.destroyer, data.id));
+    const points = useAppSelector((state) => techPointsByShip(state, accountId, ShipTypes.destroyer, data.id));
     const checked = points >= 0;
 
     const shipList: JSX.Element[] = [];

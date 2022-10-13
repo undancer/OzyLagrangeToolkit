@@ -35,3 +35,14 @@
 .account-toggle-button {
     min-width: 70px;
 }
+
+.subheader-card {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.subheader-icon {
+    margin-bottom: -7px;
+}

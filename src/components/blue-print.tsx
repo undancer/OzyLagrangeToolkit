@@ -20,6 +20,7 @@ import { selectAllAccounts } from "../redux/game-account";
 import { addAccount } from "../redux/actions/game-account";
 import { getSelectedAccountId, changeSelectedAccount } from "../redux/selected-account";
 import { randomName } from "./utils/randomName";
+import { TechIcon } from "./Icons/tech";
 
 function CardListDataGroup(props: { data: UnitDataGroup; accountId: string }): JSX.Element {
     const { data, accountId } = props;
@@ -52,9 +53,17 @@ function CardListDataGroup(props: { data: UnitDataGroup; accountId: string }): J
     }
     let cardListClass = "card-ship-list";
     if (data.type === ShipTypes.battleCruiser || data.type === ShipTypes.carrier) cardListClass = "card-super-cap-list";
+    const subHeader: JSX.Element = (
+        <ListSubheader component="div" className="subheader-card">
+            <div>{data.label}</div>
+            <div>
+                <TechIcon className="subheader-icon  svg-fill-tech-icon" /> 29
+            </div>
+        </ListSubheader>
+    );
     return (
         <Card elevation={2} className={cardListClass}>
-            <List component="nav" subheader={<ListSubheader component="div">{data.label}</ListSubheader>}>
+            <List component="nav" subheader={subHeader}>
                 {ships}
             </List>
         </Card>

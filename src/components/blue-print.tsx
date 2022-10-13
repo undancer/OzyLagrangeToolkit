@@ -1,12 +1,25 @@
 import "./css/blue-print.css";
-import { Container, Card, List, ListSubheader, Divider } from "@mui/material";
+import {
+    Container,
+    Card,
+    List,
+    ListSubheader,
+    Divider,
+    ToggleButtonGroup,
+    ToggleButton,
+    Typography,
+    Button,
+} from "@mui/material";
 import { UNIT_DATA_BASE } from "./data/ship-data";
 import { ListItemShip } from "./list-item-ship";
 import { ListItemAircraft } from "./list-item-aircraft";
 import { ListItemSuperCap } from "./list-item-super-cap";
 import { ShipTypes, UnitDataGroup } from "./data/ship-data-types";
-import { useAppSelector } from "../redux/utils/hooks";
-import { selectAccount, selectAllAccounts } from "../redux/game-account";
+import { useAppSelector, useAppDispatch } from "../redux/utils/hooks";
+import { selectAllAccounts } from "../redux/game-account";
+import { addAccount } from "../redux/actions/game-account";
+import { getSelectedAccountId, changeSelectedAccount } from "../redux/selected-account";
+import { randomName } from "./utils/randomName";
 
 function CardListDataGroup(props: { data: UnitDataGroup; accountId: string }): JSX.Element {
     const { data, accountId } = props;
@@ -31,7 +44,7 @@ function CardListDataGroup(props: { data: UnitDataGroup; accountId: string }): J
         case ShipTypes.carrier:
             data.list.forEach((ship, index) => {
                 if (index > 0) ships.push(<Divider key={`${ship.id}-div`} />);
-                ships.push(<ListItemSuperCap data={ship} key={ship.id} />);
+                ships.push(<ListItemSuperCap data={ship} key={ship.id} accountId={accountId} />);
             });
             break;
         default:
@@ -49,19 +62,62 @@ function CardListDataGroup(props: { data: UnitDataGroup; accountId: string }): J
 }
 
 function BluePrint() {
-    const gameAccounts = useAppSelector((state) => selectAllAccounts(state));
-    const firstAccount = useAppSelector((state) => selectAccount(state, gameAccounts[0].id));
-    const { id } = firstAccount;
+    const gameAccounts = useAppSelector(selectAllAccounts);
+    const accountId = useAppSelector(getSelectedAccountId);
+    const dispatch = useAppDispatch();
+
+    const noAccount = gameAccounts.length === 0;
+
+    if (noAccount) {
+        return (
+            <Container maxWidth={false} className={"container-main-blue-print"}>
+                <div className="account-content-container">
+                    <Card elevation={0} className="account-title-card">
+                        还没有账号啊，点击右上的 “账户管理” 填加一个吧。
+                    </Card>
+                    <Card elevation={0} className="account-title-card">
+                        或点击这里创建一个
+                        <Button variant="outlined" size="small" onClick={() => dispatch(addAccount(randomName()))}>
+                            随机账号
+                        </Button>
+                    </Card>
+                </div>
+            </Container>
+        );
+    }
+
+    const multiAccountUser = gameAccounts.length > 1;
+
+    function handleAccountChange(event: React.MouseEvent<HTMLElement>, newId: string) {
+        dispatch(changeSelectedAccount(newId));
+    }
+
+    const toggleButtonGroups = gameAccounts.map((account) => {
+        return (
+            <ToggleButton value={account.id} className="account-toggle-button" size="small">
+                {account.name}
+            </ToggleButton>
+        );
+    });
+
     return (
         <Container maxWidth={false} className={"container-main-blue-print"}>
             <div className="account-content-container">
-                <CardListDataGroup data={UNIT_DATA_BASE.carriers} accountId={id} />
-                <CardListDataGroup data={UNIT_DATA_BASE.battleCruisers} accountId={id} />
-                <CardListDataGroup data={UNIT_DATA_BASE.cruisers} accountId={id} />
-                <CardListDataGroup data={UNIT_DATA_BASE.destroyers} accountId={id} />
-                <CardListDataGroup data={UNIT_DATA_BASE.frigates} accountId={id} />
-                <CardListDataGroup data={UNIT_DATA_BASE.corvettes} accountId={id} />
-                <CardListDataGroup data={UNIT_DATA_BASE.aircrafts} accountId={id} />
+                {multiAccountUser ? (
+                    <Card elevation={0} className="account-selection-card">
+                        <Typography>账户选择：</Typography>
+                        <ToggleButtonGroup value={accountId} exclusive onChange={handleAccountChange} color="success">
+                            {toggleButtonGroups}
+                        </ToggleButtonGroup>
+                    </Card>
+                ) : null}
+                <CardListDataGroup data={UNIT_DATA_BASE.carriers} accountId={accountId} />
+                <CardListDataGroup data={UNIT_DATA_BASE.battleCruisers} accountId={accountId} />
+                <CardListDataGroup data={UNIT_DATA_BASE.cruisers} accountId={accountId} />
+                <CardListDataGroup data={UNIT_DATA_BASE.destroyers} accountId={accountId} />
+                <CardListDataGroup data={UNIT_DATA_BASE.frigates} accountId={accountId} />
+                <CardListDataGroup data={UNIT_DATA_BASE.corvettes} accountId={accountId} />
+                <CardListDataGroup data={UNIT_DATA_BASE.aircrafts} accountId={accountId} />
             </div>
         </Container>
     );

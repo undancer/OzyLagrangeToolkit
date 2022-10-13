@@ -20,8 +20,8 @@ export const addAccount = createAction("addAccount", (name: string) => {
     };
 });
 
-export const removeAccount = createAction("removeAccount", (id: string) => {
+export const removeAccount = createAction("removeAccount", (id: string, subId: string) => {
     return {
-        payload: { id },
+        payload: { id, subId },
     };
 });

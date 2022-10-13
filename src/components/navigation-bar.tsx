@@ -16,6 +16,7 @@ import { useState } from "react";
 import Menu from "@mui/material/Menu";
 import MenuIcon from "@mui/icons-material/Menu";
 import MenuItem from "@mui/material/MenuItem";
+import CasinoIcon from "@mui/icons-material/Casino";
 import DeleteIcon from "@mui/icons-material/Delete";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import { Link as RouterLink } from "react-router-dom";
@@ -24,8 +25,9 @@ import { useAppSelector, useAppDispatch } from "../redux/utils/hooks";
 import { selectAllAccounts } from "../redux/game-account";
 import { addAccount as add, removeAccount as remove } from "../redux/actions/game-account";
 import "./css/navigation-bar.css";
+import { randomName } from "./utils/randomName";
 
-const pages = ["计时器", "蓝图档案", "舰队计划", "保底研发"];
+const pages = ["蓝图档案", "计时器", "舰队计划", "保底研发"];
 const path: { [index: string]: string } = {
     计时器: "tracker",
     蓝图档案: "blueprint",
@@ -44,8 +46,18 @@ function AccountDialog(props: { open: boolean; onClose: () => void }): JSX.Eleme
         setName("");
     }
 
+    function addRandomAccount() {
+        dispatch(add(randomName()));
+        setName("");
+    }
+
     function removeAccount(id: string) {
-        dispatch(remove(id));
+        let subId = "";
+        if (gameAccounts.length > 1) {
+            const otherAccount = gameAccounts.find((account) => account.id !== id);
+            if (otherAccount) subId = otherAccount.id;
+        }
+        dispatch(remove(id, subId));
     }
 
     const accountListItems = gameAccounts.map((account) => {
@@ -77,6 +89,9 @@ function AccountDialog(props: { open: boolean; onClose: () => void }): JSX.Eleme
                 ></TextField>
                 <IconButton className="button-add-account" onClick={addAccount}>
                     <PersonAddIcon />
+                </IconButton>
+                <IconButton className="button-add-account" onClick={addRandomAccount}>
+                    <CasinoIcon />
                 </IconButton>
             </div>
             <DialogActions>

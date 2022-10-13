@@ -4,6 +4,7 @@ import gameAccountReducer from "../game-account";
 import taskTimeStampReducer from "../task-time-stamp";
 import timerGroupReducer from "../timer-group";
 import acquiredBluePrintReducer from "../acquired-blue-print";
+import selectedAccountReducer from "../selected-account";
 
 export const store = configureStore({
     reducer: {
@@ -11,6 +12,7 @@ export const store = configureStore({
         timerGroup: timerGroupReducer,
         taskTimeStamp: taskTimeStampReducer,
         acquiredBluePrint: acquiredBluePrintReducer,
+        selectedAccount: selectedAccountReducer,
     },
     preloadedState: loadState(),
 });
@@ -21,6 +23,7 @@ store.subscribe(() => {
         taskTimeStamp: store.getState().taskTimeStamp,
         timerGroup: store.getState().timerGroup,
         acquiredBluePrint: store.getState().acquiredBluePrint,
+        selectedAccount: store.getState().selectedAccount,
     });
 });
 

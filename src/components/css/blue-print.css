@@ -17,3 +17,21 @@
 .container-main-blue-print {
     max-width: 1850px;
 }
+
+.account-selection-card {
+    width: 99%;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}
+
+.account-title-card {
+    width: 99%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.account-toggle-button {
+    min-width: 70px;
+}

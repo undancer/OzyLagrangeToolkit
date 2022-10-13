@@ -20,9 +20,9 @@ root.render(
                 <NavigationBar />
                 <div className="game-body">
                     <Routes>
-                        <Route path="/" element={<Tracker />} />
-                        <Route path="/tracker" element={<Tracker />} />
+                        <Route path="/" element={<BluePrint />} />
                         <Route path="/blueprint" element={<BluePrint />} />
+                        <Route path="/tracker" element={<Tracker />} />
                         <Route path="/fleetbuilder" element={<InDevelopment />} />
                         <Route path="/research" element={<InDevelopment />} />
                     </Routes>

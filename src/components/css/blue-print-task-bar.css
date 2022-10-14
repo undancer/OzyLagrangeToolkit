@@ -1,0 +1,11 @@
+.blue-print-task-bar {
+    width: 99%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.blue-print-account-selection {
+    display: flex;
+    flex-direction: row;
+}

@@ -10,6 +10,9 @@ import {
     AddRemoveShipAction,
     AddRemoveSuperCapAction,
     BluePrintReport,
+    BluePrintSetting,
+    BPDisplayMode,
+    UpdateBluePrintSetting,
     UpdateTechPoint,
 } from "./types/acquired-blue-print.type";
 import { ShipData, ShipTypes } from "../components/data/ship-data-types";
@@ -21,13 +24,22 @@ interface AcquiredBluePrintsState {
 
 interface AcquiredBluePrints {
     accountId: string;
+    editLock: boolean;
+    displayMode: BPDisplayMode;
     superCapitals: AcquiredSuperCap[];
     ships: AcquiredShip[];
     aircraft: AcquiredAircraft[];
 }
 
 function emptyAccountData(id: string): AcquiredBluePrints {
-    return { accountId: id, superCapitals: [], ships: [], aircraft: [] };
+    return {
+        accountId: id,
+        editLock: false,
+        displayMode: BPDisplayMode.percent,
+        superCapitals: [],
+        ships: [],
+        aircraft: [],
+    };
 }
 
 const initialState: AcquiredBluePrintsState = {};
@@ -46,6 +58,7 @@ export const timerGroupSlice = createSlice({
         updateTechPoint: handleUpdateTechPoint,
         addModel: handleAddModule,
         removeModel: handleRemoveModel,
+        changeSetting: updateSetting,
     },
     extraReducers: (builder) => {
         builder.addCase(addAccount, (state, action) => {
@@ -72,6 +85,7 @@ function handleAddShip(state: AcquiredBluePrintsState, action: PayloadAction<Add
 
     const account = getAccountByAccountId(state, accountId);
     if (!account) return;
+    if (account.editLock) return;
 
     let ship = account.ships.find((innerShip) => innerShip.id === shipId);
     if (ship === undefined) {
@@ -88,6 +102,7 @@ function handleRemoveShip(state: AcquiredBluePrintsState, action: PayloadAction<
 
     const account = getAccountByAccountId(state, accountId);
     if (!account) return;
+    if (account.editLock) return;
 
     const shipIndex = account.ships.findIndex((innerShip) => innerShip.id === shipId);
     if (shipIndex === -1) return;
@@ -104,6 +119,7 @@ function handleAddAircraft(state: AcquiredBluePrintsState, action: PayloadAction
 
     const account = getAccountByAccountId(state, accountId);
     if (!account) return;
+    if (account.editLock) return;
 
     let aircraft = account.aircraft.find((craft) => craft.id === aircraftId);
     if (aircraft === undefined) {
@@ -117,6 +133,7 @@ function handleRemoveAircraft(state: AcquiredBluePrintsState, action: PayloadAct
 
     const account = getAccountByAccountId(state, accountId);
     if (!account) return;
+    if (account.editLock) return;
 
     const aircraftIndex = account.aircraft.findIndex((craft) => craft.id === aircraftId);
     if (aircraftIndex === -1) return;
@@ -129,6 +146,7 @@ function handleAddSuperCapital(state: AcquiredBluePrintsState, action: PayloadAc
 
     const account = getAccountByAccountId(state, accountId);
     if (!account) return;
+    if (account.editLock) return;
 
     let superCapitals = account.superCapitals.find((craft) => craft.id === superCapId);
     if (superCapitals === undefined) {
@@ -142,6 +160,7 @@ function handleRemoveSuperCapital(state: AcquiredBluePrintsState, action: Payloa
 
     const account = getAccountByAccountId(state, accountId);
     if (!account) return;
+    if (account.editLock) return;
 
     const superCapitalsIndex = account.superCapitals.findIndex((craft) => craft.id === superCapId);
 
@@ -155,6 +174,7 @@ function handleAddModule(state: AcquiredBluePrintsState, action: PayloadAction<A
 
     const account = getAccountByAccountId(state, accountId);
     if (!account) return;
+    if (account.editLock) return;
 
     const superCapitalsIndex = account.superCapitals.findIndex((craft) => craft.id === superCapId);
 
@@ -168,6 +188,7 @@ function handleRemoveModel(state: AcquiredBluePrintsState, action: PayloadAction
 
     const account = getAccountByAccountId(state, accountId);
     if (!account) return;
+    if (account.editLock) return;
 
     const superCapitalsIndex = account.superCapitals.findIndex((craft) => craft.id === superCapId);
 
@@ -183,6 +204,7 @@ function handleUpdateTechPoint(state: AcquiredBluePrintsState, action: PayloadAc
 
     const account = getAccountByAccountId(state, accountId);
     if (!account) return;
+    if (account.editLock) return;
 
     let bluePrint: AcquiredAircraft | AcquiredShip | AcquiredSuperCap | undefined;
     let index = -1;
@@ -214,10 +236,26 @@ function handleUpdateTechPoint(state: AcquiredBluePrintsState, action: PayloadAc
     bluePrint.techPoint = techPoint;
 }
 
+function updateSetting(state: AcquiredBluePrintsState, action: PayloadAction<UpdateBluePrintSetting>) {
+    const { accountId, editLock, displayMode } = action.payload;
+
+    const account = getAccountByAccountId(state, accountId);
+    if (!account) return;
+    state[accountId].displayMode = displayMode;
+    state[accountId].editLock = editLock;
+}
+
 // Selectors
 export const selectAllAcquiredBluePrints = (state: RootState) =>
     Object.keys(state.acquiredBluePrint).map((key) => state.acquiredBluePrint[key]);
 export const selectAcquiredBluePrint = (state: RootState, id: string) => state.acquiredBluePrint[id];
+
+export function bluePrintSettingForSelectedAccount(state: RootState): BluePrintSetting {
+    const localState = state.acquiredBluePrint;
+    const { accountId } = state.selectedAccount;
+    const bluePrints = localState[accountId];
+    return { displayMode: bluePrints.displayMode, editLock: bluePrints.editLock };
+}
 
 export function hasShipVariant(state: RootState, shipId: string, variant: number) {
     const localState = state.acquiredBluePrint;
@@ -440,6 +478,7 @@ export const {
     updateTechPoint,
     addModel,
     removeModel,
+    changeSetting,
 } = timerGroupSlice.actions;
 
 export default timerGroupSlice.reducer;

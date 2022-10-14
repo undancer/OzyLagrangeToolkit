@@ -51,3 +51,19 @@ export interface BluePrintReport {
     acquiredBluePrint: number;
     totalBluePrint: number;
 }
+
+export enum BPDisplayMode {
+    percent = "percent",
+    count = "count",
+}
+
+export interface BluePrintSetting {
+    editLock: boolean;
+    displayMode: BPDisplayMode;
+}
+
+export interface UpdateBluePrintSetting {
+    accountId: string;
+    editLock: boolean;
+    displayMode: BPDisplayMode;
+}

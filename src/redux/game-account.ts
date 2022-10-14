@@ -20,7 +20,7 @@ export const gameAccountSlice = createSlice({
     extraReducers: (builder) => {
         builder.addCase(addAccount, (state, action) => {
             const { id } = action.payload;
-            state[id] = action.payload;
+            state[id] = { ...action.payload };
         });
         builder.addCase(removeAccount, (state, action) => {
             const { id } = action.payload;

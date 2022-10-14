@@ -1,15 +1,5 @@
 import "./css/blue-print.css";
-import {
-    Container,
-    Card,
-    List,
-    ListSubheader,
-    Divider,
-    ToggleButtonGroup,
-    ToggleButton,
-    Typography,
-    Button,
-} from "@mui/material";
+import { Container, Card, List, ListSubheader, Divider, Typography, Button } from "@mui/material";
 import TaskIcon from "@mui/icons-material/Task";
 import { UNIT_DATA_BASE } from "./data/ship-data";
 import { ListItemShip } from "./list-item-ship";
@@ -19,10 +9,16 @@ import { ShipTypes, UnitDataGroup } from "./data/ship-data-types";
 import { useAppSelector, useAppDispatch } from "../redux/utils/hooks";
 import { selectAllAccounts } from "../redux/game-account";
 import { addAccount } from "../redux/actions/game-account";
-import { getSelectedAccountId, changeSelectedAccount } from "../redux/selected-account";
+import { getSelectedAccountId } from "../redux/selected-account";
 import { randomName } from "./utils/randomName";
 import { TechIcon } from "./Icons/tech";
-import { reportForSelectedAccount, techPointByShipType } from "../redux/acquired-blue-print";
+import {
+    bluePrintSettingForSelectedAccount,
+    reportForSelectedAccount,
+    techPointByShipType,
+} from "../redux/acquired-blue-print";
+import { BluePrintTaskBar } from "./blue-print-task-bar";
+import { BPDisplayMode } from "../redux/types/acquired-blue-print.type";
 
 function CardListDataGroup(props: { data: UnitDataGroup; accountId: string }): JSX.Element {
     const { data, accountId } = props;
@@ -30,6 +26,8 @@ function CardListDataGroup(props: { data: UnitDataGroup; accountId: string }): J
     const { totalTechPoint, totalBluePrint, acquiredBluePrint } = useAppSelector((state) =>
         techPointByShipType(state, data.type),
     );
+    const { displayMode } = useAppSelector(bluePrintSettingForSelectedAccount);
+
     switch (data.type) {
         case ShipTypes.cruiser:
         case ShipTypes.destroyer:
@@ -59,12 +57,15 @@ function CardListDataGroup(props: { data: UnitDataGroup; accountId: string }): J
     let cardListClass = "card-ship-list";
     if (data.type === ShipTypes.battleCruiser || data.type === ShipTypes.carrier) cardListClass = "card-super-cap-list";
 
+    const percent = Math.floor((acquiredBluePrint / totalBluePrint) * 100);
+
+    const displayText =
+        displayMode === BPDisplayMode.percent ? `${percent}%` : `${acquiredBluePrint}/${totalBluePrint}`;
     // const percent = Math.floor((acquiredBluePrint / totalBluePrint) * 100);
     const percentReport =
         acquiredBluePrint > 0 ? (
             <div>
-                <TaskIcon className="subheader-blueprint-icon svg-fill-tech-icon" /> {acquiredBluePrint}/
-                {totalBluePrint}
+                <TaskIcon className="subheader-blueprint-icon svg-fill-tech-icon" /> {displayText}
             </div>
         ) : null;
 
@@ -92,12 +93,16 @@ function CardListDataGroup(props: { data: UnitDataGroup; accountId: string }): J
     );
 }
 
-function BluePrint() {
+function BluePrint(): JSX.Element {
     const gameAccounts = useAppSelector(selectAllAccounts);
     const accountId = useAppSelector(getSelectedAccountId);
     const dispatch = useAppDispatch();
     const { totalBluePrint, totalTechPoint, acquiredBluePrint } = useAppSelector(reportForSelectedAccount);
-    // const percent = Math.floor((acquiredBluePrint / totalBluePrint) * 100);
+    const { displayMode } = useAppSelector(bluePrintSettingForSelectedAccount);
+    const percent = Math.floor((acquiredBluePrint / totalBluePrint) * 100);
+
+    const displayText =
+        displayMode === BPDisplayMode.percent ? `${percent}%` : `${acquiredBluePrint}/${totalBluePrint}`;
 
     const noAccount = gameAccounts.length === 0;
 
@@ -119,35 +124,14 @@ function BluePrint() {
         );
     }
 
-    const multiAccountUser = gameAccounts.length > 1;
-
-    function handleAccountChange(event: React.MouseEvent<HTMLElement>, newId: string) {
-        dispatch(changeSelectedAccount(newId));
-    }
-
-    const toggleButtonGroups = gameAccounts.map((account) => {
-        return (
-            <ToggleButton value={account.id} className="account-toggle-button" size="small">
-                {account.name}
-            </ToggleButton>
-        );
-    });
-
     return (
         <Container maxWidth={false} className={"container-main-blue-print"}>
             <div className="account-content-container">
-                {multiAccountUser ? (
-                    <Card elevation={0} className="account-selection-card">
-                        <Typography>账户选择：</Typography>
-                        <ToggleButtonGroup value={accountId} exclusive onChange={handleAccountChange} color="success">
-                            {toggleButtonGroups}
-                        </ToggleButtonGroup>
-                    </Card>
-                ) : null}
+                <BluePrintTaskBar />
                 <Card className="account-title-card">
                     <Typography variant="h4" gutterBottom>
                         全蓝图收集: <TaskIcon fontSize="large" className="svg-fill-tech-icon header-icon" />
-                        {acquiredBluePrint}/{totalBluePrint} &nbsp;&nbsp;总科技点:&nbsp;
+                        {displayText} &nbsp;&nbsp;总科技点:&nbsp;
                         <TechIcon fontSize="large" className="svg-fill-tech-icon header-icon" />
                         {totalTechPoint}
                     </Typography>

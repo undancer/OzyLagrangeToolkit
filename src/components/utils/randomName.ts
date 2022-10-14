@@ -6,10 +6,9 @@ const nameList: string[] = [
     "飄零燕",
     "飄零燕",
     "飄零燕",
-    "飄零燕",
-    "飄零燕",
-    "飄零燕",
-    "飄零燕",
+    "囍囍囍",
+    "囍囍囍",
+    "囍囍囍",
     "囍囍囍",
     "英华",
     "鱼雷",
@@ -31,12 +30,20 @@ const nameList: string[] = [
     "GGYY",
     "Player195",
     "Player195",
-    "Player195",
+    "星冰乐",
+    "翱翔之翼",
+    "Peter凶",
+    "Peter兄",
+    "琉璃玥",
     "星冰乐",
 ];
 
 const modList: string[] = [
     "威武",
+    "威武",
+    "威武",
+    "超强",
+    "超强",
     "超强",
     "牛逼",
     "在睡觉",
@@ -56,6 +63,10 @@ const modList: string[] = [
     "上吊",
     "不洗澡",
     "超漂亮",
+    "全金标",
+    "挂机中",
+    "撸猫中",
+    "喵喵叫",
 ];
 
 export function randomName(): string {

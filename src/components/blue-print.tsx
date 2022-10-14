@@ -59,11 +59,12 @@ function CardListDataGroup(props: { data: UnitDataGroup; accountId: string }): J
     let cardListClass = "card-ship-list";
     if (data.type === ShipTypes.battleCruiser || data.type === ShipTypes.carrier) cardListClass = "card-super-cap-list";
 
-    const percent = Math.floor((acquiredBluePrint / totalBluePrint) * 100);
+    // const percent = Math.floor((acquiredBluePrint / totalBluePrint) * 100);
     const percentReport =
         acquiredBluePrint > 0 ? (
             <div>
-                <TaskIcon className="subheader-blueprint-icon svg-fill-tech-icon" /> {percent}%
+                <TaskIcon className="subheader-blueprint-icon svg-fill-tech-icon" /> {acquiredBluePrint}/
+                {totalBluePrint}
             </div>
         ) : null;
 
@@ -96,7 +97,7 @@ function BluePrint() {
     const accountId = useAppSelector(getSelectedAccountId);
     const dispatch = useAppDispatch();
     const { totalBluePrint, totalTechPoint, acquiredBluePrint } = useAppSelector(reportForSelectedAccount);
-    const percent = Math.floor((acquiredBluePrint / totalBluePrint) * 100);
+    // const percent = Math.floor((acquiredBluePrint / totalBluePrint) * 100);
 
     const noAccount = gameAccounts.length === 0;
 
@@ -146,7 +147,7 @@ function BluePrint() {
                 <Card className="account-title-card">
                     <Typography variant="h4" gutterBottom>
                         全蓝图收集: <TaskIcon fontSize="large" className="svg-fill-tech-icon header-icon" />
-                        {percent}% &nbsp;&nbsp;总科技点:&nbsp;
+                        {acquiredBluePrint}/{totalBluePrint} &nbsp;&nbsp;总科技点:&nbsp;
                         <TechIcon fontSize="large" className="svg-fill-tech-icon header-icon" />
                         {totalTechPoint}
                     </Typography>

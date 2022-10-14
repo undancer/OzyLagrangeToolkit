@@ -254,6 +254,7 @@ export function bluePrintSettingForSelectedAccount(state: RootState): BluePrintS
     const localState = state.acquiredBluePrint;
     const { accountId } = state.selectedAccount;
     const bluePrints = localState[accountId];
+    if (bluePrints === undefined) return { displayMode: BPDisplayMode.percent, editLock: false };
     return { displayMode: bluePrints.displayMode, editLock: bluePrints.editLock };
 }
 

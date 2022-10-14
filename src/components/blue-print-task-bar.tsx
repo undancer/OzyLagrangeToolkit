@@ -15,13 +15,9 @@ export function BluePrintTaskBar(): JSX.Element | null {
     const accountId = useAppSelector(getSelectedAccountId);
     const { displayMode, editLock } = useAppSelector(bluePrintSettingForSelectedAccount);
     const dispatch = useAppDispatch();
-    const multiAccountUser = gameAccounts.length > 1;
     const setting: string[] = [];
     if (displayMode === BPDisplayMode.count) setting.push("number");
     if (editLock) setting.push("locked");
-
-    // Returns nothing when multiple account doesn't exist
-    if (!multiAccountUser) return null;
 
     function handleAccountChange(event: React.MouseEvent<HTMLElement>, newId: string) {
         dispatch(changeSelectedAccount(newId));

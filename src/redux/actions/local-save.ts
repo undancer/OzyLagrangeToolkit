@@ -6,7 +6,7 @@ export const saveState = (state: RootState) => {
     try {
         const serializedState = JSON.stringify(state);
         localStorage.setItem("state", serializedState);
-        localStorage.setItem("stateVersion", "4");
+        localStorage.setItem("stateVersion", "5");
     } catch {
         console.warn("Save state error.");
     }
@@ -64,6 +64,13 @@ function updateState(currentVersion: string | null, state: any): any {
         });
     }
     if (version === "3") {
+        Object.keys(state.acquiredBluePrint).forEach((key) => {
+            const blueprint = state.acquiredBluePrint[key];
+            if (blueprint.bpEditLock === undefined) blueprint.bpEditLock = false;
+            if (blueprint.displayMode === undefined) blueprint.displayMode = BPDisplayMode.percent;
+        });
+    }
+    if (version === "4") {
         Object.keys(state.acquiredBluePrint).forEach((key) => {
             const blueprint = state.acquiredBluePrint[key];
             if (blueprint.bpEditLock === undefined) blueprint.bpEditLock = false;

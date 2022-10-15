@@ -4,6 +4,7 @@ import { Provider } from "react-redux";
 import Tracker from "./components/tracker";
 import BluePrint from "./components/blue-print";
 import InDevelopment from "./components/in-development";
+import DevelopmentDebug from "./components/debug";
 import { store } from "./redux/core/store";
 import { NavigationBar } from "./components/navigation-bar";
 
@@ -25,6 +26,7 @@ root.render(
                         <Route path="/tracker" element={<Tracker />} />
                         <Route path="/fleetbuilder" element={<InDevelopment />} />
                         <Route path="/research" element={<InDevelopment />} />
+                        <Route path="/localStorageDebug" element={<DevelopmentDebug />} />
                     </Routes>
                 </div>
             </div>

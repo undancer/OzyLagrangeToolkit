@@ -6,17 +6,14 @@ import { TechIcon } from "./Icons/tech";
 import "./css/list-item-ship.css";
 import { stringToTech } from "../redux/utils/tech-cal";
 import { UpdateTechPoint } from "../redux/types/acquired-blue-print.type";
+import { getSelectedAccountId } from "../redux/selected-account";
 
-function ShipVariantCheckBox(props: {
-    accountId: string;
-    shipId: string;
-    variant: number;
-    label: string;
-}): JSX.Element {
-    const { accountId, shipId, variant, label } = props;
+function ShipVariantCheckBox(props: { shipId: string; variant: number; label: string }): JSX.Element {
+    const { shipId, variant, label } = props;
 
     const dispatch = useAppDispatch();
     const checked = useAppSelector((state) => hasShipVariant(state, shipId, variant));
+    const accountId = useAppSelector(getSelectedAccountId);
 
     function handleChange() {
         if (checked) dispatch(removeShip({ accountId, shipId, variant }));
@@ -37,10 +34,11 @@ function ShipVariantCheckBox(props: {
     );
 }
 
-function InputShipTechPoint(props: { accountId: string; shipId: string }): JSX.Element {
-    const { accountId, shipId } = props;
+function InputShipTechPoint(props: { shipId: string }): JSX.Element {
+    const { shipId } = props;
     const dispatch = useAppDispatch();
     const points = useAppSelector((state) => techPointsByShip(state, ShipTypes.destroyer, shipId));
+    const accountId = useAppSelector(getSelectedAccountId);
     const checked = points >= 0;
 
     function handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
@@ -70,17 +68,15 @@ function InputShipTechPoint(props: { accountId: string; shipId: string }): JSX.E
     );
 }
 
-export function ListItemShip(props: { data: ShipData; accountId: string }): JSX.Element {
-    const { data, accountId } = props;
+export function ListItemShip(props: { data: ShipData }): JSX.Element {
+    const { data } = props;
     const points = useAppSelector((state) => techPointsByShip(state, ShipTypes.destroyer, data.id));
     const checked = points >= 0;
 
     const shipList: JSX.Element[] = [];
     data.variants.forEach((label, index) => {
         const key = `${data.id}-${index}`;
-        shipList.push(
-            <ShipVariantCheckBox accountId={accountId} shipId={data.id} variant={index} key={key} label={label} />,
-        );
+        shipList.push(<ShipVariantCheckBox shipId={data.id} variant={index} key={key} label={label} />);
     });
 
     return (
@@ -91,7 +87,7 @@ export function ListItemShip(props: { data: ShipData; accountId: string }): JSX.
                 </ListItem>
                 {checked ? (
                     <ListItem disablePadding>
-                        <InputShipTechPoint accountId={accountId} shipId={data.id} />
+                        <InputShipTechPoint shipId={data.id} />
                     </ListItem>
                 ) : null}
             </List>

@@ -27,10 +27,11 @@ import { addAccount as add, removeAccount as remove } from "../redux/actions/gam
 import "./css/navigation-bar.css";
 import { randomName } from "./utils/randomName";
 
-const pages = ["蓝图档案", "计时器", "舰队计划", "保底研发"];
+const pages = ["蓝图档案", "蓝图报表", "计时器", "舰队计划", "保底研发"];
 const path: { [index: string]: string } = {
     计时器: "tracker",
     蓝图档案: "blueprint",
+    蓝图报表: "blueprintreport",
     舰队计划: "fleetbuilder",
     保底研发: "research",
 };

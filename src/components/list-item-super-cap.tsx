@@ -16,13 +16,15 @@ import {
 } from "../redux/acquired-blue-print";
 import { UpdateTechPoint } from "../redux/types/acquired-blue-print.type";
 import { stringToTech } from "../redux/utils/tech-cal";
+import { getSelectedAccountId } from "../redux/selected-account";
 
-function ModuleChip(props: { superCapModule: SuperCapModule; accountId: string; superCapId: string }): JSX.Element {
-    const { superCapModule, accountId, superCapId } = props;
+function ModuleChip(props: { superCapModule: SuperCapModule; superCapId: string }): JSX.Element {
+    const { superCapModule, superCapId } = props;
     const moduleId = superCapModule.id;
 
     const dispatch = useAppDispatch();
     const checked = useAppSelector((state) => hasModule(state, superCapId, superCapModule.id));
+    const accountId = useAppSelector(getSelectedAccountId);
 
     function handleClick() {
         if (checked) dispatch(removeModel({ accountId, superCapId, moduleId }));
@@ -49,10 +51,9 @@ function ModuleChip(props: { superCapModule: SuperCapModule; accountId: string; 
 
 function ModuleListItems(props: {
     superCapModules: { [key: string]: SuperCapModule };
-    accountId: string;
     superCapId: string;
 }): JSX.Element {
-    const { superCapModules, accountId, superCapId } = props;
+    const { superCapModules, superCapId } = props;
     const mainModules: JSX.Element[] = [];
     const typeAModules: JSX.Element[] = [];
     const typeBModules: JSX.Element[] = [];
@@ -60,9 +61,7 @@ function ModuleListItems(props: {
     const typeDModules: JSX.Element[] = [];
     Object.keys(superCapModules).forEach((key) => {
         const superCapModule = superCapModules[key];
-        const moduleChip = (
-            <ModuleChip superCapModule={superCapModule} key={key} accountId={accountId} superCapId={superCapId} />
-        );
+        const moduleChip = <ModuleChip superCapModule={superCapModule} key={key} superCapId={superCapId} />;
         if (key.startsWith("m")) mainModules.push(moduleChip);
         if (key.startsWith("a")) typeAModules.push(moduleChip);
         if (key.startsWith("b")) typeBModules.push(moduleChip);
@@ -91,10 +90,11 @@ function ModuleListItems(props: {
     );
 }
 
-function SuperCapCheckBox(props: { accountId: string; superCapId: string }): JSX.Element {
-    const { accountId, superCapId } = props;
+function SuperCapCheckBox(props: { superCapId: string }): JSX.Element {
+    const { superCapId } = props;
     const dispatch = useAppDispatch();
     const checked = useAppSelector((state) => hasSuperCap(state, superCapId));
+    const accountId = useAppSelector(getSelectedAccountId);
 
     function handleChange() {
         if (checked) dispatch(removeSuperCap({ accountId, superCapId }));
@@ -108,11 +108,12 @@ function SuperCapCheckBox(props: { accountId: string; superCapId: string }): JSX
     );
 }
 
-function InputSuperCapTechPoint(props: { accountId: string; superCapId: string }): JSX.Element {
-    const { accountId, superCapId } = props;
+function InputSuperCapTechPoint(props: { superCapId: string }): JSX.Element {
+    const { superCapId } = props;
     const dispatch = useAppDispatch();
     const checked = useAppSelector((state) => hasSuperCap(state, superCapId));
     const points = useAppSelector((state) => techPointsByShip(state, ShipTypes.carrier, superCapId));
+    const accountId = useAppSelector(getSelectedAccountId);
 
     function handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
         if (!checked) return;
@@ -141,22 +142,20 @@ function InputSuperCapTechPoint(props: { accountId: string; superCapId: string }
     );
 }
 
-export function ListItemSuperCap(props: { data: SuperCapData; accountId: string }): JSX.Element {
-    const { data, accountId } = props;
+export function ListItemSuperCap(props: { data: SuperCapData }): JSX.Element {
+    const { data } = props;
     const checked = useAppSelector((state) => hasSuperCap(state, data.id));
 
     return (
         <React.Fragment>
             <ListItem className="list-item-aircraft-data">
                 <ListItemText primary={data.name} />
-                {checked ? <InputSuperCapTechPoint accountId={accountId} superCapId={data.id} /> : null}
+                {checked ? <InputSuperCapTechPoint superCapId={data.id} /> : null}
                 <List disablePadding>
-                    <SuperCapCheckBox accountId={accountId} superCapId={data.id} key={data.id} />
+                    <SuperCapCheckBox superCapId={data.id} key={data.id} />
                 </List>
             </ListItem>
-            {checked ? (
-                <ModuleListItems superCapModules={data.modules} accountId={accountId} superCapId={data.id} />
-            ) : null}
+            {checked ? <ModuleListItems superCapModules={data.modules} superCapId={data.id} /> : null}
         </React.Fragment>
     );
 }

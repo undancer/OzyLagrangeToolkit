@@ -1,0 +1,48 @@
+
+.subheader-card {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.subheader-icon {
+    margin-bottom: -7px;
+    margin-left: 7px;
+}
+
+.subheader-blueprint-icon {
+    margin-bottom: -7px;
+}
+
+.subheader-right-div {
+    display: flex;
+    flex-direction: row;
+}
+
+.card-ship-list {
+    min-width: 228px;
+}
+
+.card-super-cap-list {
+    min-width: 270px;
+}
+
+.account-content-container {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-evenly;
+    gap: 15px 8px;
+    margin-top: 20px;
+}
+
+.account-title-card {
+    width: 99%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.header-icon {
+    margin-bottom: -5px;
+}

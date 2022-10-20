@@ -7,6 +7,7 @@ import InDevelopment from "./components/in-development";
 import DevelopmentDebug from "./components/debug";
 import { store } from "./redux/core/store";
 import { NavigationBar } from "./components/navigation-bar";
+import BluePrintReport from "./components/blue-print-report";
 
 const container = document.getElementById("root");
 // This line is suggested by officla React Website
@@ -23,6 +24,7 @@ root.render(
                     <Routes>
                         <Route path="/" element={<BluePrint />} />
                         <Route path="/blueprint" element={<BluePrint />} />
+                        <Route path="/blueprintreport" element={<BluePrintReport />} />
                         <Route path="/tracker" element={<Tracker />} />
                         <Route path="/fleetbuilder" element={<InDevelopment />} />
                         <Route path="/research" element={<InDevelopment />} />

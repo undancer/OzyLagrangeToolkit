@@ -12,11 +12,13 @@ import {
 } from "../redux/acquired-blue-print";
 import { stringToTech } from "../redux/utils/tech-cal";
 import { UpdateTechPoint } from "../redux/types/acquired-blue-print.type";
+import { getSelectedAccountId } from "../redux/selected-account";
 
-function AircraftCheckBox(props: { accountId: string; aircraftId: string }): JSX.Element {
-    const { accountId, aircraftId } = props;
+function AircraftCheckBox(props: { aircraftId: string }): JSX.Element {
+    const { aircraftId } = props;
     const dispatch = useAppDispatch();
     const checked = useAppSelector((state) => hasAircraft(state, aircraftId));
+    const accountId = useAppSelector(getSelectedAccountId);
 
     function handleChange() {
         if (checked) dispatch(removeAircraft({ accountId, aircraftId }));
@@ -30,11 +32,12 @@ function AircraftCheckBox(props: { accountId: string; aircraftId: string }): JSX
     );
 }
 
-function InputAircraftTechPoint(props: { accountId: string; aircraftId: string }): JSX.Element {
-    const { accountId, aircraftId } = props;
+function InputAircraftTechPoint(props: { aircraftId: string }): JSX.Element {
+    const { aircraftId } = props;
     const dispatch = useAppDispatch();
     const checked = useAppSelector((state) => hasAircraft(state, aircraftId));
     const points = useAppSelector((state) => techPointsByShip(state, ShipTypes.aircraft, aircraftId));
+    const accountId = useAppSelector(getSelectedAccountId);
 
     function handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
         if (!checked) return;
@@ -63,16 +66,16 @@ function InputAircraftTechPoint(props: { accountId: string; aircraftId: string }
     );
 }
 
-export function ListItemAircraft(props: { data: AircraftData; accountId: string }): JSX.Element {
-    const { data, accountId } = props;
+export function ListItemAircraft(props: { data: AircraftData }): JSX.Element {
+    const { data } = props;
     const aircraftList: JSX.Element[] = [];
-    aircraftList.push(<AircraftCheckBox accountId={accountId} aircraftId={data.id} key={data.id} />);
+    aircraftList.push(<AircraftCheckBox aircraftId={data.id} key={data.id} />);
     const checked = useAppSelector((state) => hasAircraft(state, data.id));
 
     return (
         <ListItem className="list-item-aircraft-data">
             <ListItemText primary={data.name} />
-            {checked ? <InputAircraftTechPoint accountId={accountId} aircraftId={data.id} /> : null}
+            {checked ? <InputAircraftTechPoint aircraftId={data.id} /> : null}
             <List disablePadding>{aircraftList}</List>
         </ListItem>
     );

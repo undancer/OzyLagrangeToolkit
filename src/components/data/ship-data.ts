@@ -24,7 +24,7 @@ export const CARRIER_DATA: SuperCapData[] = [
             a1: { id: "a1", isBase: true, name: "综合武器库", shortName: "综合武器" },
             a2: { id: "a2", isBase: false, name: "投射武器平台", shortName: "投射平台" },
             a3: { id: "a3", isBase: false, name: "综合火炮平台", shortName: "综合火炮" },
-            b1: { id: "b1", isBase: false, name: "舰载机维护系统", shortName: "载机维护" },
+            b1: { id: "b1", isBase: true, name: "舰载机维护系统", shortName: "载机维护" },
             b2: { id: "b2", isBase: false, name: "护航艇搭载平台", shortName: "炮艇平台", important: true },
             c1: { id: "c1", isBase: false, name: "舰载机平台", shortName: "载机平台", important: true },
             c2: { id: "c2", isBase: false, name: "攻城无人机", shortName: "攻城飞机" },

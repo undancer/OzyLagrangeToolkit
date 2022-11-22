@@ -25,7 +25,6 @@ const nameList: string[] = [
     "Peter凶",
     "Peter兄",
     "琉璃玥",
-    "星冰乐",
     "OZY",
     "YGG",
     "YGG",

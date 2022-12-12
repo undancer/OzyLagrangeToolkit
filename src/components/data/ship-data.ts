@@ -46,6 +46,24 @@ export const CARRIER_DATA: SuperCapData[] = [
             c2: { id: "c2", isBase: false, name: "火控辅助校准系统", shortName: "火控辅助" },
         },
     },
+    {
+        id: "cr4",
+        name: "FSV830",
+        modules: {
+            a1: { id: "a1", isBase: false, name: "工程维修系统", shortName: "工程维修" },
+            a2: { id: "a2", isBase: false, name: "战略资源存储系统", shortName: "战略存储" },
+            b1: { id: "b1", isBase: true, name: "护卫舰生产系统", shortName: "护卫生产" },
+            b2: { id: "b2", isBase: false, name: "护航艇生产系统", shortName: "炮艇生产", important: true },
+            b3: { id: "b3", isBase: false, name: "战机胜场系统", shortName: "战机生产" },
+            c1: { id: "c1", isBase: false, name: "舰载机系统", shortName: "载机平台" },
+            c2: { id: "c2", isBase: false, name: "维修无人机系统", shortName: "维修飞机" },
+            d1: { id: "d1", isBase: true, name: "预警指挥系统", shortName: "预警指挥" },
+            d2: { id: "d2", isBase: false, name: "协同指挥系统", shortName: "协同指挥" },
+            d3: { id: "d3", isBase: false, name: "干扰指挥系统", shortName: "干扰指挥" },
+            e1: { id: "e1", isBase: false, name: "区域防空系统", shortName: "区域防空" },
+            e2: { id: "e2", isBase: false, name: "护航艇坞仓", shortName: "护航艇仓" },
+        },
+    },
 ];
 
 export const BATTLE_CRUISER_DATA: SuperCapData[] = [
@@ -124,13 +142,13 @@ export const BATTLE_CRUISER_DATA: SuperCapData[] = [
 ];
 
 const CRUISER_DATA: ShipData[] = [
-    { id: "c1", name: "卡利斯托級", variants: ["鱼雷型", "反舰型", "支援型"] },
     { id: "c2", name: "艾奥级", variants: ["离子炮", "反舰型", "攻城型"] },
     { id: "c3", name: "奇美拉級", variants: ["炮弹型", "重炮型", "防衛型"] },
+    { id: "c1", name: "卡利斯托級", variants: ["鱼雷型", "反舰型", "支援型"] },
     { id: "c4", name: "猎兵级", variants: ["支援型", "反舰型"] },
-    { id: "c5", name: "狩猎者级", variants: ["通用型", "战术型", "防空型"] },
     { id: "c6", name: "康納馬拉混沌", variants: ["轨道炮", "电浆型"] },
     { id: "c7", name: "光锥级", variants: ["通用型", "防空型", "突击型"] },
+    { id: "c5", name: "狩猎者级", variants: ["通用型", "战术型", "防空型"] },
     { id: "c8", name: "CAS066級", variants: ["綜合型", "炮击型", "载机型"] },
     { id: "c9", name: "KCCPV2.0級", variants: ["綜合型", "载机型", "轨道炮", "脉冲型"] },
 ];
@@ -148,15 +166,15 @@ const FRIGATE_DATA: ShipData[] = [
 ];
 
 const DESTROYER_DATA: ShipData[] = [
-    { id: "f1", name: "苔原级", variants: ["支援型", "载机型"] },
     { id: "f2", name: "斗牛级", variants: ["攻击型", "突击型", "防御性"] },
-    { id: "f3", name: "谷神星级", variants: ["载机型", "支援型", "战术型"] },
-    { id: "f4", name: "AC721級", variants: ["通用型", "载机型", "飞弹型"] },
     { id: "f5", name: "阋神星级", variants: ["火炮型", "重炮型", "裝甲型"] },
-    { id: "f6", name: "创身星级", variants: ["轨道炮", "魚雷型"] },
+    { id: "f9", name: "亚达伯拉级", variants: ["通用型", "裝甲型"] },
+    { id: "f6", name: "创神星级", variants: ["轨道炮", "魚雷型"] },
     { id: "f7", name: "枪骑兵级", variants: ["反舰型", "綜合型", "防空型"] },
     { id: "f8", name: "卫士级", variants: ["支援型", "两栖型", "脉冲炮"] },
-    { id: "f9", name: "亚达伯拉级", variants: ["通用型", "裝甲型"] },
+    { id: "f1", name: "苔原级", variants: ["支援型", "载机型"] },
+    { id: "f3", name: "谷神星级", variants: ["载机型", "支援型", "战术型"] },
+    { id: "f4", name: "AC721級", variants: ["通用型", "载机型", "飞弹型"] },
 ];
 
 const AIRCRAFT_DATA: AircraftData[] = [

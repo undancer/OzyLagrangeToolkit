@@ -59,6 +59,7 @@ function ModuleListItems(props: {
     const typeBModules: JSX.Element[] = [];
     const typeCModules: JSX.Element[] = [];
     const typeDModules: JSX.Element[] = [];
+    const typeEModules: JSX.Element[] = [];
     Object.keys(superCapModules).forEach((key) => {
         const superCapModule = superCapModules[key];
         const moduleChip = <ModuleChip superCapModule={superCapModule} key={key} superCapId={superCapId} />;
@@ -67,6 +68,7 @@ function ModuleListItems(props: {
         if (key.startsWith("b")) typeBModules.push(moduleChip);
         if (key.startsWith("c")) typeCModules.push(moduleChip);
         if (key.startsWith("d")) typeDModules.push(moduleChip);
+        if (key.startsWith("e")) typeEModules.push(moduleChip);
     });
 
     return (
@@ -85,6 +87,9 @@ function ModuleListItems(props: {
             </ListItem>
             <ListItem disablePadding className="list-item-module-holder" key="d">
                 {typeDModules}
+            </ListItem>
+            <ListItem disablePadding className="list-item-module-holder" key="e">
+                {typeEModules}
             </ListItem>
         </React.Fragment>
     );

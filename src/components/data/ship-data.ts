@@ -178,21 +178,19 @@ const DESTROYER_DATA: ShipData[] = [
 ];
 
 const AIRCRAFT_DATA: AircraftData[] = [
-    // Medium fighters
+    { id: "b1", name: "維塔斯 B010", type: "large" },
     { id: "a1", name: "密斯托拉", type: "mid" },
     { id: "a2", name: "海氏追隨者", type: "mid" },
     { id: "a3", name: "林鴞A100", type: "mid" },
     { id: "a4", name: "砂龙", type: "mid" },
     { id: "a5", name: "維塔斯 A021", type: "mid" },
-    { id: "a6", name: "平衡安德森", type: "mid" },
+    { id: "b2", name: "刺鰩", type: "large" },
+    { id: "b3", name: "牛蛙", type: "large" },
     { id: "a7", name: "孢子A404", type: "mid" },
     { id: "a8", name: "新大地B192", type: "mid" },
     { id: "a9", name: "佩刀Aer410", type: "mid" },
+    { id: "a6", name: "平衡安德森", type: "mid" },
     { id: "a10", name: "SC002", type: "mid" },
-    // large fighters
-    { id: "b1", name: "維塔斯 B010", type: "large" },
-    { id: "b2", name: "刺鰩", type: "large" },
-    { id: "b3", name: "牛蛙", type: "large" },
 ];
 
 const CORVETTE_DATA: ShipData[] = [

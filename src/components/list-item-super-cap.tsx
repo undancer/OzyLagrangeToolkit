@@ -4,19 +4,11 @@ import { TechIcon } from "./Icons/tech";
 import { useAppDispatch, useAppSelector } from "../redux/utils/hooks";
 import "./css/list-item-super-cap.css";
 import { ShipTypes, SuperCapData, SuperCapModule } from "./data/ship-data-types";
-import {
-    addModel,
-    addSuperCap,
-    hasModule,
-    hasSuperCap,
-    removeModel,
-    removeSuperCap,
-    techPointsByShip,
-    updateTechPoint,
-} from "../redux/acquired-blue-print";
+import { addModel, addSuperCap, removeModel, removeSuperCap, updateTechPoint } from "../redux/acquired-blue-print";
 import { UpdateTechPoint } from "../redux/types/acquired-blue-print.type";
 import { stringToTech } from "../redux/utils/tech-cal";
 import { getSelectedAccountId } from "../redux/selected-account";
+import { hasModule, hasSuperCap, techPointsByShip } from "../redux/selector/acquired-blue-prints";
 
 function ModuleChip(props: { superCapModule: SuperCapModule; superCapId: string }): JSX.Element {
     const { superCapModule, superCapId } = props;

@@ -3,16 +3,11 @@ import { AircraftData, ShipTypes } from "./data/ship-data-types";
 import { useAppDispatch, useAppSelector } from "../redux/utils/hooks";
 import { TechIcon } from "./Icons/tech";
 import "./css/list-item-aircraft.css";
-import {
-    addAircraft,
-    hasAircraft,
-    removeAircraft,
-    techPointsByShip,
-    updateTechPoint,
-} from "../redux/acquired-blue-print";
+import { addAircraft, removeAircraft, updateTechPoint } from "../redux/acquired-blue-print";
 import { stringToTech } from "../redux/utils/tech-cal";
 import { UpdateTechPoint } from "../redux/types/acquired-blue-print.type";
 import { getSelectedAccountId } from "../redux/selected-account";
+import { hasAircraft, techPointsByShip } from "../redux/selector/acquired-blue-prints";
 
 function AircraftCheckBox(props: { aircraftId: string }): JSX.Element {
     const { aircraftId } = props;

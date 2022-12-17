@@ -9,12 +9,12 @@ import { useAppSelector } from "../redux/utils/hooks";
 import { ShipTypes, UnitDataGroup } from "./data/ship-data-types";
 import { UNIT_DATA_BASE } from "./data/ship-data";
 import { BPDisplayMode } from "../redux/types/acquired-blue-print.type";
+import "./css/individual-blue-print.css";
 import {
     bluePrintSettingForSelectedAccount,
     reportForSelectedAccount,
     techPointByShipType,
-} from "../redux/acquired-blue-print";
-import "./css/individual-blue-print.css";
+} from "../redux/selector/acquired-blue-prints";
 
 function CardSubHeader(props: { data: UnitDataGroup }): JSX.Element {
     const { data } = props;

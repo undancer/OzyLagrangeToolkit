@@ -1,12 +1,13 @@
 import { List, ListItem, ListItemText, FormControlLabel, Checkbox, TextField, InputAdornment } from "@mui/material";
 import { ShipData, ShipTypes } from "./data/ship-data-types";
 import { useAppDispatch, useAppSelector } from "../redux/utils/hooks";
-import { addShip, hasShipVariant, removeShip, techPointsByShip, updateTechPoint } from "../redux/acquired-blue-print";
+import { addShip, removeShip, updateTechPoint } from "../redux/acquired-blue-print";
 import { TechIcon } from "./Icons/tech";
 import "./css/list-item-ship.css";
 import { stringToTech } from "../redux/utils/tech-cal";
 import { UpdateTechPoint } from "../redux/types/acquired-blue-print.type";
 import { getSelectedAccountId } from "../redux/selected-account";
+import { hasShipVariant, techPointsByShip } from "../redux/selector/acquired-blue-prints";
 
 function ShipVariantCheckBox(props: { shipId: string; variant: number; label: string }): JSX.Element {
     const { shipId, variant, label } = props;

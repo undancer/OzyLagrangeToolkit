@@ -7,8 +7,9 @@ import { getSelectedAccountId, changeSelectedAccount } from "../redux/selected-a
 import { useAppSelector, useAppDispatch } from "../redux/utils/hooks";
 import { selectAllAccounts } from "../redux/game-account";
 import "./css/blue-print-task-bar.css";
-import { bluePrintSettingForSelectedAccount, changeSetting } from "../redux/acquired-blue-print";
+import { changeSetting } from "../redux/acquired-blue-print";
 import { BPDisplayMode } from "../redux/types/acquired-blue-print.type";
+import { bluePrintSettingForSelectedAccount } from "../redux/selector/acquired-blue-prints";
 
 export function BluePrintTaskBar(): JSX.Element | null {
     const gameAccounts = useAppSelector(selectAllAccounts);

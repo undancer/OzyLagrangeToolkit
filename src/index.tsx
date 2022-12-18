@@ -9,6 +9,7 @@ import { store } from "./redux/core/store";
 import { NavigationBar } from "./components/navigation-bar";
 import BluePrintReport from "./components/blue-print-report";
 import FleetBuilder from "./components/fleet-planner";
+import "./components/css/index.css";
 
 const container = document.getElementById("root");
 // This line is suggested by officla React Website

@@ -1,10 +1,16 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { lookUpShipById } from "../components/data/ship-data";
 import { ShipTypes } from "../components/data/ship-data-types";
 import { addAccount, removeAccount } from "./actions/game-account";
-import { AvailableShipTypes, FleetAction } from "./types/fleet-planner.type";
+import { AddShip, AvailableShipTypes, FleetAction, EditRemoveShip, SelectedFleet } from "./types/fleet-planner.type";
 
 interface FleetPlannerState {
     [index: string]: FleetPlan;
+}
+
+export enum FleetType {
+    main,
+    reinforcement,
 }
 
 interface FleetPlan {
@@ -12,21 +18,21 @@ interface FleetPlan {
     availableShipTypes: ShipTypes[];
     shipIgnoreList: string[];
     maxPopulation: number;
-    currentFleet: number;
+    selectedFleet: { index: number; type: FleetType };
     fleetLimit: number;
     fleets: Fleet[];
 }
 
-interface Fleet {
+export interface Fleet {
     name: string;
     mainFleet: ShipInFleet[];
     reinforcement: ShipInFleet[];
 }
 
-interface ShipInFleet {
-    id: string;
-    variant: string;
-    count: string;
+export interface ShipInFleet {
+    shipId: string;
+    variant: number;
+    count: number;
 }
 
 function emptyAccountData(id: string): FleetPlan {
@@ -44,7 +50,7 @@ function emptyAccountData(id: string): FleetPlan {
         shipIgnoreList: [],
         maxPopulation: 1400,
         fleetLimit: 300,
-        currentFleet: -1,
+        selectedFleet: { index: -1, type: FleetType.main },
         fleets: [],
     };
 }
@@ -57,6 +63,12 @@ export const fleetPlannerSlice = createSlice({
     reducers: {
         updateAvailableShipTypes: handleUpdateAvailableShipTypes,
         addFleet: handleAddFleet,
+        removeFleet: handleRemoveFleet,
+        addShip: handleAddShip,
+        removeShip: handleRemoveShip,
+        changeSelectedFleet: handleChangeSelectedFleet,
+        increaseShipCount: handleIncreaseShipCount,
+        decreaseShipCount: handleDecreateShipCount,
     },
     extraReducers: (builder) => {
         builder.addCase(addAccount, (state, action) => {
@@ -76,19 +88,102 @@ function createAccount(state: FleetPlannerState, id: string): FleetPlan {
 }
 
 function handleUpdateAvailableShipTypes(state: FleetPlannerState, action: PayloadAction<AvailableShipTypes>) {
-    const { id, types } = action.payload;
-    let account = state[id];
-    if (!account) account = createAccount(state, id);
+    const { accountId, types } = action.payload;
+    let account = state[accountId];
+    if (!account) account = createAccount(state, accountId);
     account.availableShipTypes = types.sort();
 }
 
 function handleAddFleet(state: FleetPlannerState, action: PayloadAction<FleetAction>) {
-    const { id, name } = action.payload;
-    let account = state[id];
-    if (!account) account = createAccount(state, id);
+    const { accountId, name } = action.payload;
+    let account = state[accountId];
+    if (!account) account = createAccount(state, accountId);
     account.fleets.push({ name, mainFleet: [], reinforcement: [] });
+    if (account.selectedFleet.index === -1) account.selectedFleet.index = 0;
 }
 
-export const { updateAvailableShipTypes } = fleetPlannerSlice.actions;
+function handleRemoveFleet(state: FleetPlannerState, action: PayloadAction<FleetAction>) {
+    const { accountId, name } = action.payload;
+    const account = state[accountId];
+    if (!account) return;
+    const index = account.fleets.findIndex((fleet) => fleet.name === name);
+    if (index === -1) return;
+    account.fleets.splice(index, 1);
+    if (account.fleets.length < 1) account.selectedFleet.index = -1;
+    else if (account.selectedFleet.index >= account.fleets.length) account.selectedFleet.index = account.fleets.length;
+}
+
+function handleAddShip(state: FleetPlannerState, action: PayloadAction<AddShip>) {
+    const { accountId, shipId, variant } = action.payload;
+    let account = state[accountId];
+    if (!account) account = createAccount(state, accountId);
+    const selectedFleet = account.fleets[account.selectedFleet.index];
+    const shipData = lookUpShipById(shipId);
+    if (!shipData) return; // This should never happened
+
+    if (account.selectedFleet.type === FleetType.main) {
+        const { mainFleet } = selectedFleet;
+        if (mainFleet.findIndex((ship) => ship.shipId === shipId && ship.variant === variant) === -1)
+            mainFleet.push({ shipId, variant, count: shipData.limit });
+    } else if (account.selectedFleet.type === FleetType.reinforcement) {
+        const { reinforcement } = selectedFleet;
+        if (reinforcement.findIndex((ship) => ship.shipId === shipId && ship.variant === variant) === -1)
+            reinforcement.push({ shipId, variant, count: shipData.limit });
+    }
+}
+
+function handleRemoveShip(state: FleetPlannerState, action: PayloadAction<EditRemoveShip>) {
+    const { accountId, type, fleetIndex, shipIndex } = action.payload;
+    const account = state[accountId];
+    if (!account) return;
+    const selectedFleet = account.fleets[fleetIndex];
+    if (type === FleetType.main) {
+        selectedFleet.mainFleet.splice(shipIndex, 1);
+    } else if (type === FleetType.reinforcement) {
+        selectedFleet.reinforcement.splice(shipIndex, 1);
+    }
+}
+
+function handleChangeSelectedFleet(state: FleetPlannerState, action: PayloadAction<SelectedFleet>) {
+    const { accountId, index, type } = action.payload;
+    let account = state[accountId];
+    if (!account) account = createAccount(state, accountId);
+    account.selectedFleet = { index, type };
+}
+
+function handleIncreaseShipCount(state: FleetPlannerState, action: PayloadAction<EditRemoveShip>) {
+    const { accountId, type, fleetIndex, shipIndex } = action.payload;
+    let account = state[accountId];
+    if (!account) account = createAccount(state, accountId);
+    const selectedFleet = account.fleets[fleetIndex];
+    if (type === FleetType.main) {
+        selectedFleet.mainFleet[shipIndex].count += 1;
+    } else if (type === FleetType.reinforcement) {
+        selectedFleet.reinforcement[shipIndex].count += 1;
+    }
+}
+
+function handleDecreateShipCount(state: FleetPlannerState, action: PayloadAction<EditRemoveShip>) {
+    const { accountId, type, fleetIndex, shipIndex } = action.payload;
+    let account = state[accountId];
+    if (!account) account = createAccount(state, accountId);
+    const selectedFleet = account.fleets[fleetIndex];
+    if (type === FleetType.main) {
+        selectedFleet.mainFleet[shipIndex].count -= 1;
+    } else if (type === FleetType.reinforcement) {
+        selectedFleet.reinforcement[shipIndex].count -= 1;
+    }
+}
+
+export const {
+    updateAvailableShipTypes,
+    addFleet,
+    removeFleet,
+    addShip,
+    removeShip,
+    changeSelectedFleet,
+    increaseShipCount,
+    decreaseShipCount,
+} = fleetPlannerSlice.actions;
 
 export default fleetPlannerSlice.reducer;

@@ -10,22 +10,6 @@
     margin-top: 20px;
 }
 
-.fleet-planner-ship-type-container{
-    width: 99%;
-    display: flex;
-    flex-direction: row;
-    justify-content: left;
-    align-items: center;
-}
-
-.fleet-planner-ship-type-selector{
-    display: flex;
-    flex-direction: row;
-    justify-content: left;
-    flex-wrap: wrap;
-    gap: 5px 5px;
-}
-
 .typography-ship-name {
     margin-left: 10px !important; 
     margin-right: 10px !important;
@@ -40,4 +24,10 @@
 
 .typography-ship-type {
     min-width: 130px;
+}
+
+.fleet-planner-fleet-control {
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
 }

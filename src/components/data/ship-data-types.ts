@@ -4,8 +4,8 @@ export enum ShipTypes {
     cruiser,
     destroyer,
     frigate,
-    aircraft,
     corvette,
+    aircraft,
 }
 
 export interface ShipData {

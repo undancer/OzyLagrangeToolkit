@@ -1,13 +1,3 @@
-.game-account {
-    width: 330px;
-    margin: 15px;
-}
-
-.account-title {
-    display: flex;
-    justify-content: center;
-}
-
 .account-name-input {
     width: 300px;
 }
@@ -21,3 +11,7 @@
     flex-grow: 20;
 }
 
+.game-account {
+    width: 330px;
+    margin: 15px;
+}

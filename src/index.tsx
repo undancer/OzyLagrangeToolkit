@@ -1,13 +1,14 @@
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Provider } from "react-redux";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
 import Tracker from "./components/tracker";
 import BluePrint from "./components/blue-print";
-import InDevelopment from "./components/in-development";
 import DevelopmentDebug from "./components/debug";
 import { store } from "./redux/core/store";
 import { NavigationBar } from "./components/navigation-bar";
 import BluePrintReport from "./components/blue-print-report";
+import FleetBuilder from "./components/fleet-planner";
 
 const container = document.getElementById("root");
 // This line is suggested by officla React Website
@@ -15,10 +16,16 @@ const container = document.getElementById("root");
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 const root = createRoot(container!);
 
+const darkTheme = createTheme({
+    palette: {
+        mode: "dark",
+    },
+});
+
 root.render(
     <Provider store={store}>
         <BrowserRouter>
-            <div>
+            <ThemeProvider theme={darkTheme}>
                 <NavigationBar />
                 <div className="game-body">
                     <Routes>
@@ -26,12 +33,11 @@ root.render(
                         <Route path="/blueprint" element={<BluePrint />} />
                         <Route path="/blueprintreport" element={<BluePrintReport />} />
                         <Route path="/tracker" element={<Tracker />} />
-                        <Route path="/fleetbuilder" element={<InDevelopment />} />
-                        <Route path="/research" element={<InDevelopment />} />
+                        <Route path="/fleetbuilder" element={<FleetBuilder />} />
                         <Route path="/localStorageDebug" element={<DevelopmentDebug />} />
                     </Routes>
                 </div>
-            </div>
+            </ThemeProvider>
         </BrowserRouter>
     </Provider>,
 );

@@ -1,5 +1,4 @@
 import { RootState } from "../core/store";
-
 import {
     AcquiredAircraft,
     AcquiredShip,
@@ -12,9 +11,13 @@ import { ShipData, ShipTypes } from "../../components/data/ship-data-types";
 import { UNIT_DATA_BASE } from "../../components/data/ship-data";
 import { getAccountByAccountId } from "../acquired-blue-print";
 
-export const selectAllAcquiredBluePrints = (state: RootState) =>
-    Object.keys(state.acquiredBluePrint).map((key) => state.acquiredBluePrint[key]);
-export const selectAcquiredBluePrint = (state: RootState, id: string) => state.acquiredBluePrint[id];
+export function selectAllAcquiredBluePrints(state: RootState) {
+    return Object.keys(state.acquiredBluePrint).map((key) => state.acquiredBluePrint[key]);
+}
+
+export function selectAcquiredBluePrint(state: RootState, id: string) {
+    return state.acquiredBluePrint[id];
+}
 
 export function bluePrintSettingForSelectedAccount(state: RootState): BluePrintSetting {
     const localState = state.acquiredBluePrint;

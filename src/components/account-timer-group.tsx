@@ -1,5 +1,5 @@
 import { Card, Typography } from "@mui/material";
-import "./css/game-account.css";
+import "./css/account-timer-group.css";
 import { selectTimerGroup } from "../redux/timer-group";
 import { useAppSelector } from "../redux/utils/hooks";
 import { TimerAdder } from "./timer-adder";
@@ -31,7 +31,7 @@ export function AccountTimerGroup(props: { accountId: string }): JSX.Element {
     return (
         <Card elevation={2} key={timerGroup.accountId}>
             <div className="game-account">
-                <div className="account-title">
+                <div className="timer-account-title">
                     <Typography variant="h5" gutterBottom align="center">
                         {account.name}
                     </Typography>

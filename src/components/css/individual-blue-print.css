@@ -43,6 +43,11 @@
     justify-content: center;
 }
 
+.blue-print-account-tittle {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
 .header-icon {
     margin-bottom: -5px;
 }

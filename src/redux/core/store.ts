@@ -5,6 +5,7 @@ import taskTimeStampReducer from "../task-time-stamp";
 import timerGroupReducer from "../timer-group";
 import acquiredBluePrintReducer from "../acquired-blue-print";
 import selectedAccountReducer from "../selected-account";
+import fleetPlannerReducer from "../fleet-planner";
 
 export const store = configureStore({
     reducer: {
@@ -13,6 +14,7 @@ export const store = configureStore({
         taskTimeStamp: taskTimeStampReducer,
         acquiredBluePrint: acquiredBluePrintReducer,
         selectedAccount: selectedAccountReducer,
+        fleetPlanner: fleetPlannerReducer,
     },
     preloadedState: loadState(),
 });
@@ -24,6 +26,7 @@ store.subscribe(() => {
         timerGroup: store.getState().timerGroup,
         acquiredBluePrint: store.getState().acquiredBluePrint,
         selectedAccount: store.getState().selectedAccount,
+        fleetPlanner: store.getState().fleetPlanner,
     });
 });
 

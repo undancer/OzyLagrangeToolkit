@@ -106,7 +106,7 @@ function IndividualBluePrint(): JSX.Element {
         <div className="account-content-container">
             <BluePrintTaskBar />
             <Card className="account-title-card">
-                <Typography variant="h4" gutterBottom>
+                <Typography variant="h4" className="blue-print-account-tittle">
                     全蓝图收集: <TaskIcon fontSize="large" className="svg-fill-tech-icon header-icon" />
                     {displayText} &nbsp;&nbsp;总科技点:&nbsp;
                     <TechIcon fontSize="large" className="svg-fill-tech-icon header-icon" />

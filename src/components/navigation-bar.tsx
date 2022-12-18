@@ -183,7 +183,8 @@ export function NavigationBar() {
                                 component={RouterLink}
                                 to={`/${path[page]}`}
                                 onClick={closeNavMenu}
-                                sx={{ my: 2, color: "black", display: "block" }}
+                                color="inherit"
+                                sx={{ my: 2, display: "block" }}
                             >
                                 {page}
                             </Button>

@@ -35,7 +35,7 @@ export function BluePrintTaskBar(): JSX.Element | null {
 
     const toggleButtonGroups = gameAccounts.map((account) => {
         return (
-            <ToggleButton value={account.id} className="account-toggle-button" size="small">
+            <ToggleButton value={account.id} className="account-toggle-button" size="small" color="primary">
                 {account.name}
             </ToggleButton>
         );
@@ -45,7 +45,12 @@ export function BluePrintTaskBar(): JSX.Element | null {
     return (
         <Card elevation={0} className="blue-print-task-bar">
             <div className="blue-print-control-bar">
-                <ToggleButtonGroup value={setting} onChange={handleFormat} size="small">
+                <ToggleButtonGroup
+                    value={setting}
+                    onChange={handleFormat}
+                    size="small"
+                    className="toggle-button-background"
+                >
                     <ToggleButton value="locked">{editLock ? <LockIcon /> : <LockOpenIcon />}</ToggleButton>
                     <ToggleButton value="number">
                         {displayMode === BPDisplayMode.percent ? <PercentIcon /> : <NumbersIcon />}

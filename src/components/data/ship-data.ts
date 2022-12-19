@@ -242,7 +242,7 @@ const FRIGATE_DATA: ShipData[] = [
         id: "d4",
         name: "卡里莱恩级",
         type: ShipTypes.frigate,
-        pop: 4,
+        pop: 5,
         limit: 10,
         variants: ["侦查型", "重炮型", "特種型"],
     },

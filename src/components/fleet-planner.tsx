@@ -97,7 +97,7 @@ function FleetControl(): JSX.Element {
             <ToggleButtonGroup
                 onChange={handleSelectedFleetChange}
                 exclusive
-                value={showControl ? selectedFleet.type : null}
+                value={showControl ? selectedFleet.index : null}
                 size="small"
                 disabled={!showControl}
             >

@@ -83,7 +83,7 @@ function updateState(currentVersion: string | null, state: any): any {
             const plan = fleetPlan as FleetPlan;
             plan.onlyDisplayOwned = true;
             plan.displayControl = true;
-            plan.fleets.forEach((fleet) => {
+            plan.fleets?.forEach((fleet) => {
                 fleet.aircraft = [];
             });
         });

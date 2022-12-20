@@ -79,7 +79,7 @@ export const timerGroupSlice = createSlice({
                     account.agreement.push(id);
                     break;
                 default:
-                    console.log("Case not supported.");
+                    console.warn("Case not supported.");
             }
         });
         builder.addCase(clearTimer, (state, action) => {

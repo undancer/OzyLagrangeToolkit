@@ -28,3 +28,11 @@
 .fleet-table-total {
     padding-right: 30px;
 }
+
+.fleet-plan-table-divider {
+    padding-top: 30px;
+}
+
+.no-border {
+    border: 0
+}

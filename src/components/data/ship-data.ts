@@ -267,7 +267,7 @@ const DESTROYER_DATA: ShipData[] = [
         type: ShipTypes.destroyer,
         pop: 8,
         limit: 10,
-        variants: ["攻击型", "突击型", "防御性"],
+        variants: ["攻击型", "突击型", "防御型"],
     },
     {
         id: "f5",
@@ -356,7 +356,6 @@ let ShipLookupTable: { [index: string]: UnitData };
 
 export function lookUpShipById(index: string): UnitData | undefined {
     if (ShipLookupTable === null || ShipLookupTable === undefined) {
-        console.log("Initialize loopup table");
         ShipLookupTable = {};
         Object.values(UNIT_DATA_BASE).forEach((shipType: UnitDataGroup) => {
             shipType.list.forEach((ship) => {

@@ -2,7 +2,19 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { lookUpShipById } from "../components/data/ship-data";
 import { ShipTypes } from "../components/data/ship-data-types";
 import { addAccount, removeAccount } from "./actions/game-account";
-import { AddShip, AvailableShipTypes, FleetAction, EditRemoveShip, SelectedFleet } from "./types/fleet-planner.type";
+import {
+    AddShip,
+    AvailableShipTypes,
+    FleetAction,
+    EditRemoveShip,
+    SelectedFleet,
+    FleetPlannerSettings,
+} from "./types/fleet-planner.type";
+
+export enum FleetPlannerSetting {
+    DisplayOwned,
+    DisplayControl,
+}
 
 interface FleetPlannerState {
     [index: string]: FleetPlan;
@@ -13,11 +25,13 @@ export enum FleetType {
     reinforcement,
 }
 
-interface FleetPlan {
+export interface FleetPlan {
     accountId: string;
     availableShipTypes: ShipTypes[];
     shipIgnoreList: string[];
     maxPopulation: number;
+    onlyDisplayOwned: boolean;
+    displayControl: boolean;
     selectedFleet: { index: number; type: FleetType };
     fleetLimit: number;
     fleets: Fleet[];
@@ -27,9 +41,22 @@ export interface Fleet {
     name: string;
     mainFleet: ShipInFleet[];
     reinforcement: ShipInFleet[];
+    aircraft: AircraftInFleet[];
 }
 
 export interface ShipInFleet {
+    shipId: string;
+    variant: number;
+    count: number;
+}
+
+export interface AircraftInFleet {
+    shipId: string;
+    count: number;
+    distribution: AircraftDistribution[];
+}
+
+interface AircraftDistribution {
     shipId: string;
     variant: number;
     count: number;
@@ -50,6 +77,8 @@ function emptyAccountData(id: string): FleetPlan {
         shipIgnoreList: [],
         maxPopulation: 1400,
         fleetLimit: 300,
+        onlyDisplayOwned: true,
+        displayControl: true,
         selectedFleet: { index: -1, type: FleetType.main },
         fleets: [],
     };
@@ -69,6 +98,7 @@ export const fleetPlannerSlice = createSlice({
         changeSelectedFleet: handleChangeSelectedFleet,
         increaseShipCount: handleIncreaseShipCount,
         decreaseShipCount: handleDecreateShipCount,
+        updateSettings: handleUpdateSetting,
     },
     extraReducers: (builder) => {
         builder.addCase(addAccount, (state, action) => {
@@ -98,7 +128,7 @@ function handleAddFleet(state: FleetPlannerState, action: PayloadAction<FleetAct
     const { accountId, name } = action.payload;
     let account = state[accountId];
     if (!account) account = createAccount(state, accountId);
-    account.fleets.push({ name, mainFleet: [], reinforcement: [] });
+    account.fleets.push({ name, mainFleet: [], reinforcement: [], aircraft: [] });
     if (account.selectedFleet.index === -1) account.selectedFleet.index = 0;
 }
 
@@ -175,6 +205,18 @@ function handleDecreateShipCount(state: FleetPlannerState, action: PayloadAction
     }
 }
 
+function handleUpdateSetting(state: FleetPlannerState, action: PayloadAction<FleetPlannerSettings>) {
+    const { accountId, settings } = action.payload;
+    let account = state[accountId];
+    if (!account) account = createAccount(state, accountId);
+    if (settings.findIndex((value) => value === FleetPlannerSetting.DisplayOwned) !== -1)
+        account.onlyDisplayOwned = true;
+    else account.onlyDisplayOwned = false;
+    if (settings.findIndex((value) => value === FleetPlannerSetting.DisplayControl) !== -1)
+        account.displayControl = true;
+    else account.displayControl = false;
+}
+
 export const {
     updateAvailableShipTypes,
     addFleet,
@@ -184,6 +226,7 @@ export const {
     changeSelectedFleet,
     increaseShipCount,
     decreaseShipCount,
+    updateSettings,
 } = fleetPlannerSlice.actions;
 
 export default fleetPlannerSlice.reducer;

@@ -29,3 +29,8 @@ export interface SelectedFleet {
     index: number;
     type: FleetType;
 }
+
+export interface FleetPlannerSettings {
+    accountId: string;
+    settings: number[];
+}

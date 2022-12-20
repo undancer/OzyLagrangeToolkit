@@ -25,23 +25,20 @@ export function BluePrintTaskBar(): JSX.Element | null {
     }
 
     function handleFormat(event: React.MouseEvent<HTMLElement>, result: string[]) {
-        console.log("Setting");
-        console.log(result);
         const updatedSetting = { accountId, editLock: true, displayMode: BPDisplayMode.count };
         if (result.findIndex((item) => item === "number") === -1) updatedSetting.displayMode = BPDisplayMode.percent;
         if (result.findIndex((item) => item === "locked") === -1) updatedSetting.editLock = false;
         dispatch(changeSetting(updatedSetting));
     }
 
-    const toggleButtonGroups = gameAccounts.map((account) => {
+    const toggleButtonGroups = gameAccounts.map((account, index) => {
         return (
-            <ToggleButton value={account.id} className="account-toggle-button" size="small" color="primary">
+            <ToggleButton value={account.id} className="account-toggle-button" size="small" color="primary" key={index}>
                 {account.name}
             </ToggleButton>
         );
     });
 
-    console.log(setting);
     return (
         <Card elevation={0} className="blue-print-task-bar">
             <div className="blue-print-control-bar">

@@ -1,5 +1,5 @@
 import { RootState } from "../core/store";
-import { FleetType } from "../fleet-planner";
+import { FleetPlannerSetting, FleetType } from "../fleet-planner";
 
 export function selectAvailableShipTypes(state: RootState) {
     const { accountId } = state.selectedAccount;
@@ -23,4 +23,31 @@ export function getAllFleets(state: RootState) {
 
     if (!plan) return [];
     return plan.fleets;
+}
+
+export function fleetPlannerControlSetting(state: RootState) {
+    const { accountId } = state.selectedAccount;
+    const plan = state.fleetPlanner[accountId];
+
+    if (!plan) return [];
+    const settings: number[] = [];
+    if (plan.onlyDisplayOwned) settings.push(FleetPlannerSetting.DisplayOwned);
+    if (plan.displayControl) settings.push(FleetPlannerSetting.DisplayControl);
+    return settings;
+}
+
+export function displayOnlyOwnedShip(state: RootState) {
+    const { accountId } = state.selectedAccount;
+    const plan = state.fleetPlanner[accountId];
+
+    if (!plan) return [];
+    return plan.onlyDisplayOwned;
+}
+
+export function displayControl(state: RootState) {
+    const { accountId } = state.selectedAccount;
+    const plan = state.fleetPlanner[accountId];
+
+    if (!plan) return [];
+    return plan.displayControl;
 }

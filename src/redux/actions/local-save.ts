@@ -1,12 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { RootState } from "../core/store";
+import { FleetPlan } from "../fleet-planner";
 import { BPDisplayMode } from "../types/acquired-blue-print.type";
 
 export const saveState = (state: RootState) => {
     try {
         const serializedState = JSON.stringify(state);
         localStorage.setItem("state", serializedState);
-        localStorage.setItem("stateVersion", "5");
+        localStorage.setItem("stateVersion", "6");
     } catch {
         console.warn("Save state error.");
     }
@@ -75,6 +76,16 @@ function updateState(currentVersion: string | null, state: any): any {
             const blueprint = state.acquiredBluePrint[key];
             if (blueprint.bpEditLock === undefined) blueprint.bpEditLock = false;
             if (blueprint.displayMode === undefined) blueprint.displayMode = BPDisplayMode.percent;
+        });
+    }
+    if (version === "5") {
+        Object.values(state.fleetPlanner).forEach((fleetPlan) => {
+            const plan = fleetPlan as FleetPlan;
+            plan.onlyDisplayOwned = true;
+            plan.displayControl = true;
+            plan.fleets.forEach((fleet) => {
+                fleet.aircraft = [];
+            });
         });
     }
 }

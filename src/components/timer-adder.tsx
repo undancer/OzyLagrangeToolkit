@@ -40,7 +40,6 @@ export function TimerAdder(props: timerAdder): JSX.Element {
         let min = 0;
         let hr = 0;
         const timeArray = time.split(/[d:]/);
-        console.log(`Length: ${timeArray.length}`);
 
         if (timeArray.length >= 3) day = parseInt(timeArray[timeArray.length - 3], 10);
         if (timeArray.length >= 2) hr = parseInt(timeArray[timeArray.length - 2], 10);

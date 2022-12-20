@@ -1,4 +1,4 @@
-import "./css/blue-print.css";
+import "./css/debug.css";
 import { Container } from "@mui/material";
 import ReactJson from "react-json-view";
 import { useAppSelector } from "../redux/utils/hooks";
@@ -11,7 +11,7 @@ function DevelopmnentDebug() {
     const version = localStorage.getItem("stateVersion");
     return (
         <Container maxWidth="xl">
-            <div className="account-content-container">
+            <div className="debug-content-container">
                 <ReactJson src={store} />
                 <ReactJson src={stateStore} />
                 <div>Version: {version}</div>

@@ -21,7 +21,7 @@ import {
     FleetType,
     increaseShipCount,
     removeFleet,
-    removeShip,
+    removeShipOrAircraft,
     ShipInFleet,
 } from "../redux/fleet-planner";
 import { getSelectedAccountId } from "../redux/selected-account";
@@ -98,57 +98,77 @@ function IndividualFleetControl(props: { fleet: Fleet; fleetIndex: number }): JS
                 {showControl ? removeFleetButton : null}
             </div>
             <Table sx={{ width: 510 }} size="small">
-                <TableHead>
-                    <TableCell colSpan={2} align="center">
-                        主力部队
-                    </TableCell>
-                    <TableCell width={30} align="center">
-                        人口
-                    </TableCell>
-                    <TableCell width={30} align="center">
-                        数量
-                    </TableCell>
-                    <TableCell width={45} align="center">
-                        总人口
-                    </TableCell>
-                </TableHead>
+                <ShipTableHeader titles={["主力部队", "人口", "数量", "总人口"]} />
                 <TableBody>
                     {mainRows}
-                    <TableRow>
-                        <TableCell colSpan={2} className="no-border"></TableCell>
-                        <TableCell>合计</TableCell>
-                        <TableCell align="center">{mainCount}</TableCell>
-                        <TableCell align="right">{mainTotal}</TableCell>
-                    </TableRow>
+                    <ShipTableFooter values={[mainCount, mainTotal]} />
+                </TableBody>
+            </Table>
+            <div className="fleet-plan-table-divider"></div>
+            <Table sx={{ width: 510 }} size="small">
+                <ShipTableHeader titles={["增援部队", "人口", "数量", "总人口"]} />
+                <TableBody>
+                    {reinforcementRow}
+                    <ShipTableFooter values={[reinforcementCount, reinforcementTotal]} />
                 </TableBody>
             </Table>
             <div className="fleet-plan-table-divider"></div>
             <Table sx={{ width: 510 }} size="small">
                 <TableHead>
-                    <TableCell colSpan={2} align="center">
-                        增援部队
+                    <TableCell></TableCell>
+                    <TableCell align="center">飞机/炮艇</TableCell>
+                    <TableCell align="center">载机舰</TableCell>
+                    <TableCell align="right" width={40}>
+                        🚁 50
                     </TableCell>
-                    <TableCell width={30} align="center">
-                        人口
-                    </TableCell>
-                    <TableCell width={30} align="center">
-                        数量
-                    </TableCell>
-                    <TableCell width={45} align="center">
-                        总人口
+                    <TableCell align="right" width={40}>
+                        🚤 30
                     </TableCell>
                 </TableHead>
                 <TableBody>
-                    {reinforcementRow}
                     <TableRow>
-                        <TableCell colSpan={2} className="no-border"></TableCell>
-                        <TableCell>合计</TableCell>
-                        <TableCell align="center">{reinforcementCount}</TableCell>
-                        <TableCell align="right">{reinforcementTotal}</TableCell>
+                        <TableCell></TableCell>
+                        <TableCell align="center">新大地B192</TableCell>
+                        <TableCell>n/a</TableCell>
+                        <TableCell align="center">10</TableCell>
+                        <TableCell></TableCell>
                     </TableRow>
+                    <ShipTableFooter values={[0, 0]} />
                 </TableBody>
             </Table>
         </TableContainer>
+    );
+}
+
+function ShipTableHeader(props: { titles: string[] }) {
+    const { titles } = props;
+    return (
+        <TableHead>
+            <TableCell colSpan={2} align="center">
+                {titles[0]}
+            </TableCell>
+            <TableCell width={30} align="center">
+                {titles[1]}
+            </TableCell>
+            <TableCell width={30} align="center">
+                {titles[2]}
+            </TableCell>
+            <TableCell width={45} align="center">
+                {titles[3]}
+            </TableCell>
+        </TableHead>
+    );
+}
+
+function ShipTableFooter(props: { values: number[] }) {
+    const { values } = props;
+    return (
+        <TableRow>
+            <TableCell colSpan={2} className="no-border"></TableCell>
+            <TableCell>合计</TableCell>
+            <TableCell align="center">{values[0]}</TableCell>
+            <TableCell align="right">{values[1]}</TableCell>
+        </TableRow>
     );
 }
 
@@ -167,7 +187,7 @@ function ShipTableRow(props: {
 
     function handleRemoveShip() {
         const action: EditRemoveShip = { accountId, shipIndex, fleetIndex, type };
-        dispatch(removeShip(action));
+        dispatch(removeShipOrAircraft(action));
     }
 
     function handleIncreaseCount() {

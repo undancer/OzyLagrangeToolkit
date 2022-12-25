@@ -80,13 +80,15 @@ function updateState(currentVersion: string | null, state: any): any {
         });
     }
     if (version === "5") {
-        Object.values(state.fleetPlanner).forEach((fleetPlan) => {
-            const plan = fleetPlan as FleetPlan;
-            plan.onlyDisplayOwned = true;
-            plan.displayControl = true;
-            plan.fleets?.forEach((fleet) => {
-                fleet.aircraft = [];
+        if (state.fleetPlanner) {
+            Object.values(state.fleetPlanner).forEach((fleetPlan) => {
+                const plan = fleetPlan as FleetPlan;
+                plan.onlyDisplayOwned = true;
+                plan.displayControl = true;
+                plan.fleets?.forEach((fleet) => {
+                    fleet.aircraft = [];
+                });
             });
-        });
+        }
     }
 }

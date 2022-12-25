@@ -23,6 +23,7 @@ interface FleetPlannerState {
 export enum FleetType {
     main,
     reinforcement,
+    aircraft,
 }
 
 export interface FleetPlan {
@@ -52,6 +53,7 @@ export interface ShipInFleet {
 
 export interface AircraftInFleet {
     shipId: string;
+    variant: number;
     count: number;
     distribution: AircraftDistribution[];
 }
@@ -94,7 +96,8 @@ export const fleetPlannerSlice = createSlice({
         addFleet: handleAddFleet,
         removeFleet: handleRemoveFleet,
         addShip: handleAddShip,
-        removeShip: handleRemoveShip,
+        addAircraft: handleAddAircraft,
+        removeShipOrAircraft: handleRemoveShipOrAircraft,
         changeSelectedFleet: handleChangeSelectedFleet,
         increaseShipCount: handleIncreaseShipCount,
         decreaseShipCount: handleDecreateShipCount,
@@ -162,7 +165,7 @@ function handleAddShip(state: FleetPlannerState, action: PayloadAction<AddShip>)
     }
 }
 
-function handleRemoveShip(state: FleetPlannerState, action: PayloadAction<EditRemoveShip>) {
+function handleRemoveShipOrAircraft(state: FleetPlannerState, action: PayloadAction<EditRemoveShip>) {
     const { accountId, type, fleetIndex, shipIndex } = action.payload;
     const account = state[accountId];
     if (!account) return;
@@ -171,7 +174,22 @@ function handleRemoveShip(state: FleetPlannerState, action: PayloadAction<EditRe
         selectedFleet.mainFleet.splice(shipIndex, 1);
     } else if (type === FleetType.reinforcement) {
         selectedFleet.reinforcement.splice(shipIndex, 1);
+    } else if (type === FleetType.aircraft) {
+        selectedFleet.aircraft.splice(shipIndex, 1);
     }
+}
+
+function handleAddAircraft(state: FleetPlannerState, action: PayloadAction<AddShip>) {
+    const { accountId, shipId, variant } = action.payload;
+    let account = state[accountId];
+    if (!account) account = createAccount(state, accountId);
+    const selectedFleet = account.fleets[account.selectedFleet.index];
+    const shipData = lookUpShipById(shipId);
+    if (!shipData) return; // This should never happened
+
+    const { aircraft } = selectedFleet;
+    if (aircraft.findIndex((plane) => plane.shipId === shipId && plane.variant === variant) === -1)
+        aircraft.push({ shipId, variant, count: shipData.limit, distribution: [] });
 }
 
 function handleChangeSelectedFleet(state: FleetPlannerState, action: PayloadAction<SelectedFleet>) {
@@ -222,7 +240,8 @@ export const {
     addFleet,
     removeFleet,
     addShip,
-    removeShip,
+    addAircraft,
+    removeShipOrAircraft,
     changeSelectedFleet,
     increaseShipCount,
     decreaseShipCount,

@@ -25,6 +25,7 @@ export function loadState() {
         return parsedState;
     } catch (err) {
         console.warn("Error loading state.");
+        console.log(err);
         throw new Error("Failed to load app state");
     }
 }

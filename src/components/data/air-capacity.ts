@@ -67,7 +67,7 @@ export function SuperCapAirCapacity(id: string, modules: string[]): AirCapacity 
     const tempModules = [...modules];
     if (id === "cr1") tempModules.push("m1");
     if (id === "cr2") tempModules.push("m1");
-    if (id === "cr3") tempModules.push("A1");
+    if (id === "cr3") tempModules.push("a1");
     tempModules.sort().reverse();
 
     // We assume there will never be a module starting with Z

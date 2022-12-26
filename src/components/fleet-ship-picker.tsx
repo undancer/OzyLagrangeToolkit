@@ -158,7 +158,6 @@ function ShipCard(props: { shipData: ShipData; disabled?: boolean }): JSX.Elemen
             dispatch(addAircraft({ accountId, shipId, variant }));
             return;
         }
-        console.log(ship);
         dispatch(addShip({ accountId, shipId, variant }));
     }
 

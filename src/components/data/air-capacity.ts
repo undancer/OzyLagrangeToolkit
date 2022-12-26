@@ -73,7 +73,6 @@ export function SuperCapAirCapacity(id: string, modules: string[]): AirCapacity 
     // We assume there will never be a module starting with Z
     let moduleFound = "z";
 
-    console.log(tempModules);
     if (shipCapacity !== null && shipCapacity !== undefined) {
         const resultCapacity = { corvette: 0, midAir: 0, heavyAir: 0 };
         tempModules.forEach((module) => {

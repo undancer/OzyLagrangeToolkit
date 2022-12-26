@@ -17,7 +17,7 @@ export interface AddShip {
     variant: number;
 }
 
-export interface EditRemoveShip {
+export interface EditRemoveShipOrAircraft {
     accountId: string;
     type: FleetType;
     fleetIndex: number;

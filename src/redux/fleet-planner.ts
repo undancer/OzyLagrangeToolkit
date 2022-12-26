@@ -6,7 +6,7 @@ import {
     AddShip,
     AvailableShipTypes,
     FleetAction,
-    EditRemoveShip,
+    EditRemoveShipOrAircraft,
     SelectedFleet,
     FleetPlannerSettings,
 } from "./types/fleet-planner.type";
@@ -165,7 +165,7 @@ function handleAddShip(state: FleetPlannerState, action: PayloadAction<AddShip>)
     }
 }
 
-function handleRemoveShipOrAircraft(state: FleetPlannerState, action: PayloadAction<EditRemoveShip>) {
+function handleRemoveShipOrAircraft(state: FleetPlannerState, action: PayloadAction<EditRemoveShipOrAircraft>) {
     const { accountId, type, fleetIndex, shipIndex } = action.payload;
     const account = state[accountId];
     if (!account) return;
@@ -199,7 +199,7 @@ function handleChangeSelectedFleet(state: FleetPlannerState, action: PayloadActi
     account.selectedFleet = { index, type };
 }
 
-function handleIncreaseShipCount(state: FleetPlannerState, action: PayloadAction<EditRemoveShip>) {
+function handleIncreaseShipCount(state: FleetPlannerState, action: PayloadAction<EditRemoveShipOrAircraft>) {
     const { accountId, type, fleetIndex, shipIndex } = action.payload;
     let account = state[accountId];
     if (!account) account = createAccount(state, accountId);
@@ -208,10 +208,12 @@ function handleIncreaseShipCount(state: FleetPlannerState, action: PayloadAction
         selectedFleet.mainFleet[shipIndex].count += 1;
     } else if (type === FleetType.reinforcement) {
         selectedFleet.reinforcement[shipIndex].count += 1;
+    } else if (type === FleetType.aircraft) {
+        selectedFleet.aircraft[shipIndex].count += 1;
     }
 }
 
-function handleDecreateShipCount(state: FleetPlannerState, action: PayloadAction<EditRemoveShip>) {
+function handleDecreateShipCount(state: FleetPlannerState, action: PayloadAction<EditRemoveShipOrAircraft>) {
     const { accountId, type, fleetIndex, shipIndex } = action.payload;
     let account = state[accountId];
     if (!account) account = createAccount(state, accountId);
@@ -220,6 +222,8 @@ function handleDecreateShipCount(state: FleetPlannerState, action: PayloadAction
         selectedFleet.mainFleet[shipIndex].count -= 1;
     } else if (type === FleetType.reinforcement) {
         selectedFleet.reinforcement[shipIndex].count -= 1;
+    } else if (type === FleetType.aircraft) {
+        selectedFleet.aircraft[shipIndex].count -= 1;
     }
 }
 

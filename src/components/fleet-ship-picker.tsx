@@ -5,10 +5,10 @@ import {
     selectAvailableShipTypes,
 } from "../redux/selector/fleet-planner.selector";
 import { useAppDispatch, useAppSelector } from "../redux/utils/hooks";
-import { UNIT_DATA_BASE } from "./data/ship-data";
+import { lookUpShipById, UNIT_DATA_BASE } from "./data/ship-data";
 import { AircraftData, ShipData, ShipTypes, SuperCapData, UnitDataGroup } from "./data/ship-data-types";
 import "./css/fleet-ship-picker.css";
-import { addShip } from "../redux/fleet-planner";
+import { addAircraft, addShip } from "../redux/fleet-planner";
 import { getSelectedAccountId } from "../redux/selected-account";
 import {
     getOwnedAircraftLookUpTable,
@@ -63,13 +63,11 @@ function shipCardsByType(props: { data: UnitDataGroup }): JSX.Element[] {
         case ShipTypes.cruiser:
         case ShipTypes.destroyer:
         case ShipTypes.frigate:
+        case ShipTypes.corvette:
             shipCards = list.map((data) => <ShipCard shipData={data} key={data.id} />);
             break;
-        case ShipTypes.corvette:
-            shipCards = list.map((data) => <ShipCard shipData={data} key={data.id} disabled={true} />);
-            break;
         case ShipTypes.aircraft:
-            shipCards = list.map((data) => <AircraftCard airData={data} key={data.id} disabled={true} />);
+            shipCards = list.map((data) => <AircraftCard airData={data} key={data.id} />);
             break;
         case ShipTypes.battleCruiser:
         case ShipTypes.carrier:
@@ -124,7 +122,7 @@ function AircraftCard(props: { airData: AircraftData; disabled?: boolean }): JSX
     if (!hasAircraft && onlyDisplayOnwed) return null;
 
     function handleAddShip() {
-        dispatch(addShip({ accountId, shipId, variant: -1 }));
+        dispatch(addAircraft({ accountId, shipId, variant: -1 }));
     }
 
     return (
@@ -148,6 +146,7 @@ function ShipCard(props: { shipData: ShipData; disabled?: boolean }): JSX.Elemen
     const dispatch = useAppDispatch();
     const accountId = useAppSelector(getSelectedAccountId);
     const ownedLookupTable = useAppSelector(getOwnedShipLookUpTable);
+    const ship = lookUpShipById(shipId);
     const ownedShip = ownedLookupTable[shipId];
     const onlyDisplayOnwed = useAppSelector(displayOnlyOwnedShip);
 
@@ -155,6 +154,11 @@ function ShipCard(props: { shipData: ShipData; disabled?: boolean }): JSX.Elemen
     if (!hasShip && onlyDisplayOnwed) return null;
 
     function handleAddShip(variant: number) {
+        if (ship?.type === ShipTypes.corvette) {
+            dispatch(addAircraft({ accountId, shipId, variant }));
+            return;
+        }
+        console.log(ship);
         dispatch(addShip({ accountId, shipId, variant }));
     }
 

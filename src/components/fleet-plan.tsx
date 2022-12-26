@@ -16,6 +16,7 @@ import { displayControl, getAllFleets } from "../redux/selector/fleet-planner.se
 import { useAppDispatch, useAppSelector } from "../redux/utils/hooks";
 import "./css/fleet-plan.css";
 import {
+    AircraftInFleet,
     decreaseShipCount,
     Fleet,
     FleetType,
@@ -26,8 +27,10 @@ import {
 } from "../redux/fleet-planner";
 import { getSelectedAccountId } from "../redux/selected-account";
 import { lookUpShipById } from "./data/ship-data";
-import { isShipData } from "./data/ship-data-types";
-import { EditRemoveShip } from "../redux/types/fleet-planner.type";
+import { isShipData, ShipTypes } from "./data/ship-data-types";
+import { EditRemoveShipOrAircraft } from "../redux/types/fleet-planner.type";
+import { addCapacity, AirCapacity, ShipAirCapacity, SuperCapAirCapacity } from "./data/air-capacity";
+import { getOwnedSuperCapLookUpTable } from "../redux/selector/acquired-blue-prints";
 
 export function FleetPlan(): JSX.Element {
     const fleets = useAppSelector(getAllFleets);
@@ -49,11 +52,13 @@ function IndividualFleetControl(props: { fleet: Fleet; fleetIndex: number }): JS
     const accountId = useAppSelector(getSelectedAccountId);
     const showControl = useAppSelector(displayControl);
     const dispatch = useAppDispatch();
+    const ownedLookupTable = useAppSelector(getOwnedSuperCapLookUpTable);
     const { fleet, fleetIndex } = props;
 
     function handleRemoveFleet() {
         dispatch(removeFleet({ accountId, name: fleet.name }));
     }
+    const capacity: AirCapacity = { corvette: 0, midAir: 0, heavyAir: 0 };
 
     let mainTotal = 0;
     let mainCount = 0;
@@ -63,6 +68,12 @@ function IndividualFleetControl(props: { fleet: Fleet; fleetIndex: number }): JS
         if (!data) return null;
         mainTotal += data.pop * ship.count;
         mainCount += ship.count;
+        if (data.type === ShipTypes.carrier || data.type === ShipTypes.battleCruiser) {
+            const ownedSuperCap = ownedLookupTable[ship.shipId];
+            addCapacity(capacity, SuperCapAirCapacity(ship.shipId, ownedSuperCap.modules), ship.count);
+        } else {
+            addCapacity(capacity, ShipAirCapacity(ship.shipId, ship.variant), ship.count);
+        }
         return <ShipTableRow ship={ship} fleetIndex={fleetIndex} shipIndex={index} type={FleetType.main} key={index} />;
     });
 
@@ -74,6 +85,12 @@ function IndividualFleetControl(props: { fleet: Fleet; fleetIndex: number }): JS
         if (!data) return null;
         reinforcementTotal += data.pop * ship.count;
         reinforcementCount += ship.count;
+        if (data.type === ShipTypes.carrier || data.type === ShipTypes.battleCruiser) {
+            const ownedSuperCap = ownedLookupTable[ship.shipId];
+            addCapacity(capacity, SuperCapAirCapacity(ship.shipId, ownedSuperCap.modules), ship.count);
+        } else {
+            addCapacity(capacity, ShipAirCapacity(ship.shipId, ship.variant), ship.count);
+        }
         return (
             <ShipTableRow
                 ship={ship}
@@ -85,10 +102,49 @@ function IndividualFleetControl(props: { fleet: Fleet; fleetIndex: number }): JS
         );
     });
 
+    let aircraftCount = 0;
+    let corvetteCount = 0;
+
+    const hideAircraftTable: boolean =
+        fleet.aircraft.length < 1 && capacity.corvette === 0 && capacity.heavyAir === 0 && capacity.midAir === 0;
+
+    const aircraftRow = fleet.aircraft.map((aircraft, index) => {
+        const data = lookUpShipById(aircraft.shipId);
+        if (!data) return null;
+        if (data.type === ShipTypes.corvette) corvetteCount += aircraft.count;
+        else aircraftCount += aircraft.count;
+        return <AircraftTableRow aircraft={aircraft} fleetIndex={fleetIndex} aircraftIndex={index} key={index} />;
+    });
+
     const removeFleetButton: JSX.Element = (
         <IconButton color="error" size="small" onClick={handleRemoveFleet}>
             <DeleteOutlineIcon />
         </IconButton>
+    );
+
+    const aircraftTable = (
+        <Table sx={{ width: 510 }} size="small">
+            <TableHead>
+                <TableCell></TableCell>
+                <TableCell align="center">飞机/炮艇</TableCell>
+                <TableCell width={35}></TableCell>
+                <TableCell align="center" width={75}>
+                    {`🚁 ${capacity.midAir + capacity.heavyAir} (${capacity.heavyAir})`}
+                </TableCell>
+                <TableCell align="center" width={40}>
+                    🚤 {capacity.corvette}
+                </TableCell>
+            </TableHead>
+            <TableBody>
+                {aircraftRow}
+                <TableRow>
+                    <TableCell colSpan={2} className="no-border"></TableCell>
+                    <TableCell>合计</TableCell>
+                    <TableCell align="center">{aircraftCount}</TableCell>
+                    <TableCell align="center">{corvetteCount}</TableCell>
+                </TableRow>
+            </TableBody>
+        </Table>
     );
 
     return (
@@ -113,29 +169,7 @@ function IndividualFleetControl(props: { fleet: Fleet; fleetIndex: number }): JS
                 </TableBody>
             </Table>
             <div className="fleet-plan-table-divider"></div>
-            <Table sx={{ width: 510 }} size="small">
-                <TableHead>
-                    <TableCell></TableCell>
-                    <TableCell align="center">飞机/炮艇</TableCell>
-                    <TableCell align="center">载机舰</TableCell>
-                    <TableCell align="right" width={40}>
-                        🚁 50
-                    </TableCell>
-                    <TableCell align="right" width={40}>
-                        🚤 30
-                    </TableCell>
-                </TableHead>
-                <TableBody>
-                    <TableRow>
-                        <TableCell></TableCell>
-                        <TableCell align="center">新大地B192</TableCell>
-                        <TableCell>n/a</TableCell>
-                        <TableCell align="center">10</TableCell>
-                        <TableCell></TableCell>
-                    </TableRow>
-                    <ShipTableFooter values={[0, 0]} />
-                </TableBody>
-            </Table>
+            {hideAircraftTable ? null : aircraftTable}
         </TableContainer>
     );
 }
@@ -160,14 +194,14 @@ function ShipTableHeader(props: { titles: string[] }) {
     );
 }
 
-function ShipTableFooter(props: { values: number[] }) {
-    const { values } = props;
+function ShipTableFooter(props: { values: number[]; isAir?: boolean }) {
+    const { values, isAir } = props;
     return (
         <TableRow>
             <TableCell colSpan={2} className="no-border"></TableCell>
             <TableCell>合计</TableCell>
             <TableCell align="center">{values[0]}</TableCell>
-            <TableCell align="right">{values[1]}</TableCell>
+            <TableCell align={isAir ? "center" : "right"}>{values[1]}</TableCell>
         </TableRow>
     );
 }
@@ -186,17 +220,17 @@ function ShipTableRow(props: {
     const { shipId, count, variant } = ship;
 
     function handleRemoveShip() {
-        const action: EditRemoveShip = { accountId, shipIndex, fleetIndex, type };
+        const action: EditRemoveShipOrAircraft = { accountId, shipIndex, fleetIndex, type };
         dispatch(removeShipOrAircraft(action));
     }
 
     function handleIncreaseCount() {
-        const action: EditRemoveShip = { accountId, shipIndex, fleetIndex, type };
+        const action: EditRemoveShipOrAircraft = { accountId, shipIndex, fleetIndex, type };
         dispatch(increaseShipCount(action));
     }
 
-    function handleDecreaseShipCount() {
-        const action: EditRemoveShip = { accountId, shipIndex, fleetIndex, type };
+    function handleDecreaseCount() {
+        const action: EditRemoveShipOrAircraft = { accountId, shipIndex, fleetIndex, type };
         dispatch(decreaseShipCount(action));
     }
 
@@ -209,7 +243,7 @@ function ShipTableRow(props: {
             <IconButton color="success" size="small" onClick={handleIncreaseCount} disabled={count >= data.limit}>
                 <AddIcon />
             </IconButton>
-            <IconButton color="error" size="small" onClick={handleDecreaseShipCount} disabled={count <= 0}>
+            <IconButton color="error" size="small" onClick={handleDecreaseCount} disabled={count <= 0}>
                 <RemoveIcon />
             </IconButton>
             <IconButton color="warning" size="small" onClick={handleRemoveShip}>
@@ -225,6 +259,64 @@ function ShipTableRow(props: {
             <TableCell align="center">{data.pop}</TableCell>
             <TableCell align="center">{count}</TableCell>
             <TableCell align="right">{data.pop * count}</TableCell>
+        </TableRow>
+    );
+}
+
+function AircraftTableRow(props: {
+    aircraft: AircraftInFleet;
+    fleetIndex: number;
+    aircraftIndex: number;
+}): JSX.Element | null {
+    const accountId = useAppSelector(getSelectedAccountId);
+    const showControl = useAppSelector(displayControl);
+    const dispatch = useAppDispatch();
+
+    const { aircraft, fleetIndex, aircraftIndex: shipIndex } = props;
+    const { shipId, count, variant } = aircraft;
+    const type = FleetType.aircraft;
+
+    function handleRemoveAircraft() {
+        const action: EditRemoveShipOrAircraft = { accountId, shipIndex, fleetIndex, type };
+        dispatch(removeShipOrAircraft(action));
+    }
+
+    function handleIncreaseCount() {
+        const action: EditRemoveShipOrAircraft = { accountId, shipIndex, fleetIndex, type };
+        dispatch(increaseShipCount(action));
+    }
+
+    function handleDecreaseCount() {
+        const action: EditRemoveShipOrAircraft = { accountId, shipIndex, fleetIndex, type };
+        dispatch(decreaseShipCount(action));
+    }
+
+    const data = lookUpShipById(shipId);
+    if (!data) return null;
+    const isCorvette = data.type === ShipTypes.corvette;
+    let addOn = "";
+    if (isShipData(data) && data.variants[0] !== "") addOn = ` - ${data.variants[variant]}`;
+
+    const controlCell: JSX.Element = (
+        <TableCell width={110}>
+            <IconButton color="success" size="small" onClick={handleIncreaseCount} disabled={count >= data.limit}>
+                <AddIcon />
+            </IconButton>
+            <IconButton color="error" size="small" onClick={handleDecreaseCount} disabled={count <= 0}>
+                <RemoveIcon />
+            </IconButton>
+            <IconButton color="warning" size="small" onClick={handleRemoveAircraft}>
+                <DeleteOutlineIcon />
+            </IconButton>
+        </TableCell>
+    );
+
+    return (
+        <TableRow>
+            {showControl ? controlCell : <TableCell width={1}></TableCell>}
+            <TableCell colSpan={2}>{`${data.name}${addOn}`}</TableCell>
+            <TableCell align="center">{isCorvette ? null : count}</TableCell>
+            <TableCell align="center">{isCorvette ? count : null}</TableCell>
         </TableRow>
     );
 }

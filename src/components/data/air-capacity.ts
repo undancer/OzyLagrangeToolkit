@@ -79,9 +79,9 @@ export function SuperCapAirCapacity(id: string, modules: string[], mainModule: b
         tempModules.forEach((module) => {
             // Skip module which already has capacity
             if (module.indexOf(moduleFound) !== -1) return;
-            moduleFound = module[0];
             const moduleCapacity = shipCapacity[module];
             if (moduleCapacity !== null && moduleCapacity !== undefined) {
+                moduleFound = module[0];
                 resultCapacity.corvette += moduleCapacity.corvette;
                 resultCapacity.midAir += moduleCapacity.midAir;
                 resultCapacity.heavyAir += moduleCapacity.heavyAir;

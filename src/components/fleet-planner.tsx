@@ -3,6 +3,8 @@ import React from "react";
 import AddIcon from "@mui/icons-material/Add";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import TuneIcon from "@mui/icons-material/Tune";
+import DeveloperBoardIcon from "@mui/icons-material/DeveloperBoard";
+// import DeveloperBoardOffIcon from "@mui/icons-material/DeveloperBoardOff";
 import {
     addFleet,
     changeSelectedFleet,
@@ -161,6 +163,9 @@ function GeneralControl(): JSX.Element {
                 </ToggleButton>
                 <ToggleButton value={FleetPlannerSetting.DisplayControl}>
                     <TuneIcon fontSize="small" />
+                </ToggleButton>
+                <ToggleButton value={FleetPlannerSetting.MainModuleFirst}>
+                    <DeveloperBoardIcon fontSize="small" />
                 </ToggleButton>
             </ToggleButtonGroup>
         </div>

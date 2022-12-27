@@ -61,14 +61,15 @@ export function ShipAirCapacity(id: string, variant: number): AirCapacity {
     return { corvette: 0, midAir: 0, heavyAir: 0 };
 }
 
-export function SuperCapAirCapacity(id: string, modules: string[]): AirCapacity {
+export function SuperCapAirCapacity(id: string, modules: string[], mainModule: boolean): AirCapacity {
     const shipCapacity = MODULE_AIR_CAPACITY[id];
 
     const tempModules = [...modules];
     if (id === "cr1") tempModules.push("m1");
     if (id === "cr2") tempModules.push("m1");
     if (id === "cr3") tempModules.push("a1");
-    tempModules.sort().reverse();
+    tempModules.sort();
+    if (!mainModule) tempModules.reverse();
 
     // We assume there will never be a module starting with Z
     let moduleFound = "z";

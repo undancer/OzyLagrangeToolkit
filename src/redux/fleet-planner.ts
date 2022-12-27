@@ -14,6 +14,7 @@ import {
 export enum FleetPlannerSetting {
     DisplayOwned,
     DisplayControl,
+    MainModuleFirst,
 }
 
 interface FleetPlannerState {
@@ -33,6 +34,7 @@ export interface FleetPlan {
     maxPopulation: number;
     onlyDisplayOwned: boolean;
     displayControl: boolean;
+    mainModuleFirst: boolean;
     selectedFleet: { index: number; type: FleetType };
     fleetLimit: number;
     fleets: Fleet[];
@@ -81,6 +83,7 @@ function emptyAccountData(id: string): FleetPlan {
         fleetLimit: 300,
         onlyDisplayOwned: true,
         displayControl: true,
+        mainModuleFirst: false,
         selectedFleet: { index: -1, type: FleetType.main },
         fleets: [],
     };
@@ -237,6 +240,9 @@ function handleUpdateSetting(state: FleetPlannerState, action: PayloadAction<Fle
     if (settings.findIndex((value) => value === FleetPlannerSetting.DisplayControl) !== -1)
         account.displayControl = true;
     else account.displayControl = false;
+    if (settings.findIndex((value) => value === FleetPlannerSetting.MainModuleFirst) !== -1)
+        account.mainModuleFirst = true;
+    else account.mainModuleFirst = false;
 }
 
 export const {

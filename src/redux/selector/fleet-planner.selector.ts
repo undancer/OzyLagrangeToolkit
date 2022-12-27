@@ -33,6 +33,7 @@ export function fleetPlannerControlSetting(state: RootState) {
     const settings: number[] = [];
     if (plan.onlyDisplayOwned) settings.push(FleetPlannerSetting.DisplayOwned);
     if (plan.displayControl) settings.push(FleetPlannerSetting.DisplayControl);
+    if (plan.mainModuleFirst) settings.push(FleetPlannerSetting.MainModuleFirst);
     return settings;
 }
 
@@ -40,7 +41,7 @@ export function displayOnlyOwnedShip(state: RootState) {
     const { accountId } = state.selectedAccount;
     const plan = state.fleetPlanner[accountId];
 
-    if (!plan) return [];
+    if (!plan) return false;
     return plan.onlyDisplayOwned;
 }
 
@@ -48,6 +49,14 @@ export function displayControl(state: RootState) {
     const { accountId } = state.selectedAccount;
     const plan = state.fleetPlanner[accountId];
 
-    if (!plan) return [];
+    if (!plan) return false;
     return plan.displayControl;
+}
+
+export function useMainModule(state: RootState) {
+    const { accountId } = state.selectedAccount;
+    const plan = state.fleetPlanner[accountId];
+
+    if (!plan) return false;
+    return plan.mainModuleFirst;
 }

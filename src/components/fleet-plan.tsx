@@ -12,7 +12,7 @@ import {
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
-import { displayControl, getAllFleets } from "../redux/selector/fleet-planner.selector";
+import { displayControl, getAllFleets, useMainModule } from "../redux/selector/fleet-planner.selector";
 import { useAppDispatch, useAppSelector } from "../redux/utils/hooks";
 import "./css/fleet-plan.css";
 import {
@@ -54,6 +54,7 @@ function IndividualFleetControl(props: { fleet: Fleet; fleetIndex: number }): JS
     const dispatch = useAppDispatch();
     const ownedLookupTable = useAppSelector(getOwnedSuperCapLookUpTable);
     const { fleet, fleetIndex } = props;
+    const mainModule = useAppSelector(useMainModule);
 
     function handleRemoveFleet() {
         dispatch(removeFleet({ accountId, name: fleet.name }));
@@ -70,7 +71,7 @@ function IndividualFleetControl(props: { fleet: Fleet; fleetIndex: number }): JS
         mainCount += ship.count;
         if (data.type === ShipTypes.carrier || data.type === ShipTypes.battleCruiser) {
             const ownedSuperCap = ownedLookupTable[ship.shipId];
-            addCapacity(capacity, SuperCapAirCapacity(ship.shipId, ownedSuperCap.modules), ship.count);
+            addCapacity(capacity, SuperCapAirCapacity(ship.shipId, ownedSuperCap.modules, mainModule), ship.count);
         } else {
             addCapacity(capacity, ShipAirCapacity(ship.shipId, ship.variant), ship.count);
         }
@@ -87,7 +88,7 @@ function IndividualFleetControl(props: { fleet: Fleet; fleetIndex: number }): JS
         reinforcementCount += ship.count;
         if (data.type === ShipTypes.carrier || data.type === ShipTypes.battleCruiser) {
             const ownedSuperCap = ownedLookupTable[ship.shipId];
-            addCapacity(capacity, SuperCapAirCapacity(ship.shipId, ownedSuperCap.modules), ship.count);
+            addCapacity(capacity, SuperCapAirCapacity(ship.shipId, ownedSuperCap.modules, mainModule), ship.count);
         } else {
             addCapacity(capacity, ShipAirCapacity(ship.shipId, ship.variant), ship.count);
         }

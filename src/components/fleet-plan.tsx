@@ -12,6 +12,8 @@ import {
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import MilitaryTechIcon from "@mui/icons-material/MilitaryTech";
+import ScienceIcon from "@mui/icons-material/Science";
 import { displayControl, getAllFleets, useMainModule } from "../redux/selector/fleet-planner.selector";
 import { useAppDispatch, useAppSelector } from "../redux/utils/hooks";
 import "./css/fleet-plan.css";
@@ -20,6 +22,8 @@ import {
     decreaseShipCount,
     Fleet,
     FleetType,
+    flipAdjustedFlag,
+    flipLeveledFlag,
     increaseShipCount,
     removeFleet,
     removeShipOrAircraft,
@@ -218,7 +222,7 @@ function ShipTableRow(props: {
     const dispatch = useAppDispatch();
 
     const { ship, fleetIndex, shipIndex, type } = props;
-    const { shipId, count, variant } = ship;
+    const { shipId, count, variant, leveled, adjusted } = ship;
 
     function handleRemoveShip() {
         const action: EditRemoveShipOrAircraft = { accountId, shipIndex, fleetIndex, type };
@@ -233,6 +237,16 @@ function ShipTableRow(props: {
     function handleDecreaseCount() {
         const action: EditRemoveShipOrAircraft = { accountId, shipIndex, fleetIndex, type };
         dispatch(decreaseShipCount(action));
+    }
+
+    function handleLeveled() {
+        const action: EditRemoveShipOrAircraft = { accountId, shipIndex, fleetIndex, type };
+        dispatch(flipLeveledFlag(action));
+    }
+
+    function handleAdjusted() {
+        const action: EditRemoveShipOrAircraft = { accountId, shipIndex, fleetIndex, type };
+        dispatch(flipAdjustedFlag(action));
     }
 
     const data = lookUpShipById(shipId);
@@ -253,9 +267,20 @@ function ShipTableRow(props: {
         </TableCell>
     );
 
+    const tagCell: JSX.Element = (
+        <TableCell width={60}>
+            <IconButton size="small" color={leveled ? "warning" : "default"} onClick={handleLeveled}>
+                <MilitaryTechIcon fontSize="inherit" />
+            </IconButton>
+            <IconButton size="small" color={adjusted ? "primary" : "default"} onClick={handleAdjusted}>
+                <ScienceIcon fontSize="inherit" />
+            </IconButton>
+        </TableCell>
+    );
+
     return (
         <TableRow>
-            {showControl ? controlCell : <TableCell width={1}></TableCell>}
+            {showControl ? controlCell : tagCell}
             <TableCell>{`${data.name}${addOn}`}</TableCell>
             <TableCell align="center">{data.pop}</TableCell>
             <TableCell align="center">{count}</TableCell>
@@ -274,7 +299,7 @@ function AircraftTableRow(props: {
     const dispatch = useAppDispatch();
 
     const { aircraft, fleetIndex, aircraftIndex: shipIndex } = props;
-    const { shipId, count, variant } = aircraft;
+    const { shipId, count, variant, leveled, adjusted } = aircraft;
     const type = FleetType.aircraft;
 
     function handleRemoveAircraft() {
@@ -290,6 +315,16 @@ function AircraftTableRow(props: {
     function handleDecreaseCount() {
         const action: EditRemoveShipOrAircraft = { accountId, shipIndex, fleetIndex, type };
         dispatch(decreaseShipCount(action));
+    }
+
+    function handleLeveled() {
+        const action: EditRemoveShipOrAircraft = { accountId, shipIndex, fleetIndex, type };
+        dispatch(flipLeveledFlag(action));
+    }
+
+    function handleAdjusted() {
+        const action: EditRemoveShipOrAircraft = { accountId, shipIndex, fleetIndex, type };
+        dispatch(flipAdjustedFlag(action));
     }
 
     const data = lookUpShipById(shipId);
@@ -312,9 +347,20 @@ function AircraftTableRow(props: {
         </TableCell>
     );
 
+    const tagCell: JSX.Element = (
+        <TableCell width={60}>
+            <IconButton size="small" color={leveled ? "warning" : "default"} onClick={handleLeveled}>
+                <MilitaryTechIcon fontSize="inherit" />
+            </IconButton>
+            <IconButton size="small" color={adjusted ? "primary" : "default"} onClick={handleAdjusted}>
+                <ScienceIcon fontSize="inherit" />
+            </IconButton>
+        </TableCell>
+    );
+
     return (
         <TableRow>
-            {showControl ? controlCell : <TableCell width={1}></TableCell>}
+            {showControl ? controlCell : tagCell}
             <TableCell colSpan={2}>{`${data.name}${addOn}`}</TableCell>
             <TableCell align="center">{isCorvette ? null : count}</TableCell>
             <TableCell align="center">{isCorvette ? count : null}</TableCell>

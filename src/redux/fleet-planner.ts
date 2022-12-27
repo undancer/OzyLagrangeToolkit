@@ -51,6 +51,8 @@ export interface ShipInFleet {
     shipId: string;
     variant: number;
     count: number;
+    adjusted: boolean;
+    leveled: boolean;
 }
 
 export interface AircraftInFleet {
@@ -58,6 +60,8 @@ export interface AircraftInFleet {
     variant: number;
     count: number;
     distribution: AircraftDistribution[];
+    adjusted: boolean;
+    leveled: boolean;
 }
 
 interface AircraftDistribution {
@@ -104,6 +108,8 @@ export const fleetPlannerSlice = createSlice({
         changeSelectedFleet: handleChangeSelectedFleet,
         increaseShipCount: handleIncreaseShipCount,
         decreaseShipCount: handleDecreateShipCount,
+        flipLeveledFlag: handleFlipLeveledFlag,
+        flipAdjustedFlag: handleFlipAdjustedFlag,
         updateSettings: handleUpdateSetting,
     },
     extraReducers: (builder) => {
@@ -160,11 +166,11 @@ function handleAddShip(state: FleetPlannerState, action: PayloadAction<AddShip>)
     if (account.selectedFleet.type === FleetType.main) {
         const { mainFleet } = selectedFleet;
         if (mainFleet.findIndex((ship) => ship.shipId === shipId && ship.variant === variant) === -1)
-            mainFleet.push({ shipId, variant, count: shipData.limit });
+            mainFleet.push({ shipId, variant, count: shipData.limit, adjusted: false, leveled: false });
     } else if (account.selectedFleet.type === FleetType.reinforcement) {
         const { reinforcement } = selectedFleet;
         if (reinforcement.findIndex((ship) => ship.shipId === shipId && ship.variant === variant) === -1)
-            reinforcement.push({ shipId, variant, count: shipData.limit });
+            reinforcement.push({ shipId, variant, count: shipData.limit, adjusted: false, leveled: false });
     }
 }
 
@@ -192,7 +198,7 @@ function handleAddAircraft(state: FleetPlannerState, action: PayloadAction<AddSh
 
     const { aircraft } = selectedFleet;
     if (aircraft.findIndex((plane) => plane.shipId === shipId && plane.variant === variant) === -1)
-        aircraft.push({ shipId, variant, count: shipData.limit, distribution: [] });
+        aircraft.push({ shipId, variant, count: shipData.limit, distribution: [], adjusted: false, leveled: false });
 }
 
 function handleChangeSelectedFleet(state: FleetPlannerState, action: PayloadAction<SelectedFleet>) {
@@ -230,6 +236,34 @@ function handleDecreateShipCount(state: FleetPlannerState, action: PayloadAction
     }
 }
 
+function handleFlipAdjustedFlag(state: FleetPlannerState, action: PayloadAction<EditRemoveShipOrAircraft>) {
+    const { accountId, type, fleetIndex, shipIndex } = action.payload;
+    let account = state[accountId];
+    if (!account) account = createAccount(state, accountId);
+    const selectedFleet = account.fleets[fleetIndex];
+    if (type === FleetType.main) {
+        selectedFleet.mainFleet[shipIndex].adjusted = !selectedFleet.mainFleet[shipIndex].adjusted;
+    } else if (type === FleetType.reinforcement) {
+        selectedFleet.reinforcement[shipIndex].adjusted = !selectedFleet.reinforcement[shipIndex].adjusted;
+    } else if (type === FleetType.aircraft) {
+        selectedFleet.aircraft[shipIndex].adjusted = !selectedFleet.aircraft[shipIndex].adjusted;
+    }
+}
+
+function handleFlipLeveledFlag(state: FleetPlannerState, action: PayloadAction<EditRemoveShipOrAircraft>) {
+    const { accountId, type, fleetIndex, shipIndex } = action.payload;
+    let account = state[accountId];
+    if (!account) account = createAccount(state, accountId);
+    const selectedFleet = account.fleets[fleetIndex];
+    if (type === FleetType.main) {
+        selectedFleet.mainFleet[shipIndex].leveled = !selectedFleet.mainFleet[shipIndex].leveled;
+    } else if (type === FleetType.reinforcement) {
+        selectedFleet.reinforcement[shipIndex].leveled = !selectedFleet.reinforcement[shipIndex].leveled;
+    } else if (type === FleetType.aircraft) {
+        selectedFleet.aircraft[shipIndex].leveled = !selectedFleet.aircraft[shipIndex].leveled;
+    }
+}
+
 function handleUpdateSetting(state: FleetPlannerState, action: PayloadAction<FleetPlannerSettings>) {
     const { accountId, settings } = action.payload;
     let account = state[accountId];
@@ -255,6 +289,8 @@ export const {
     changeSelectedFleet,
     increaseShipCount,
     decreaseShipCount,
+    flipAdjustedFlag,
+    flipLeveledFlag,
     updateSettings,
 } = fleetPlannerSlice.actions;
 

@@ -11,3 +11,10 @@
     height: 40px;
     margin-bottom: -5px !important;
 }
+
+.account-list-line-item {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+}

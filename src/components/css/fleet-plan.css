@@ -8,6 +8,10 @@
     padding-top: 8px;
 }
 
+.fleet-manager-table-title-button-group {
+    margin-right: -30px;
+}
+
 .fleet-manager-table-footer {
     display: flex;
     flex-direction: row;

@@ -11,6 +11,7 @@ import {
     ListItem,
     ListSubheader,
     IconButton,
+    Input,
 } from "@mui/material";
 import { useState } from "react";
 import Menu from "@mui/material/Menu";
@@ -19,10 +20,12 @@ import MenuItem from "@mui/material/MenuItem";
 import CasinoIcon from "@mui/icons-material/Casino";
 import DeleteIcon from "@mui/icons-material/Delete";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
+import EditIcon from "@mui/icons-material/Edit";
+import DoneIcon from "@mui/icons-material/Done";
 import { Link as RouterLink } from "react-router-dom";
 import { ClosedPackageIcon } from "./Icons/closedpackage";
 import { useAppSelector, useAppDispatch } from "../redux/utils/hooks";
-import { selectAllAccounts } from "../redux/game-account";
+import { changeAccountName, selectAllAccounts } from "../redux/game-account";
 import { addAccount as add, removeAccount as remove } from "../redux/actions/game-account";
 import "./css/navigation-bar.css";
 import { randomName } from "./utils/randomName";
@@ -39,17 +42,41 @@ const path: { [index: string]: string } = {
 function AccountDialog(props: { open: boolean; onClose: () => void }): JSX.Element {
     const { open, onClose } = props;
     const [name, setName] = useState("");
+    const [editAccountId, setEditAccountId] = useState("");
+    const [newAccountName, setNewAccountName] = useState("");
     const gameAccounts = useAppSelector((state) => selectAllAccounts(state));
     const dispatch = useAppDispatch();
 
     function addAccount() {
-        dispatch(add(name));
+        if (name !== "") dispatch(add(name));
+        else dispatch(add(randomName()));
         setName("");
     }
 
+    function editAccount(id: string) {
+        setEditAccountId(id);
+        setNewAccountName("");
+    }
+
     function addRandomAccount() {
-        dispatch(add(randomName()));
         setName("");
+        dispatch(add(randomName()));
+    }
+
+    function updateAccountName(event: React.ChangeEvent<HTMLInputElement>) {
+        setNewAccountName(event.target.value);
+    }
+
+    function handleAccountNameChange(originalName: string) {
+        dispatch(changeAccountName({ id: editAccountId, name: newAccountName !== "" ? newAccountName : originalName }));
+        setEditAccountId("");
+        setNewAccountName("");
+    }
+
+    function onDialogClose() {
+        setEditAccountId("");
+        setNewAccountName("");
+        onClose();
     }
 
     function removeAccount(id: string) {
@@ -62,22 +89,37 @@ function AccountDialog(props: { open: boolean; onClose: () => void }): JSX.Eleme
     }
 
     const accountListItems = gameAccounts.map((account) => {
+        if (editAccountId !== account.id) {
+            return (
+                <ListItem key={account.id} className="account-list-line-item">
+                    <div>{account.name}</div>
+                    <div>
+                        <IconButton aria-label="edit" onClick={() => editAccount(account.id)} size="small">
+                            <EditIcon fontSize="inherit" />
+                        </IconButton>
+                        <IconButton aria-label="delete" onClick={() => removeAccount(account.id)} size="small">
+                            <DeleteIcon fontSize="inherit" color="error" />
+                        </IconButton>
+                    </div>
+                </ListItem>
+            );
+        }
         return (
-            <ListItem
-                secondaryAction={
-                    <IconButton edge="end" aria-label="delete" onClick={() => removeAccount(account.id)}>
-                        <DeleteIcon />
+            <ListItem key={account.id} className="account-list-line-item">
+                <div>
+                    <Input placeholder={account.name} value={newAccountName} onChange={updateAccountName} />
+                </div>
+                <div>
+                    <IconButton aria-label="edit" onClick={() => handleAccountNameChange(account.name)} size="small">
+                        <DoneIcon fontSize="inherit" color="success" />
                     </IconButton>
-                }
-                key={account.id}
-            >
-                {account.name}
+                </div>
             </ListItem>
         );
     });
 
     return (
-        <Dialog open={open} onClose={onClose}>
+        <Dialog open={open} onClose={onDialogClose}>
             <List subheader={<ListSubheader id="account-list-subheader">现有账号</ListSubheader>}>
                 {accountListItems}
             </List>
@@ -96,7 +138,7 @@ function AccountDialog(props: { open: boolean; onClose: () => void }): JSX.Eleme
                 </IconButton>
             </div>
             <DialogActions>
-                <Button onClick={onClose}>关闭</Button>
+                <Button onClick={onDialogClose}>关闭</Button>
             </DialogActions>
         </Dialog>
     );

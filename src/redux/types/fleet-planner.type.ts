@@ -24,6 +24,11 @@ export interface EditRemoveShipOrAircraft {
     shipIndex: number;
 }
 
+export interface RemoveFleet {
+    accountId: string;
+    index: number;
+}
+
 export interface SelectedFleet {
     accountId: string;
     index: number;
@@ -33,4 +38,10 @@ export interface SelectedFleet {
 export interface FleetPlannerSettings {
     accountId: string;
     settings: number[];
+}
+
+export interface FleetNameChange {
+    accountId: string;
+    fleetIndex: number;
+    name: string;
 }

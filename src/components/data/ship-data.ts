@@ -84,6 +84,14 @@ const CARRIER_DATA: SuperCapData[] = [
             e2: { id: "e2", isBase: false, name: "护航艇坞仓", shortName: "护航艇仓" },
         },
     },
+    {
+        id: "cr5",
+        name: "埃迪卡拉级",
+        type: ShipTypes.carrier,
+        pop: 40,
+        limit: 2,
+        modules: {},
+    },
 ];
 
 const BATTLE_CRUISER_DATA: SuperCapData[] = [
@@ -170,6 +178,14 @@ const BATTLE_CRUISER_DATA: SuperCapData[] = [
             c2: { id: "c2", isBase: false, name: "电磁装甲系统", shortName: "电磁装甲", important: true },
             c3: { id: "c3", isBase: false, name: "重型防卫装甲", shortName: "重型装甲", important: true },
         },
+    },
+    {
+        id: "bc5",
+        name: "雷火之星",
+        type: ShipTypes.battleCruiser,
+        pop: 35,
+        limit: 3,
+        modules: {},
     },
 ];
 

@@ -1,6 +1,7 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "./core/store";
 import { addAccount, removeAccount } from "./actions/game-account";
+import { AccountNameChangeAction } from "./types/game-account.type";
 
 interface GameAccountState {
     [index: string]: GameAccount;
@@ -16,7 +17,12 @@ const initialState: GameAccountState = {};
 export const gameAccountSlice = createSlice({
     name: "gameAccount",
     initialState,
-    reducers: {},
+    reducers: {
+        changeAccountName: (state, action: PayloadAction<AccountNameChangeAction>) => {
+            const { id, name } = action.payload;
+            state[id].name = name;
+        },
+    },
     extraReducers: (builder) => {
         builder.addCase(addAccount, (state, action) => {
             const { id } = action.payload;
@@ -34,3 +40,4 @@ export const selectAllAccounts = (state: RootState) =>
 export const selectAccount = (state: RootState, id: string) => state.gameAccount[id];
 
 export default gameAccountSlice.reducer;
+export const { changeAccountName } = gameAccountSlice.actions;

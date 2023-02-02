@@ -9,6 +9,8 @@ import {
     EditRemoveShipOrAircraft,
     SelectedFleet,
     FleetPlannerSettings,
+    FleetNameChange,
+    RemoveFleet,
 } from "./types/fleet-planner.type";
 
 export enum FleetPlannerSetting {
@@ -111,6 +113,7 @@ export const fleetPlannerSlice = createSlice({
         flipLeveledFlag: handleFlipLeveledFlag,
         flipAdjustedFlag: handleFlipAdjustedFlag,
         updateSettings: handleUpdateSetting,
+        changeFleetName: handleChangeFleetName,
     },
     extraReducers: (builder) => {
         builder.addCase(addAccount, (state, action) => {
@@ -144,12 +147,10 @@ function handleAddFleet(state: FleetPlannerState, action: PayloadAction<FleetAct
     if (account.selectedFleet.index === -1) account.selectedFleet.index = 0;
 }
 
-function handleRemoveFleet(state: FleetPlannerState, action: PayloadAction<FleetAction>) {
-    const { accountId, name } = action.payload;
+function handleRemoveFleet(state: FleetPlannerState, action: PayloadAction<RemoveFleet>) {
+    const { accountId, index } = action.payload;
     const account = state[accountId];
     if (!account) return;
-    const index = account.fleets.findIndex((fleet) => fleet.name === name);
-    if (index === -1) return;
     account.fleets.splice(index, 1);
     if (account.fleets.length < 1) account.selectedFleet.index = -1;
     else if (account.selectedFleet.index >= account.fleets.length) account.selectedFleet.index = account.fleets.length;
@@ -279,6 +280,15 @@ function handleUpdateSetting(state: FleetPlannerState, action: PayloadAction<Fle
     else account.mainModuleFirst = false;
 }
 
+function handleChangeFleetName(state: FleetPlannerState, action: PayloadAction<FleetNameChange>) {
+    const { accountId, fleetIndex, name } = action.payload;
+
+    const account = state[accountId];
+    if (!account) return;
+    const selectedFleet = account.fleets[fleetIndex];
+    selectedFleet.name = name;
+}
+
 export const {
     updateAvailableShipTypes,
     addFleet,
@@ -292,6 +302,7 @@ export const {
     flipAdjustedFlag,
     flipLeveledFlag,
     updateSettings,
+    changeFleetName,
 } = fleetPlannerSlice.actions;
 
 export default fleetPlannerSlice.reducer;

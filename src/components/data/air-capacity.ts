@@ -3,6 +3,11 @@ export interface ShipAirCapacity extends AirCapacity {
     variant: number;
 }
 
+export interface ModuleAirCapacity extends AirCapacity {
+    id: string;
+    moduleId: string;
+}
+
 export const SHIP_AIR_CAPACITY: { [index: string]: ShipAirCapacity } = {
     f8: { id: "f8", variant: 1, corvette: 2, midAir: 0, heavyAir: 0 },
     f1: { id: "f1", variant: 1, corvette: 0, midAir: 2, heavyAir: 0 },
@@ -13,11 +18,6 @@ export const SHIP_AIR_CAPACITY: { [index: string]: ShipAirCapacity } = {
     c8: { id: "c8", variant: 2, corvette: 2, midAir: 0, heavyAir: 0 },
     c9: { id: "c9", variant: 1, corvette: 0, midAir: 0, heavyAir: 2 },
 };
-
-export interface ModuleAirCapacity extends AirCapacity {
-    id: string;
-    moduleId: string;
-}
 
 export const MODULE_AIR_CAPACITY: { [index: string]: { [index: string]: ModuleAirCapacity } } = {
     bc1: { c2: { id: "bc1", moduleId: "c2", corvette: 0, midAir: 2, heavyAir: 0 } },

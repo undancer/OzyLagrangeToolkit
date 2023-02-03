@@ -4,7 +4,7 @@ import RemoveIcon from "@mui/icons-material/Remove";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import MilitaryTechIcon from "@mui/icons-material/MilitaryTech";
 import ScienceIcon from "@mui/icons-material/Science";
-import { displayControl } from "../redux/selector/fleet-planner.selector";
+import { displayControl, getFleetsAirCapacity } from "../redux/selector/fleet-planner.selector";
 import { useAppDispatch, useAppSelector } from "../redux/utils/hooks";
 import "./css/fleet-plan.css";
 import {
@@ -24,8 +24,9 @@ import { EditRemoveShipOrAircraft } from "../redux/types/fleet-planner.type";
 import { AirCapacity } from "./data/air-capacity";
 
 export function FleetPlanAircraftTable(props: { fleet: Fleet; fleetIndex: number }): JSX.Element | null {
+    const fleetCapacities = useAppSelector(getFleetsAirCapacity);
     const { fleet, fleetIndex } = props;
-    const capacity: AirCapacity = { corvette: 0, midAir: 0, heavyAir: 0 };
+    const capacity: AirCapacity = fleetCapacities[fleetIndex];
 
     let aircraftCount = 0;
     let corvetteCount = 0;

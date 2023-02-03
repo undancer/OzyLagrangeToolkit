@@ -15,11 +15,9 @@ import {
     ShipInFleet,
 } from "../redux/fleet-planner";
 import { lookUpShipById } from "./data/ship-data";
-import { isShipData, ShipTypes } from "./data/ship-data-types";
+import { isShipData } from "./data/ship-data-types";
 import { useAppDispatch, useAppSelector } from "../redux/utils/hooks";
-import { getOwnedSuperCapLookUpTable } from "../redux/selector/acquired-blue-prints";
-import { addCapacity, AirCapacity, ShipAirCapacity, SuperCapAirCapacity } from "./data/air-capacity";
-import { displayControl, useMainModule } from "../redux/selector/fleet-planner.selector";
+import { displayControl } from "../redux/selector/fleet-planner.selector";
 import { EditRemoveShipOrAircraft } from "../redux/types/fleet-planner.type";
 import { getSelectedAccountId } from "../redux/selected-account";
 
@@ -29,9 +27,6 @@ export function FleetPlanShipTable(props: {
     type: "main" | "reinforce";
 }): JSX.Element {
     const { fleet, fleetIndex, type } = props;
-    const ownedLookupTable = useAppSelector(getOwnedSuperCapLookUpTable);
-    const capacity: AirCapacity = { corvette: 0, midAir: 0, heavyAir: 0 };
-    const mainModule = useAppSelector(useMainModule);
 
     let total = 0;
     let count = 0;
@@ -43,12 +38,6 @@ export function FleetPlanShipTable(props: {
         if (!data) return null;
         total += data.pop * ship.count;
         count += ship.count;
-        if (data.type === ShipTypes.carrier || data.type === ShipTypes.battleCruiser) {
-            const ownedSuperCap = ownedLookupTable[ship.shipId];
-            addCapacity(capacity, SuperCapAirCapacity(ship.shipId, ownedSuperCap.modules, mainModule), ship.count);
-        } else {
-            addCapacity(capacity, ShipAirCapacity(ship.shipId, ship.variant), ship.count);
-        }
         return <ShipTableRow ship={ship} fleetIndex={fleetIndex} shipIndex={index} type={fleetType} key={index} />;
     });
 

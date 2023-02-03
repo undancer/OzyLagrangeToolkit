@@ -1,5 +1,10 @@
+import { createSelector } from "@reduxjs/toolkit";
+import { addCapacity, AirCapacity, ShipAirCapacity, SuperCapAirCapacity } from "../../components/data/air-capacity";
+import { lookUpShipById } from "../../components/data/ship-data";
+import { ShipTypes } from "../../components/data/ship-data-types";
 import { RootState } from "../core/store";
 import { FleetPlannerSetting, FleetType } from "../fleet-planner";
+import { getOwnedSuperCapLookUpTable } from "./acquired-blue-prints";
 
 export function selectAvailableShipTypes(state: RootState) {
     const { accountId } = state.selectedAccount;
@@ -60,3 +65,31 @@ export function useMainModule(state: RootState) {
     if (!plan) return false;
     return plan.mainModuleFirst;
 }
+
+export const getFleetsAirCapacity = createSelector(
+    (state: RootState) => getAllFleets(state),
+    (state: RootState) => getOwnedSuperCapLookUpTable(state),
+    (state: RootState) => useMainModule(state),
+    (fleets, ownedLookupTable, mainModule) => {
+        const capacities = fleets.map((fleet) => {
+            const capacity: AirCapacity = { corvette: 0, midAir: 0, heavyAir: 0 };
+            const combinedFleet = fleet.mainFleet.concat(fleet.reinforcement);
+            combinedFleet.forEach((ship) => {
+                const data = lookUpShipById(ship.shipId);
+                if (!data) return;
+                if (data.type === ShipTypes.carrier || data.type === ShipTypes.battleCruiser) {
+                    const ownedSuperCap = ownedLookupTable[ship.shipId];
+                    addCapacity(
+                        capacity,
+                        SuperCapAirCapacity(ship.shipId, ownedSuperCap.modules, mainModule),
+                        ship.count,
+                    );
+                } else {
+                    addCapacity(capacity, ShipAirCapacity(ship.shipId, ship.variant), ship.count);
+                }
+            });
+            return capacity;
+        });
+        return capacities;
+    },
+);

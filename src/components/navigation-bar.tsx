@@ -13,7 +13,7 @@ import {
     IconButton,
     Input,
 } from "@mui/material";
-import { useState } from "react";
+import React, { useState } from "react";
 import Menu from "@mui/material/Menu";
 import MenuIcon from "@mui/icons-material/Menu";
 import MenuItem from "@mui/material/MenuItem";
@@ -29,6 +29,7 @@ import { changeAccountName, selectAllAccounts } from "../redux/game-account";
 import { addAccount as add, removeAccount as remove } from "../redux/actions/game-account";
 import "./css/navigation-bar.css";
 import { randomName } from "./utils/randomName";
+import { getStateExportLink, importStateIntoLocalStorage } from "../redux/actions/state-import-export";
 
 const pages = ["蓝图档案", /* "蓝图报表", */ "计时器", "舰队计划" /* , "保底研发" */];
 const path: { [index: string]: string } = {
@@ -45,6 +46,7 @@ function AccountDialog(props: { open: boolean; onClose: () => void }): JSX.Eleme
     const [editAccountId, setEditAccountId] = useState("");
     const [newAccountName, setNewAccountName] = useState("");
     const gameAccounts = useAppSelector((state) => selectAllAccounts(state));
+    const exportLink = useAppSelector((state) => getStateExportLink(state));
     const dispatch = useAppDispatch();
 
     function addAccount() {
@@ -71,6 +73,15 @@ function AccountDialog(props: { open: boolean; onClose: () => void }): JSX.Eleme
         dispatch(changeAccountName({ id: editAccountId, name: newAccountName !== "" ? newAccountName : originalName }));
         setEditAccountId("");
         setNewAccountName("");
+    }
+
+    function handleStateUpoad(e: React.ChangeEvent<HTMLInputElement>) {
+        if (!e.target.files) {
+            return;
+        }
+        const file = e.target.files[0];
+        importStateIntoLocalStorage(file);
+        window.location.reload();
     }
 
     function onDialogClose() {
@@ -138,6 +149,13 @@ function AccountDialog(props: { open: boolean; onClose: () => void }): JSX.Eleme
                 </IconButton>
             </div>
             <DialogActions>
+                <Button component="label">
+                    导入数据
+                    <input type="file" hidden onChange={handleStateUpoad}></input>
+                </Button>
+                <Button href={exportLink} download>
+                    导出数据
+                </Button>
                 <Button onClick={onDialogClose}>关闭</Button>
             </DialogActions>
         </Dialog>

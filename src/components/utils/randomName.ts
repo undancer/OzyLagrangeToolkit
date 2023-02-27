@@ -2,12 +2,6 @@ const nameList: string[] = [
     "飄零燕",
     "飄零燕",
     "飄零燕",
-    "飄零燕",
-    "飄零燕",
-    "飄零燕",
-    "飄零燕",
-    "囍囍囍",
-    "囍囍囍",
     "囍囍囍",
     "囍囍囍",
     "英华",
@@ -20,15 +14,21 @@ const nameList: string[] = [
     "索羅斯",
     "GGYY",
     "Player195",
-    "Player195",
-    "翱翔之翼",
     "Peter凶",
     "Peter兄",
     "琉璃玥",
     "OZY",
     "YGG",
-    "YGG",
-    "YGG",
+    "超越者",
+    "doom",
+    "微积分",
+    "水母",
+    "小冥",
+    "馒头",
+    "星海",
+    "工头",
+    "三月十四日",
+    "dczephyrus",
 ];
 
 const modList: string[] = [
@@ -60,6 +60,7 @@ const modList: string[] = [
     "挂机中",
     "撸猫中",
     "喵喵叫",
+    "瑟瑟",
 ];
 
 const fleetMod: string[] = [

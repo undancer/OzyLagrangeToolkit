@@ -46,45 +46,24 @@ function ModuleListItems(props: {
     superCapId: string;
 }): JSX.Element {
     const { superCapModules, superCapId } = props;
-    const mainModules: JSX.Element[] = [];
-    const typeAModules: JSX.Element[] = [];
-    const typeBModules: JSX.Element[] = [];
-    const typeCModules: JSX.Element[] = [];
-    const typeDModules: JSX.Element[] = [];
-    const typeEModules: JSX.Element[] = [];
-    Object.keys(superCapModules).forEach((key) => {
-        const superCapModule = superCapModules[key];
-        const moduleChip = <ModuleChip superCapModule={superCapModule} key={key} superCapId={superCapId} />;
-        if (key.startsWith("m")) mainModules.push(moduleChip);
-        if (key.startsWith("a")) typeAModules.push(moduleChip);
-        if (key.startsWith("b")) typeBModules.push(moduleChip);
-        if (key.startsWith("c")) typeCModules.push(moduleChip);
-        if (key.startsWith("d")) typeDModules.push(moduleChip);
-        if (key.startsWith("e")) typeEModules.push(moduleChip);
+
+    const moduleTypes = ["m", "a", "b", "c", "d", "e"];
+    const moduleGroup = moduleTypes.map((type) => {
+        const moduleList: JSX.Element[] = [];
+        Object.keys(superCapModules).forEach((key) => {
+            const superCapModule = superCapModules[key];
+            if (key.startsWith(type))
+                moduleList.push(<ModuleChip superCapModule={superCapModule} key={key} superCapId={superCapId} />);
+        });
+        if (moduleList.length <= 0) return null;
+        return (
+            <ListItem disablePadding className="list-item-module-holder" key={type}>
+                {moduleList}
+            </ListItem>
+        );
     });
 
-    return (
-        <React.Fragment>
-            <ListItem disablePadding className="list-item-module-holder" key="m">
-                {mainModules}
-            </ListItem>
-            <ListItem disablePadding className="list-item-module-holder" key="a">
-                {typeAModules}
-            </ListItem>
-            <ListItem disablePadding className="list-item-module-holder" key="b">
-                {typeBModules}
-            </ListItem>
-            <ListItem disablePadding className="list-item-module-holder" key="c">
-                {typeCModules}
-            </ListItem>
-            <ListItem disablePadding className="list-item-module-holder" key="d">
-                {typeDModules}
-            </ListItem>
-            <ListItem disablePadding className="list-item-module-holder" key="e">
-                {typeEModules}
-            </ListItem>
-        </React.Fragment>
-    );
+    return <React.Fragment>{moduleGroup}</React.Fragment>;
 }
 
 function SuperCapCheckBox(props: { superCapId: string }): JSX.Element {

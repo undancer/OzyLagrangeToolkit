@@ -19,6 +19,7 @@ const nameList: string[] = [
     "琉璃玥",
     "OZY",
     "YGG",
+    "涵翔",
     "超越者",
     "doom",
     "微积分",

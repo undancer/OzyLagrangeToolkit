@@ -249,7 +249,7 @@ const CRUISER_DATA: ShipData[] = [
         type: ShipTypes.cruiser,
         pop: 18,
         limit: 12,
-        variants: ["綜合型", "炮击型", "载机型"],
+        variants: ["綜合型", "炮击型", "载机型", "支援型"],
     },
     {
         id: "c9",
@@ -379,7 +379,14 @@ const CORVETTE_DATA: ShipData[] = [
     { id: "e5", name: "虚灵", type: ShipTypes.corvette, pop: 2, limit: 10, variants: [""] },
     { id: "e6", name: "RB7-13", type: ShipTypes.corvette, pop: 2, limit: 10, variants: [""] },
     { id: "e7", name: "鳐", type: ShipTypes.corvette, pop: 2, limit: 10, variants: [""] },
-    { id: "e8", name: "CV-M011", type: ShipTypes.corvette, pop: 2, limit: 15, variants: ["导弹型", "火炮型"] },
+    {
+        id: "e8",
+        name: "CV-M011",
+        type: ShipTypes.corvette,
+        pop: 2,
+        limit: 15,
+        variants: ["导弹型", "火炮型", "高速型"],
+    },
     { id: "e9", name: "CV-II003", type: ShipTypes.corvette, pop: 2, limit: 10, variants: [""] },
 ];
 

@@ -41,9 +41,11 @@ export function FleetPlanShipTable(props: {
         return <ShipTableRow ship={ship} fleetIndex={fleetIndex} shipIndex={index} type={fleetType} key={index} />;
     });
 
+    const title = type === "main" ? "主力部队" : "增援部队";
+
     return (
         <Table sx={{ width: 510 }} size="small">
-            <ShipTableHeader titles={["主力部队", "人口", "数量", "总人口"]} />
+            <ShipTableHeader titles={[title, "人口", "数量", "总人口"]} />
             <TableBody>
                 {rows}
                 <ShipTableFooter values={[count, total]} />

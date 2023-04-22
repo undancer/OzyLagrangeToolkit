@@ -66,6 +66,34 @@ export function useMainModule(state: RootState) {
     return plan.mainModuleFirst;
 }
 
+// The Selector that retuns the total number of ships and population in the fleet of the current selected account
+export function getFleetDataTotal(state: RootState) {
+    const { accountId } = state.selectedAccount;
+    const plan = state.fleetPlanner[accountId];
+    const result = plan.fleets.map((fleet) => {
+        const main = fleet.mainFleet.reduce(
+            (acc, cur) => {
+                const population = lookUpShipById(cur.shipId)?.pop ?? 0;
+                acc.count += cur.count;
+                acc.population += population * cur.count;
+                return acc;
+            },
+            { count: 0, population: 0 },
+        );
+        const reinforce = fleet.reinforcement.reduce(
+            (acc, cur) => {
+                const population = lookUpShipById(cur.shipId)?.pop ?? 0;
+                acc.count += cur.count;
+                acc.population += population * cur.count;
+                return acc;
+            },
+            { count: 0, population: 0 },
+        );
+        return { main, reinforce };
+    });
+    return result;
+}
+
 export const getFleetsAirCapacity = createSelector(
     (state: RootState) => getAllFleets(state),
     (state: RootState) => getOwnedSuperCapLookUpTable(state),

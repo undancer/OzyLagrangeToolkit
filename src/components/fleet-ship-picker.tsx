@@ -145,8 +145,8 @@ function ShipCard(props: { shipData: ShipData; disabled?: boolean }): JSX.Elemen
     const shipId = shipData.id;
     const dispatch = useAppDispatch();
     const accountId = useAppSelector(getSelectedAccountId);
-    const ownedLookupTable = useAppSelector(getOwnedShipLookUpTable);
     const ship = lookUpShipById(shipId);
+    const ownedLookupTable = useAppSelector(getOwnedShipLookUpTable);
     const ownedShip = ownedLookupTable[shipId];
     const onlyDisplayOnwed = useAppSelector(displayOnlyOwnedShip);
 

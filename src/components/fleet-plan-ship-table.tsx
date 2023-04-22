@@ -17,7 +17,7 @@ import {
 import { lookUpShipById } from "./data/ship-data";
 import { isShipData } from "./data/ship-data-types";
 import { useAppDispatch, useAppSelector } from "../redux/utils/hooks";
-import { displayControl } from "../redux/selector/fleet-planner.selector";
+import { displayControl, getFleetDataTotal } from "../redux/selector/fleet-planner.selector";
 import { EditRemoveShipOrAircraft } from "../redux/types/fleet-planner.type";
 import { getSelectedAccountId } from "../redux/selected-account";
 
@@ -28,16 +28,10 @@ export function FleetPlanShipTable(props: {
 }): JSX.Element {
     const { fleet, fleetIndex, type } = props;
 
-    let total = 0;
-    let count = 0;
     const selectedFleet = type === "main" ? fleet.mainFleet : fleet.reinforcement;
     const fleetType = type === "main" ? FleetType.main : FleetType.reinforcement;
 
     const rows = selectedFleet.map((ship, index) => {
-        const data = lookUpShipById(ship.shipId);
-        if (!data) return null;
-        total += data.pop * ship.count;
-        count += ship.count;
         return <ShipTableRow ship={ship} fleetIndex={fleetIndex} shipIndex={index} type={fleetType} key={index} />;
     });
 
@@ -48,7 +42,7 @@ export function FleetPlanShipTable(props: {
             <ShipTableHeader titles={[title, "人口", "数量", "总人口"]} />
             <TableBody>
                 {rows}
-                <ShipTableFooter values={[count, total]} />
+                <ShipTableFooter fleetIndex={fleetIndex} type={type} />
             </TableBody>
         </Table>
     );
@@ -62,10 +56,13 @@ function ShipTableRow(props: {
 }): JSX.Element | null {
     const accountId = useAppSelector(getSelectedAccountId);
     const showControl = useAppSelector(displayControl);
+    // const ownedLookupTable = useAppSelector(getOwnedShipLookUpTable);
     const dispatch = useAppDispatch();
 
     const { ship, fleetIndex, shipIndex, type } = props;
     const { shipId, count, variant, leveled, adjusted } = ship;
+
+    // const ownedShip = ownedLookupTable[shipId];
 
     function handleRemoveShip() {
         const action: EditRemoveShipOrAircraft = { accountId, shipIndex, fleetIndex, type };
@@ -152,14 +149,16 @@ function ShipTableHeader(props: { titles: string[] }) {
     );
 }
 
-function ShipTableFooter(props: { values: number[] }) {
-    const { values } = props;
+function ShipTableFooter(props: { fleetIndex: number; type: "main" | "reinforce" }) {
+    const { fleetIndex, type } = props;
+    const fleetTotal = useAppSelector(getFleetDataTotal);
+    const total = fleetTotal[fleetIndex][type];
     return (
         <TableRow>
             <TableCell colSpan={2} className="no-border"></TableCell>
             <TableCell>合计</TableCell>
-            <TableCell align="center">{values[0]}</TableCell>
-            <TableCell align="right">{values[1]}</TableCell>
+            <TableCell align="center">{total.count}</TableCell>
+            <TableCell align="right">{total.population}</TableCell>
         </TableRow>
     );
 }

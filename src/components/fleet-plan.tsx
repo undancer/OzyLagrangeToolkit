@@ -21,13 +21,13 @@ export function FleetPlan(): JSX.Element {
         );
 
     const fleetControls: JSX.Element[] = fleets.map((fleet, index) => {
-        return <IndividualFleetControl fleet={fleet} fleetIndex={index} key={index} />;
+        return <IndividualFleetPlanner fleet={fleet} fleetIndex={index} key={index} />;
     });
 
     return <div className="fleet-manager-container">{fleetControls}</div>;
 }
 
-function IndividualFleetControl(props: { fleet: Fleet; fleetIndex: number }): JSX.Element {
+function IndividualFleetPlanner(props: { fleet: Fleet; fleetIndex: number }): JSX.Element {
     const accountId = useAppSelector(getSelectedAccountId);
     const showControl = useAppSelector(displayControl);
     const dispatch = useAppDispatch();

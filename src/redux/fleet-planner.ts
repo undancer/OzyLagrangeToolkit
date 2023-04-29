@@ -200,6 +200,9 @@ function handleAddAircraft(state: FleetPlannerState, action: PayloadAction<AddSh
     const { aircraft } = selectedFleet;
     if (aircraft.findIndex((plane) => plane.shipId === shipId && plane.variant === variant) === -1)
         aircraft.push({ shipId, variant, count: shipData.limit, distribution: [], adjusted: false, leveled: false });
+    aircraft.sort((aircraftA, aircraftB) => {
+        return aircraftA.shipId[0].localeCompare(aircraftB.shipId[0]);
+    });
 }
 
 function handleChangeSelectedFleet(state: FleetPlannerState, action: PayloadAction<SelectedFleet>) {

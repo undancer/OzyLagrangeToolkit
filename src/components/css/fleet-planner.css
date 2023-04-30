@@ -38,3 +38,18 @@
     flex-wrap: nowrap;
     gap: 10px;
 }
+
+.tech-normal {
+    padding: 1px 3px 1px 3px;
+    border: 1.5px;
+    border-style: solid;
+    border-color: white;
+}
+
+.tech-gold {
+    padding: 1px 3px 1px 3px;
+    border: 1.5px;
+    border-style: solid;
+    border-color: gold;
+    color: gold;
+}

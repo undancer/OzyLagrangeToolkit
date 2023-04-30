@@ -5,6 +5,7 @@ import { ShipTypes } from "../../components/data/ship-data-types";
 import { RootState } from "../core/store";
 import { FleetPlannerSetting, FleetType } from "../fleet-planner";
 import { getOwnedSuperCapLookUpTable } from "./acquired-blue-prints";
+import { techPointDisplayData } from "../../components/fleet-plan-ship-table";
 
 export function selectAvailableShipTypes(state: RootState) {
     const { accountId } = state.selectedAccount;
@@ -94,6 +95,29 @@ export function getFleetDataTotal(state: RootState) {
     return result;
 }
 
+// The Selector that returns the total number of aircraft and corvette in the fleet of the current selected account
+export function getFleetAirTotal(state: RootState) {
+    const { accountId } = state.selectedAccount;
+    const plan = state.fleetPlanner[accountId];
+    const fleetCapacity = plan.fleets.map((fleet) => {
+        const { aircraft } = fleet;
+        const total: AirCapacity = { corvette: 0, midAir: 0, heavyAir: 0 };
+        aircraft.forEach((plane) => {
+            const data = lookUpShipById(plane.shipId);
+            if (!data) return;
+            if (data.type === ShipTypes.corvette) {
+                total.corvette += plane.count;
+            } else if (data.type === ShipTypes.aircraft && data.aircraftType === "mid") {
+                total.midAir += plane.count;
+            } else if (data.type === ShipTypes.aircraft && data.aircraftType === "large") {
+                total.heavyAir += plane.count;
+            }
+        });
+        return total;
+    });
+    return fleetCapacity;
+}
+
 export const getFleetsAirCapacity = createSelector(
     (state: RootState) => getAllFleets(state),
     (state: RootState) => getOwnedSuperCapLookUpTable(state),
@@ -121,3 +145,64 @@ export const getFleetsAirCapacity = createSelector(
         return capacities;
     },
 );
+
+export const getFleetShipTechPointLookupTable = createSelector(
+    (state: RootState) => {
+        const { accountId } = state.selectedAccount;
+        return state.acquiredBluePrint[accountId];
+    },
+    (state: RootState) => {
+        const { accountId } = state.selectedAccount;
+        return state.fleetPlanner[accountId].fleets;
+    },
+    (bluePrints, fleets) => {
+        // for all ships in each fleets, find the corresponding ship in bluePrints based on IP and return the techpoints
+        const lookUpObject: { [index: string]: techPointDisplayData } = {};
+        fleets.forEach((fleet) => {
+            const { aircraft, mainFleet, reinforcement } = fleet;
+            aircraft.forEach((ship) => {
+                const { shipId } = ship;
+                let bluePrint = bluePrints.aircraft.find((bp) => bp.id === shipId);
+                if (!bluePrint) {
+                    bluePrint = bluePrints.ships.find((bp) => bp.id === shipId);
+                }
+                if (!bluePrint) return;
+
+                lookUpObject[shipId] = techPointsToDisplayValue(bluePrint.techPoint, shipId);
+            });
+            mainFleet.forEach((ship) => {
+                const { shipId } = ship;
+                const bluePrint = bluePrints.ships.find((bp) => bp.id === shipId);
+                if (!bluePrint) return;
+
+                lookUpObject[ship.shipId] = techPointsToDisplayValue(bluePrint.techPoint, shipId);
+            });
+            reinforcement.forEach((ship) => {
+                const { shipId } = ship;
+                const bluePrint = bluePrints.superCapitals.find((bp) => bp.id === shipId);
+                if (!bluePrint) return;
+
+                lookUpObject[ship.shipId] = techPointsToDisplayValue(bluePrint.techPoint, shipId);
+            });
+        });
+        return lookUpObject;
+    },
+);
+
+function techPointsToDisplayValue(inputTechPoint: number, shipId: string): techPointDisplayData {
+    const shipData = lookUpShipById(shipId);
+    const techPoint = (inputTechPoint ?? 0) + 30;
+    // techPoints divided by 100, round down than plus 1 to get the main version
+    const mainVersion = Math.floor(techPoint / 100) + 1;
+    // techPoints divided by 100 and get the remainder to get sub version
+    const subVersion = techPoint % 100;
+    // display tech point as mainVersion.subVersion, subVersion is always 2 digits
+    const text = `v${mainVersion}.${subVersion.toString().padStart(2, "0")}`;
+
+    if (!shipData) return { text, type: "tech-normal" }; // This should never happen
+
+    // Determines which color and style to use for the tech point display
+    const goldBreakPoint = shipData.type === ShipTypes.carrier || shipData.type === ShipTypes.battleCruiser ? 200 : 100;
+    const type = techPoint < goldBreakPoint ? "tech-normal" : "tech-gold";
+    return { text, type };
+}

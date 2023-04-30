@@ -17,9 +17,18 @@ import {
 import { lookUpShipById } from "./data/ship-data";
 import { isShipData } from "./data/ship-data-types";
 import { useAppDispatch, useAppSelector } from "../redux/utils/hooks";
-import { displayControl, getFleetDataTotal } from "../redux/selector/fleet-planner.selector";
+import {
+    displayControl,
+    getFleetDataTotal,
+    getFleetShipTechPointLookupTable,
+} from "../redux/selector/fleet-planner.selector";
 import { EditRemoveShipOrAircraft } from "../redux/types/fleet-planner.type";
 import { getSelectedAccountId } from "../redux/selected-account";
+
+export interface techPointDisplayData {
+    text: string;
+    type: "tech-normal" | "tech-gold" | "tech-max";
+}
 
 export function FleetPlanShipTable(props: {
     fleet: Fleet;
@@ -27,19 +36,23 @@ export function FleetPlanShipTable(props: {
     type: "main" | "reinforce";
 }): JSX.Element {
     const { fleet, fleetIndex, type } = props;
+    const showControl = useAppSelector(displayControl);
 
     const selectedFleet = type === "main" ? fleet.mainFleet : fleet.reinforcement;
     const fleetType = type === "main" ? FleetType.main : FleetType.reinforcement;
 
     const rows = selectedFleet.map((ship, index) => {
-        return <ShipTableRow ship={ship} fleetIndex={fleetIndex} shipIndex={index} type={fleetType} key={index} />;
+        if (showControl) {
+            return <EditShipRow ship={ship} fleetIndex={fleetIndex} shipIndex={index} type={fleetType} key={index} />;
+        }
+        return <DisplayShipRow ship={ship} fleetIndex={fleetIndex} shipIndex={index} type={fleetType} key={index} />;
     });
 
     const title = type === "main" ? "主力部队" : "增援部队";
 
     return (
         <Table sx={{ width: 510 }} size="small">
-            <ShipTableHeader titles={[title, "人口", "数量", "总人口"]} />
+            <ShipTableHeader titles={[title, showControl ? "人口" : "", "数量", "总人口"]} />
             <TableBody>
                 {rows}
                 <ShipTableFooter fleetIndex={fleetIndex} type={type} />
@@ -48,21 +61,75 @@ export function FleetPlanShipTable(props: {
     );
 }
 
-function ShipTableRow(props: {
+function DisplayShipRow(props: {
+    ship: ShipInFleet;
+    fleetIndex: number;
+    shipIndex: number;
+    type: FleetType;
+}): JSX.Element {
+    const { ship, fleetIndex, shipIndex, type } = props;
+    const { shipId, count, variant, leveled, adjusted } = ship;
+    const dispatch = useAppDispatch();
+    const accountId = useAppSelector(getSelectedAccountId);
+    const techPointLookupTable = useAppSelector(getFleetShipTechPointLookupTable);
+
+    const shipData = lookUpShipById(shipId);
+    if (!shipData) return <></>;
+
+    const { name, pop } = shipData;
+
+    const totalPopulation = pop * count;
+
+    function handleLeveled() {
+        const action: EditRemoveShipOrAircraft = { accountId, shipIndex, fleetIndex, type };
+        dispatch(flipLeveledFlag(action));
+    }
+
+    function handleAdjusted() {
+        const action: EditRemoveShipOrAircraft = { accountId, shipIndex, fleetIndex, type };
+        dispatch(flipAdjustedFlag(action));
+    }
+
+    const tagCell: JSX.Element = (
+        <TableCell width={60}>
+            <IconButton size="small" color={leveled ? "warning" : "default"} onClick={handleLeveled}>
+                <MilitaryTechIcon fontSize="inherit" />
+            </IconButton>
+            <IconButton size="small" color={adjusted ? "primary" : "default"} onClick={handleAdjusted}>
+                <ScienceIcon fontSize="inherit" />
+            </IconButton>
+        </TableCell>
+    );
+
+    let addOn = "";
+    if (isShipData(shipData) && shipData.variants[0] !== "") addOn = ` - ${shipData.variants[variant]}`;
+
+    const techDisplayData = techPointLookupTable[shipId];
+
+    return (
+        <TableRow>
+            {tagCell}
+            <TableCell>{`${name}${addOn}`}</TableCell>
+            <TableCell>
+                <div className={techDisplayData.type}>{techDisplayData.text}</div>
+            </TableCell>
+            <TableCell align="center">{count}</TableCell>
+            <TableCell align="right">{totalPopulation}</TableCell>
+        </TableRow>
+    );
+}
+
+function EditShipRow(props: {
     ship: ShipInFleet;
     fleetIndex: number;
     shipIndex: number;
     type: FleetType;
 }): JSX.Element | null {
     const accountId = useAppSelector(getSelectedAccountId);
-    const showControl = useAppSelector(displayControl);
-    // const ownedLookupTable = useAppSelector(getOwnedShipLookUpTable);
     const dispatch = useAppDispatch();
 
     const { ship, fleetIndex, shipIndex, type } = props;
-    const { shipId, count, variant, leveled, adjusted } = ship;
-
-    // const ownedShip = ownedLookupTable[shipId];
+    const { shipId, count, variant } = ship;
 
     function handleRemoveShip() {
         const action: EditRemoveShipOrAircraft = { accountId, shipIndex, fleetIndex, type };
@@ -77,16 +144,6 @@ function ShipTableRow(props: {
     function handleDecreaseCount() {
         const action: EditRemoveShipOrAircraft = { accountId, shipIndex, fleetIndex, type };
         dispatch(decreaseShipCount(action));
-    }
-
-    function handleLeveled() {
-        const action: EditRemoveShipOrAircraft = { accountId, shipIndex, fleetIndex, type };
-        dispatch(flipLeveledFlag(action));
-    }
-
-    function handleAdjusted() {
-        const action: EditRemoveShipOrAircraft = { accountId, shipIndex, fleetIndex, type };
-        dispatch(flipAdjustedFlag(action));
     }
 
     const data = lookUpShipById(shipId);
@@ -107,20 +164,9 @@ function ShipTableRow(props: {
         </TableCell>
     );
 
-    const tagCell: JSX.Element = (
-        <TableCell width={60}>
-            <IconButton size="small" color={leveled ? "warning" : "default"} onClick={handleLeveled}>
-                <MilitaryTechIcon fontSize="inherit" />
-            </IconButton>
-            <IconButton size="small" color={adjusted ? "primary" : "default"} onClick={handleAdjusted}>
-                <ScienceIcon fontSize="inherit" />
-            </IconButton>
-        </TableCell>
-    );
-
     return (
         <TableRow>
-            {showControl ? controlCell : tagCell}
+            {controlCell}
             <TableCell>{`${data.name}${addOn}`}</TableCell>
             <TableCell align="center">{data.pop}</TableCell>
             <TableCell align="center">{count}</TableCell>

@@ -191,7 +191,18 @@ export const getFleetShipTechPointLookupTable = createSelector(
 
 function techPointsToDisplayValue(inputTechPoint: number, shipId: string): techPointDisplayData {
     const shipData = lookUpShipById(shipId);
-    const techPoint = (inputTechPoint ?? 0) + 30;
+    let goldBreakPoints = 100;
+    let additionalTechPoints = 30;
+    if (shipData !== undefined) {
+        if (shipData.type === ShipTypes.carrier || shipData.type === ShipTypes.battleCruiser) {
+            goldBreakPoints = 200;
+        }
+        if (shipData.type === ShipTypes.aircraft || shipData.type === ShipTypes.corvette) {
+            additionalTechPoints = 40;
+        }
+    }
+
+    const techPoint = (inputTechPoint ?? 0) + additionalTechPoints;
     // techPoints divided by 100, round down than plus 1 to get the main version
     const mainVersion = Math.floor(techPoint / 100) + 1;
     // techPoints divided by 100 and get the remainder to get sub version
@@ -202,7 +213,6 @@ function techPointsToDisplayValue(inputTechPoint: number, shipId: string): techP
     if (!shipData) return { text, type: "tech-normal" }; // This should never happen
 
     // Determines which color and style to use for the tech point display
-    const goldBreakPoint = shipData.type === ShipTypes.carrier || shipData.type === ShipTypes.battleCruiser ? 200 : 100;
-    const type = techPoint < goldBreakPoint ? "tech-normal" : "tech-gold";
+    const type = techPoint < goldBreakPoints ? "tech-normal" : "tech-gold";
     return { text, type };
 }

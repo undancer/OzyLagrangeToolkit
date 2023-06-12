@@ -238,6 +238,12 @@ function handleUpdateTechPoint(state: AcquiredBluePrintsState, action: PayloadAc
 function handleUpdateProgress(state: AcquiredBluePrintsState, action: PayloadAction<AddRemoveShipAction>) {
     const { accountId, shipId, variant } = action.payload;
 
+    let increment = 20;
+    if (shipId.startsWith("f")) increment = 25;
+    else if (shipId.startsWith("d")) increment = 35;
+    else if (shipId.startsWith("c")) increment = 20;
+    if (shipId === "c4" || shipId === "c6") increment = 35;
+
     const account = getAccountByAccountId(state, accountId);
     if (!account) return;
     if (account.editLock) return;
@@ -250,7 +256,7 @@ function handleUpdateProgress(state: AcquiredBluePrintsState, action: PayloadAct
     if (ship.partialComplete === undefined) ship.partialComplete = {};
     if (ship.partialComplete[variant] === undefined) ship.partialComplete[variant] = 0;
 
-    ship.partialComplete[variant] += 10;
+    ship.partialComplete[variant] += increment;
 
     if (ship.partialComplete[variant] >= 100) {
         ship.partialComplete[variant] = 0;

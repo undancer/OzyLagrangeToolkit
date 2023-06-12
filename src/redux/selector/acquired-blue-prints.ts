@@ -243,6 +243,7 @@ export const getOwnedShipLookUpTable = createSelector(
     (state: RootState) => state.selectedAccount.accountId,
     (bluePrints, accountId) => {
         const bluePrint = bluePrints[accountId];
+        if (bluePrint === undefined) return {};
         const lookUpObject: { [index: string]: AcquiredShip } = {};
         bluePrint.ships.forEach((ship) => {
             lookUpObject[ship.id] = ship;
@@ -256,6 +257,7 @@ export const getOwnedAircraftLookUpTable = createSelector(
     (state: RootState) => state.selectedAccount.accountId,
     (bluePrints, accountId) => {
         const bluePrint = bluePrints[accountId];
+        if (bluePrint === undefined) return {};
         const lookUpObject: { [index: string]: AcquiredAircraft } = {};
         bluePrint.aircraft.forEach((ship) => {
             lookUpObject[ship.id] = ship;
@@ -269,6 +271,7 @@ export const getOwnedSuperCapLookUpTable = createSelector(
     (state: RootState) => state.selectedAccount.accountId,
     (bluePrints, accountId) => {
         const bluePrint = bluePrints[accountId];
+        if (bluePrint === undefined) return {};
         const lookUpObject: { [index: string]: AcquiredSuperCap } = {};
         bluePrint.superCapitals.forEach((ship) => {
             lookUpObject[ship.id] = ship;

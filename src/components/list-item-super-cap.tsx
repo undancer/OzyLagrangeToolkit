@@ -47,7 +47,7 @@ function ModuleListItems(props: {
 }): JSX.Element {
     const { superCapModules, superCapId } = props;
 
-    const moduleTypes = ["m", "a", "b", "c", "d", "e"];
+    const moduleTypes = ["m", "a", "b", "c", "d", "e", "f"];
     const moduleGroup = moduleTypes.map((type) => {
         const moduleList: JSX.Element[] = [];
         Object.keys(superCapModules).forEach((key) => {

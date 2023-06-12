@@ -1,28 +1,71 @@
-import { List, ListItem, ListItemText, FormControlLabel, Checkbox, TextField, InputAdornment } from "@mui/material";
+import {
+    List,
+    ListItem,
+    ListItemText,
+    FormControlLabel,
+    Checkbox,
+    TextField,
+    InputAdornment,
+    Button,
+} from "@mui/material";
 import { ShipData, ShipTypes } from "./data/ship-data-types";
 import { useAppDispatch, useAppSelector } from "../redux/utils/hooks";
-import { addShip, removeShip, updateTechPoint } from "../redux/acquired-blue-print";
+import { addShip, removeShip, updateShipProgress, updateTechPoint } from "../redux/acquired-blue-print";
 import { TechIcon } from "./Icons/tech";
 import "./css/list-item-ship.css";
 import { stringToTech } from "../redux/utils/tech-cal";
 import { UpdateTechPoint } from "../redux/types/acquired-blue-print.type";
 import { getSelectedAccountId } from "../redux/selected-account";
-import { hasShipVariant, techPointsByShip } from "../redux/selector/acquired-blue-prints";
+import {
+    bluePrintSettingForSelectedAccount,
+    getShipVariantProgress,
+    hasShipVariant,
+    techPointsByShip,
+} from "../redux/selector/acquired-blue-prints";
 
 function ShipVariantCheckBox(props: { shipId: string; variant: number; label: string }): JSX.Element {
     const { shipId, variant, label } = props;
 
     const dispatch = useAppDispatch();
     const checked = useAppSelector((state) => hasShipVariant(state, shipId, variant));
+    const shipProgress = useAppSelector((state) => getShipVariantProgress(state, shipId, variant));
     const accountId = useAppSelector(getSelectedAccountId);
+
+    // Trying to figure out which variant should display the percentage button for, we hide variant for：
+    // 1. if the variant is the base variant
+    // 2. if the variant is not the base variant, but the base variant is not acquired
+    // 3. if the variant is acquired
+    // 4. if we have a 0% progress and hide 0% progress is on
+    const hasBaseVariant = useAppSelector((state) => hasShipVariant(state, shipId, 0));
+    const { showZeroPercent } = useAppSelector((state) => bluePrintSettingForSelectedAccount(state));
+    const hideOnZeroPercent = shipProgress === 0 && !showZeroPercent;
+    const noBaseBariant = !hasBaseVariant;
+    const isBaseVariant = variant === 0;
+    let showDisplay = true;
+    if (hideOnZeroPercent || noBaseBariant || isBaseVariant || checked) showDisplay = false;
 
     function handleChange() {
         if (checked) dispatch(removeShip({ accountId, shipId, variant }));
         else dispatch(addShip({ accountId, shipId, variant }));
     }
 
+    function handleProgressChange() {
+        dispatch(updateShipProgress({ accountId, shipId, variant }));
+    }
+
     return (
-        <ListItem disablePadding>
+        <div className="ship-checkbox">
+            {showDisplay ? (
+                <Button
+                    variant="text"
+                    color="secondary"
+                    size="small"
+                    className="completation-button"
+                    onClick={handleProgressChange}
+                >
+                    {`${shipProgress}%`}
+                </Button>
+            ) : null}
             <FormControlLabel
                 value="start"
                 className="control-label-ship-variant"
@@ -31,7 +74,7 @@ function ShipVariantCheckBox(props: { shipId: string; variant: number; label: st
                 labelPlacement="start"
                 onChange={handleChange}
             />
-        </ListItem>
+        </div>
     );
 }
 
@@ -92,7 +135,7 @@ export function ListItemShip(props: { data: ShipData }): JSX.Element {
                     </ListItem>
                 ) : null}
             </List>
-            <List disablePadding>{shipList}</List>
+            <div className="ship-checkbox-area">{shipList}</div>
         </ListItem>
     );
 }

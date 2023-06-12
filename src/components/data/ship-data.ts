@@ -233,7 +233,7 @@ const CRUISER_DATA: ShipData[] = [
         variants: ["鱼雷型", "反舰型", "支援型"],
     },
     { id: "c4", name: "猎兵级", type: ShipTypes.cruiser, pop: 18, limit: 8, variants: ["支援型", "反舰型"] },
-    { id: "c6", name: "康納馬拉混沌", type: ShipTypes.cruiser, pop: 20, limit: 8, variants: ["轨道炮", "电浆型"] },
+    { id: "c6", name: "康納混沌级", type: ShipTypes.cruiser, pop: 20, limit: 8, variants: ["轨道炮", "电浆型"] },
     { id: "c7", name: "光锥级", type: ShipTypes.cruiser, pop: 20, limit: 8, variants: ["通用型", "防空型", "突击型"] },
     {
         id: "c5",
@@ -253,7 +253,7 @@ const CRUISER_DATA: ShipData[] = [
     },
     {
         id: "c9",
-        name: "KCCPV2.0級",
+        name: "KCCPV2.0",
         type: ShipTypes.cruiser,
         pop: 16,
         limit: 12,
@@ -290,7 +290,7 @@ const FRIGATE_DATA: ShipData[] = [
     { id: "d5", name: "澄海級", type: ShipTypes.frigate, pop: 5, limit: 10, variants: ["反舰型", "飞弹型", "防空型"] },
     {
         id: "d6",
-        name: "諾瑪M470級",
+        name: "诺玛級",
         type: ShipTypes.frigate,
         pop: 6,
         limit: 10,

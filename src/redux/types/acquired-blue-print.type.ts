@@ -10,6 +10,7 @@ export interface AcquiredShip {
     id: string;
     techPoint: number;
     variants: number[];
+    partialComplete: Record<number, number>;
 }
 
 export interface AcquiredAircraft {
@@ -60,10 +61,12 @@ export enum BPDisplayMode {
 export interface BluePrintSetting {
     editLock: boolean;
     displayMode: BPDisplayMode;
+    showZeroPercent: boolean;
 }
 
 export interface UpdateBluePrintSetting {
     accountId: string;
     editLock: boolean;
     displayMode: BPDisplayMode;
+    showZeroPercent: boolean;
 }

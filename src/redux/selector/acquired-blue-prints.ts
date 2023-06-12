@@ -24,8 +24,13 @@ export function bluePrintSettingForSelectedAccount(state: RootState): BluePrintS
     const localState = state.acquiredBluePrint;
     const { accountId } = state.selectedAccount;
     const bluePrints = localState[accountId];
-    if (bluePrints === undefined) return { displayMode: BPDisplayMode.percent, editLock: false };
-    return { displayMode: bluePrints.displayMode, editLock: bluePrints.editLock };
+    if (bluePrints === undefined)
+        return { displayMode: BPDisplayMode.percent, editLock: false, showZeroPercent: false };
+    return {
+        displayMode: bluePrints.displayMode,
+        editLock: bluePrints.editLock,
+        showZeroPercent: bluePrints.showZeroPercentBluePrint,
+    };
 }
 
 export function hasShipVariant(state: RootState, shipId: string, variant: number) {
@@ -42,6 +47,22 @@ export function hasShipVariant(state: RootState, shipId: string, variant: number
     const variantIndex = variants.findIndex((local) => local === variant);
     if (variantIndex === -1) return false;
     return true;
+}
+
+export function getShipVariantProgress(state: RootState, shipId: string, variant: number): number {
+    const localState = state.acquiredBluePrint;
+    const { accountId } = state.selectedAccount;
+    // Verify account exist
+    const bluePrints = localState[accountId];
+    if (bluePrints === undefined) return 0;
+    // Verify ship exist
+    const shipIndex = bluePrints.ships.findIndex((ship) => ship.id === shipId);
+    if (shipIndex === -1) return 0;
+    // Verify variant exist
+    const { partialComplete } = bluePrints.ships[shipIndex];
+    if (partialComplete === undefined) return 0;
+    if (partialComplete[variant] === undefined) return 0;
+    return partialComplete[variant];
 }
 
 export function hasAircraft(state: RootState, aircraftId: string) {

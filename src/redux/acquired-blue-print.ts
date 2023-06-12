@@ -22,6 +22,7 @@ export interface AcquiredBluePrints {
     accountId: string;
     editLock: boolean;
     displayMode: BPDisplayMode;
+    showZeroPercentBluePrint: boolean;
     superCapitals: AcquiredSuperCap[];
     ships: AcquiredShip[];
     aircraft: AcquiredAircraft[];
@@ -32,6 +33,7 @@ function emptyAccountData(id: string): AcquiredBluePrints {
         accountId: id,
         editLock: false,
         displayMode: BPDisplayMode.percent,
+        showZeroPercentBluePrint: false,
         superCapitals: [],
         ships: [],
         aircraft: [],
@@ -47,6 +49,7 @@ export const acquiredBluePrintSlice = createSlice({
         // Ship Related Actions
         addShip: handleAddShip,
         removeShip: handleRemoveShip,
+        updateShipProgress: handleUpdateProgress,
         addAircraft: handleAddAircraft,
         removeAircraft: handleRemoveAircraft,
         addSuperCap: handleAddSuperCapital,
@@ -85,7 +88,7 @@ function handleAddShip(state: AcquiredBluePrintsState, action: PayloadAction<Add
 
     let ship = account.ships.find((innerShip) => innerShip.id === shipId);
     if (ship === undefined) {
-        ship = { id: shipId, techPoint: 0, variants: [] };
+        ship = { id: shipId, techPoint: 0, variants: [], partialComplete: {} };
         account.ships.push(ship);
     }
 
@@ -232,19 +235,43 @@ function handleUpdateTechPoint(state: AcquiredBluePrintsState, action: PayloadAc
     bluePrint.techPoint = techPoint;
 }
 
+function handleUpdateProgress(state: AcquiredBluePrintsState, action: PayloadAction<AddRemoveShipAction>) {
+    const { accountId, shipId, variant } = action.payload;
+
+    const account = getAccountByAccountId(state, accountId);
+    if (!account) return;
+    if (account.editLock) return;
+
+    const shipIndex = account.ships.findIndex((innerShip) => innerShip.id === shipId);
+    if (shipIndex === -1) return;
+    const ship = account.ships[shipIndex];
+
+    // initialize the variables if they don't exist yet
+    if (ship.partialComplete === undefined) ship.partialComplete = {};
+    if (ship.partialComplete[variant] === undefined) ship.partialComplete[variant] = 0;
+
+    ship.partialComplete[variant] += 10;
+
+    if (ship.partialComplete[variant] >= 100) {
+        ship.partialComplete[variant] = 0;
+    }
+}
+
 function updateSetting(state: AcquiredBluePrintsState, action: PayloadAction<UpdateBluePrintSetting>) {
-    const { accountId, editLock, displayMode } = action.payload;
+    const { accountId, editLock, displayMode, showZeroPercent } = action.payload;
 
     const account = getAccountByAccountId(state, accountId);
     if (!account) return;
     state[accountId].displayMode = displayMode;
     state[accountId].editLock = editLock;
+    state[accountId].showZeroPercentBluePrint = showZeroPercent;
 }
 
 // Action exports
 export const {
     addShip,
     removeShip,
+    updateShipProgress,
     addAircraft,
     removeAircraft,
     addSuperCap,

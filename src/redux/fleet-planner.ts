@@ -55,6 +55,7 @@ export interface ShipInFleet {
     count: number;
     adjusted: boolean;
     leveled: boolean;
+    inComplete?: boolean;
 }
 
 export interface AircraftInFleet {

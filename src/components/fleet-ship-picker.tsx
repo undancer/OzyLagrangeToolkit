@@ -164,15 +164,18 @@ function ShipCard(props: { shipData: ShipData; disabled?: boolean }): JSX.Elemen
     const buttons: JSX.Element[] = [];
     shipData.variants.forEach((variant, index) => {
         const hasVariant = hasShip && ownedShip.variants.findIndex((item) => item === index) !== -1;
+        const hasProgress = hasShip && ownedShip.partialComplete && (ownedShip.partialComplete[index] || 0) > 0;
+        const onlyHasProgress = hasProgress && !hasVariant;
         // Skip the variant if it doesn't exist
-        if (onlyDisplayOnwed && !hasVariant) return;
+        if (onlyDisplayOnwed && !hasVariant && !hasProgress) return;
         const buttonItem = (
             <Button
                 key={index}
                 size="small"
                 variant="text"
+                color={onlyHasProgress ? "success" : "primary"}
                 onClick={() => handleAddShip(index)}
-                disabled={disabled || !hasVariant}
+                disabled={disabled || (!hasVariant && !hasProgress)}
             >
                 {variant !== "" ? variant : "基础型"}
             </Button>

@@ -240,7 +240,7 @@ function handleUpdateProgress(state: AcquiredBluePrintsState, action: PayloadAct
 
     let increment = 20;
     if (shipId.startsWith("f")) increment = 25;
-    else if (shipId.startsWith("d")) increment = 35;
+    else if (shipId.startsWith("d") || shipId.startsWith("e")) increment = 35;
     else if (shipId.startsWith("c")) increment = 20;
     if (shipId === "c4" || shipId === "c6") increment = 35;
 

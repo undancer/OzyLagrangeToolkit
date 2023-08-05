@@ -1,0 +1,31 @@
+# This "input" configures a global authorization rule to enable public access to
+# all models in this schema. Learn more about authorization rules here: https://docs.amplify.aws/cli/graphql/authorization-rules
+input AMPLIFY {
+    globalAuthRule: AuthRule = { allow: public }
+} # FOR TESTING ONLY!
+type City
+    @model
+    @auth(
+        rules: [
+            { allow: groups, groups: ["Admin"], operations: [read, create, update, delete] }
+            { allow: groups, groups: ["Members"], operations: [read, create] }
+        ]
+    ) {
+    id: ID!
+    level: Int!
+    pos: Cordinate! @hasOne
+    submitter: String!
+}
+
+type Cordinate
+    @model
+    @auth(
+        rules: [
+            { allow: groups, groups: ["Members"], operations: [read, create] }
+            { allow: groups, groups: ["Admin"], operations: [read, create, update, delete] }
+        ]
+    ) {
+    id: ID!
+    x: Int!
+    y: Int!
+}

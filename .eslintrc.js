@@ -27,6 +27,7 @@ module.exports = {
         "import/extensions": "off",
         // Disabled for now to be fixed later if possible
         "import/no-cycle": "off",
+        "@typescript-eslint/ban-ts-comment": ["error", { "ts-ignore": "allow-with-description" }],
         // Disabling this rule as it conflicts with default behavior with redux toolkit
         "no-param-reassign": "off",
         "@typescript-eslint/no-explicit-any": "error",

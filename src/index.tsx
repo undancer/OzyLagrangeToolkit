@@ -2,14 +2,22 @@ import { createRoot } from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Provider } from "react-redux";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
+import { Amplify } from "aws-amplify";
 import Tracker from "./components/tracker";
 import BluePrint from "./components/blue-print";
 import DevelopmentDebug from "./components/debug";
+import Setting from "./components/setting";
+import AngulumMap from "./components/angulum-system-map";
 import { store } from "./redux/core/store";
 import { NavigationBar } from "./components/navigation-bar";
 import BluePrintReport from "./components/blue-print-report";
 import FleetBuilder from "./components/fleet-planner";
 import "./components/css/index.css";
+import awsExports from "./aws-exports";
+import authTranslation from "./redux/language/amplify-auth";
+
+Amplify.configure(awsExports);
+authTranslation();
 
 const container = document.getElementById("root");
 // This line is suggested by officla React Website
@@ -35,6 +43,8 @@ root.render(
                         <Route path="/blueprintreport" element={<BluePrintReport />} />
                         <Route path="/tracker" element={<Tracker />} />
                         <Route path="/fleetbuilder" element={<FleetBuilder />} />
+                        <Route path="/setting" element={<Setting />} />
+                        <Route path="/angulummap" element={<AngulumMap />} />
                         <Route path="/localStorageDebug" element={<DevelopmentDebug />} />
                     </Routes>
                 </div>

@@ -1,0 +1,11 @@
+{
+  "AppSyncApiName": "ozylagrangetoolkit",
+  "DynamoDBBillingMode": "PAY_PER_REQUEST",
+  "DynamoDBEnableServerSideEncryption": false,
+  "AuthCognitoUserPoolId": {
+    "Fn::GetAtt": [
+      "authozylagrangetoolkit6a64cf156a64cf15",
+      "Outputs.UserPoolId"
+    ]
+  }
+}

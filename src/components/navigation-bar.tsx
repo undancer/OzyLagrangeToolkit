@@ -1,170 +1,24 @@
-import {
-    AppBar,
-    Box,
-    Button,
-    Dialog,
-    DialogActions,
-    TextField,
-    Toolbar,
-    Typography,
-    List,
-    ListItem,
-    ListSubheader,
-    IconButton,
-    Input,
-} from "@mui/material";
+import { AppBar, Box, Button, Toolbar, Typography, IconButton } from "@mui/material";
 import React, { useState } from "react";
 import Menu from "@mui/material/Menu";
 import MenuIcon from "@mui/icons-material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import CasinoIcon from "@mui/icons-material/Casino";
-import DeleteIcon from "@mui/icons-material/Delete";
-import PersonAddIcon from "@mui/icons-material/PersonAdd";
-import EditIcon from "@mui/icons-material/Edit";
-import DoneIcon from "@mui/icons-material/Done";
 import { Link as RouterLink } from "react-router-dom";
 import { ClosedPackageIcon } from "./Icons/closedpackage";
-import { useAppSelector, useAppDispatch } from "../redux/utils/hooks";
-import { changeAccountName, selectAllAccounts } from "../redux/game-account";
-import { addAccount as add, removeAccount as remove } from "../redux/actions/game-account";
 import "./css/navigation-bar.css";
-import { randomName } from "./utils/randomName";
-import { getStateExportLink, importStateIntoLocalStorage } from "../redux/actions/state-import-export";
+import "@aws-amplify/ui-react/styles.css";
 
-const pages = ["蓝图档案", /* "蓝图报表", */ "计时器", "舰队计划" /* , "保底研发" */];
+const pages = ["蓝图档案", /* "蓝图报表", */ "计时器", "舰队计划", "探险地图" /* , "保底研发" */];
 const path: { [index: string]: string } = {
     计时器: "tracker",
     蓝图档案: "blueprint",
     蓝图报表: "blueprintreport",
     舰队计划: "fleetbuilder",
     保底研发: "research",
+    探险地图: "angulummap",
 };
 
-function AccountDialog(props: { open: boolean; onClose: () => void }): JSX.Element {
-    const { open, onClose } = props;
-    const [name, setName] = useState("");
-    const [editAccountId, setEditAccountId] = useState("");
-    const [newAccountName, setNewAccountName] = useState("");
-    const gameAccounts = useAppSelector((state) => selectAllAccounts(state));
-    const exportLink = useAppSelector((state) => getStateExportLink(state));
-    const dispatch = useAppDispatch();
-
-    function addAccount() {
-        if (name !== "") dispatch(add(name));
-        else dispatch(add(randomName()));
-        setName("");
-    }
-
-    function editAccount(id: string) {
-        setEditAccountId(id);
-        setNewAccountName("");
-    }
-
-    function addRandomAccount() {
-        setName("");
-        dispatch(add(randomName()));
-    }
-
-    function updateAccountName(event: React.ChangeEvent<HTMLInputElement>) {
-        setNewAccountName(event.target.value);
-    }
-
-    function handleAccountNameChange(originalName: string) {
-        dispatch(changeAccountName({ id: editAccountId, name: newAccountName !== "" ? newAccountName : originalName }));
-        setEditAccountId("");
-        setNewAccountName("");
-    }
-
-    function handleStateUpoad(e: React.ChangeEvent<HTMLInputElement>) {
-        if (!e.target.files) {
-            return;
-        }
-        const file = e.target.files[0];
-        importStateIntoLocalStorage(file);
-        window.location.reload();
-    }
-
-    function onDialogClose() {
-        setEditAccountId("");
-        setNewAccountName("");
-        onClose();
-    }
-
-    function removeAccount(id: string) {
-        let subId = "";
-        if (gameAccounts.length > 1) {
-            const otherAccount = gameAccounts.find((account) => account.id !== id);
-            if (otherAccount) subId = otherAccount.id;
-        }
-        dispatch(remove(id, subId));
-    }
-
-    const accountListItems = gameAccounts.map((account) => {
-        if (editAccountId !== account.id) {
-            return (
-                <ListItem key={account.id} className="account-list-line-item">
-                    <div>{account.name}</div>
-                    <div>
-                        <IconButton aria-label="edit" onClick={() => editAccount(account.id)} size="small">
-                            <EditIcon fontSize="inherit" />
-                        </IconButton>
-                        <IconButton aria-label="delete" onClick={() => removeAccount(account.id)} size="small">
-                            <DeleteIcon fontSize="inherit" color="error" />
-                        </IconButton>
-                    </div>
-                </ListItem>
-            );
-        }
-        return (
-            <ListItem key={account.id} className="account-list-line-item">
-                <div>
-                    <Input placeholder={account.name} value={newAccountName} onChange={updateAccountName} />
-                </div>
-                <div>
-                    <IconButton aria-label="edit" onClick={() => handleAccountNameChange(account.name)} size="small">
-                        <DoneIcon fontSize="inherit" color="success" />
-                    </IconButton>
-                </div>
-            </ListItem>
-        );
-    });
-
-    return (
-        <Dialog open={open} onClose={onDialogClose}>
-            <List subheader={<ListSubheader id="account-list-subheader">现有账号</ListSubheader>}>
-                {accountListItems}
-            </List>
-            <div className="container-add-account">
-                <TextField
-                    label="添加账号"
-                    variant="standard"
-                    value={name}
-                    onChange={(event) => setName(event.target.value)}
-                ></TextField>
-                <IconButton className="button-add-account" onClick={addAccount}>
-                    <PersonAddIcon />
-                </IconButton>
-                <IconButton className="button-add-account" onClick={addRandomAccount}>
-                    <CasinoIcon />
-                </IconButton>
-            </div>
-            <DialogActions>
-                <Button component="label">
-                    导入数据
-                    <input type="file" hidden onChange={handleStateUpoad}></input>
-                </Button>
-                <Button href={exportLink} download>
-                    导出数据
-                </Button>
-                <Button onClick={onDialogClose}>关闭</Button>
-            </DialogActions>
-        </Dialog>
-    );
-}
-
 export function NavigationBar() {
-    const [dialogOpen, setDialogOpen] = useState(false);
-
     const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
 
     function openNavMenu(event: React.MouseEvent<HTMLElement>) {
@@ -173,14 +27,6 @@ export function NavigationBar() {
 
     function closeNavMenu() {
         setAnchorElNav(null);
-    }
-
-    function openDialog() {
-        setDialogOpen(true);
-    }
-
-    function closeDialog() {
-        setDialogOpen(false);
     }
 
     return (
@@ -250,10 +96,9 @@ export function NavigationBar() {
                             </Button>
                         ))}
                     </Box>
-                    <Button color="inherit" onClick={openDialog}>
-                        账号管理
+                    <Button component={RouterLink} to={"/setting"} color="inherit">
+                        设置
                     </Button>
-                    <AccountDialog open={dialogOpen} onClose={closeDialog} />
                 </Toolbar>
             </AppBar>
         </Box>

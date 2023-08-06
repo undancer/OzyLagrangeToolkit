@@ -8,6 +8,7 @@ import CasinoIcon from "@mui/icons-material/Casino";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import { useAppSelector, useAppDispatch } from "../redux/utils/hooks";
 import { selectAllAccounts, changeAccountName } from "../redux/game-account";
+import "@aws-amplify/ui-react/styles.css";
 import "./css/setting.css";
 import NoAccountWarning from "./no-account-warning";
 import { getStateExportLink, importStateIntoLocalStorage } from "../redux/actions/state-import-export";

@@ -50,16 +50,16 @@ export function FleetPlanAircraftTable(props: { fleet: Fleet; fleetIndex: number
     const maxAir = capacity.midAir + capacity.heavyAir;
 
     return (
-        <Table sx={{ width: 510 }} size="small">
+        <Table sx={{ width: 560 }} size="small">
             <TableHead>
                 <TableCell colSpan={2} align="center">
                     空军
                 </TableCell>
-                <TableCell width={30}></TableCell>
-                <TableCell align="center" width={30}>
+                <TableCell width={64}></TableCell>
+                <TableCell align="center" width={64}>
                     飞机
                 </TableCell>
-                <TableCell align="center" width={45}>
+                <TableCell align="center" width={75}>
                     炮艇
                 </TableCell>
             </TableHead>
@@ -108,7 +108,7 @@ function DisplayAircraftRow(props: { aircraft: AircraftInFleet; fleetIndex: numb
     const techDisplayData = techPointLookupTable[shipId];
 
     const tagCell: JSX.Element = (
-        <TableCell width={60}>
+        <TableCell width={80}>
             <IconButton size="small" color={leveled ? "warning" : "default"} onClick={handleLeveled}>
                 <MilitaryTechIcon fontSize="inherit" />
             </IconButton>

@@ -83,7 +83,7 @@ function IndividualFleetPlanner(props: { fleet: Fleet; fleetIndex: number }): JS
     }
 
     return (
-        <TableContainer component={Paper} sx={{ width: 510 }}>
+        <TableContainer component={Paper} sx={{ width: 560 }}>
             {fleetTitleBox}
             <FleetPlanShipTable fleet={fleet} fleetIndex={fleetIndex} type="main" />
             <div className="fleet-plan-table-divider"></div>

@@ -6,7 +6,6 @@ import MenuItem from "@mui/material/MenuItem";
 import { Link as RouterLink } from "react-router-dom";
 import { ClosedPackageIcon } from "./Icons/closedpackage";
 import "./css/navigation-bar.css";
-import "@aws-amplify/ui-react/styles.css";
 
 const pages = ["蓝图档案", /* "蓝图报表", */ "计时器", "舰队计划", "探险地图" /* , "保底研发" */];
 const path: { [index: string]: string } = {

@@ -51,7 +51,7 @@ export function FleetPlanShipTable(props: {
     const title = type === "main" ? "主力部队" : "增援部队";
 
     return (
-        <Table sx={{ width: 510 }} size="small">
+        <Table sx={{ width: 545 }} size="small">
             <ShipTableHeader titles={[title, showControl ? "人口" : "", "数量", "总人口"]} />
             <TableBody>
                 {rows}
@@ -91,7 +91,7 @@ function DisplayShipRow(props: {
     }
 
     const tagCell: JSX.Element = (
-        <TableCell width={60}>
+        <TableCell width={88}>
             <IconButton size="small" color={leveled ? "warning" : "default"} onClick={handleLeveled}>
                 <MilitaryTechIcon fontSize="inherit" />
             </IconButton>
@@ -151,7 +151,7 @@ function EditShipRow(props: {
     let addOn = "";
     if (isShipData(data) && data.variants[0] !== "") addOn = ` - ${data.variants[variant]}`;
     const controlCell: JSX.Element = (
-        <TableCell width={110}>
+        <TableCell width={150}>
             <IconButton color="success" size="small" onClick={handleIncreaseCount} disabled={count >= data.limit}>
                 <AddIcon />
             </IconButton>
@@ -182,13 +182,13 @@ function ShipTableHeader(props: { titles: string[] }) {
             <TableCell colSpan={2} align="center">
                 {titles[0]}
             </TableCell>
-            <TableCell width={30} align="center">
+            <TableCell width={64} align="center">
                 {titles[1]}
             </TableCell>
-            <TableCell width={30} align="center">
+            <TableCell width={64} align="center">
                 {titles[2]}
             </TableCell>
-            <TableCell width={45} align="center">
+            <TableCell width={75} align="center">
                 {titles[3]}
             </TableCell>
         </TableHead>

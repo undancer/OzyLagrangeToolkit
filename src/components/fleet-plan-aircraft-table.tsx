@@ -108,7 +108,7 @@ function DisplayAircraftRow(props: { aircraft: AircraftInFleet; fleetIndex: numb
     const techDisplayData = techPointLookupTable[shipId];
 
     const tagCell: JSX.Element = (
-        <TableCell width={80}>
+        <TableCell width={88}>
             <IconButton size="small" color={leveled ? "warning" : "default"} onClick={handleLeveled}>
                 <MilitaryTechIcon fontSize="inherit" />
             </IconButton>
@@ -165,7 +165,7 @@ function AircraftTableRow(props: {
     if (isShipData(data) && data.variants[0] !== "") addOn = ` - ${data.variants[variant]}`;
 
     const controlCell: JSX.Element = (
-        <TableCell width={110}>
+        <TableCell width={150}>
             <IconButton color="success" size="small" onClick={handleIncreaseCount} disabled={count >= data.limit}>
                 <AddIcon />
             </IconButton>

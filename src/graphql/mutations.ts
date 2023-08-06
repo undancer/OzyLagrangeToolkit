@@ -19,7 +19,9 @@ export const createCity = /* GraphQL */ `
         __typename
       }
       submitter
+      type
       createdAt
+      owner
       updatedAt
       cityPosId
       __typename
@@ -43,7 +45,9 @@ export const updateCity = /* GraphQL */ `
         __typename
       }
       submitter
+      type
       createdAt
+      owner
       updatedAt
       cityPosId
       __typename
@@ -67,7 +71,9 @@ export const deleteCity = /* GraphQL */ `
         __typename
       }
       submitter
+      type
       createdAt
+      owner
       updatedAt
       cityPosId
       __typename

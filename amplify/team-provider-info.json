@@ -24,7 +24,38 @@
         "AdminQueries99b65b3a": {
           "deploymentBucketName": "amplify-amplify84c142b30c764-staging-30040-deployment",
           "s3Key": "amplify-builds/AdminQueries99b65b3a-7861344b5152566b6533-build.zip"
-        }
+        },
+        "ozylagrangetoolkit6a64cf156a64cf15": {}
+      },
+      "api": {
+        "AdminQueries": {},
+        "ozylagrangetoolkit": {}
+      }
+    }
+  },
+  "test": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-ozylagrangetoolkit-test-115430-authRole",
+      "UnauthRoleArn": "arn:aws:iam::304909328905:role/amplify-ozylagrangetoolkit-test-115430-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::304909328905:role/amplify-ozylagrangetoolkit-test-115430-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-ozylagrangetoolkit-test-115430-deployment",
+      "UnauthRoleName": "amplify-ozylagrangetoolkit-test-115430-unauthRole",
+      "StackName": "amplify-ozylagrangetoolkit-test-115430",
+      "StackId": "arn:aws:cloudformation:us-east-1:304909328905:stack/amplify-ozylagrangetoolkit-test-115430/844a9890-33c1-11ee-89ba-0e0de7294027",
+      "AmplifyAppId": "d3e3jy48yv77sy"
+    },
+    "categories": {
+      "auth": {
+        "ozylagrangetoolkit6a64cf156a64cf15": {},
+        "userPoolGroups": {}
+      },
+      "function": {
+        "AdminQueries99b65b3a": {
+          "deploymentBucketName": "amplify-ozylagrangetoolkit-test-115430-deployment",
+          "s3Key": "amplify-builds/AdminQueries99b65b3a-7861344b5152566b6533-build.zip"
+        },
+        "ozylagrangetoolkit6a64cf156a64cf15": {}
       },
       "api": {
         "AdminQueries": {},

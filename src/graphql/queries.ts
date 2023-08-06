@@ -16,7 +16,9 @@ export const getCity = /* GraphQL */ `
         __typename
       }
       submitter
+      type
       createdAt
+      owner
       updatedAt
       cityPosId
       __typename
@@ -42,7 +44,50 @@ export const listCities = /* GraphQL */ `
           __typename
         }
         submitter
+        type
         createdAt
+        owner
+        updatedAt
+        cityPosId
+        __typename
+      }
+      nextToken
+      __typename
+    }
+  }
+`;
+export const listCitiesWithSortedTime = /* GraphQL */ `
+  query ListCitiesWithSortedTime(
+    $type: String!
+    $createdAt: ModelStringKeyConditionInput
+    $sortDirection: ModelSortDirection
+    $filter: ModelCityFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listCitiesWithSortedTime(
+      type: $type
+      createdAt: $createdAt
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        level
+        pos {
+          id
+          x
+          y
+          createdAt
+          updatedAt
+          __typename
+        }
+        submitter
+        type
+        createdAt
+        owner
         updatedAt
         cityPosId
         __typename

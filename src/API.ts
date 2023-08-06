@@ -6,12 +6,18 @@ export type CreateCityInput = {
   id?: string | null,
   level: number,
   submitter: string,
+  type: string,
+  createdAt?: string | null,
+  owner?: string | null,
   cityPosId: string,
 };
 
 export type ModelCityConditionInput = {
   level?: ModelIntInput | null,
   submitter?: ModelStringInput | null,
+  type?: ModelStringInput | null,
+  createdAt?: ModelStringInput | null,
+  owner?: ModelStringInput | null,
   and?: Array< ModelCityConditionInput | null > | null,
   or?: Array< ModelCityConditionInput | null > | null,
   not?: ModelCityConditionInput | null,
@@ -92,7 +98,9 @@ export type City = {
   level: number,
   pos: Cordinate,
   submitter: string,
+  type: string,
   createdAt: string,
+  owner?: string | null,
   updatedAt: string,
   cityPosId: string,
 };
@@ -110,6 +118,9 @@ export type UpdateCityInput = {
   id: string,
   level?: number | null,
   submitter?: string | null,
+  type?: string | null,
+  createdAt?: string | null,
+  owner?: string | null,
   cityPosId?: string | null,
 };
 
@@ -145,6 +156,9 @@ export type ModelCityFilterInput = {
   id?: ModelIDInput | null,
   level?: ModelIntInput | null,
   submitter?: ModelStringInput | null,
+  type?: ModelStringInput | null,
+  createdAt?: ModelStringInput | null,
+  owner?: ModelStringInput | null,
   and?: Array< ModelCityFilterInput | null > | null,
   or?: Array< ModelCityFilterInput | null > | null,
   not?: ModelCityFilterInput | null,
@@ -156,6 +170,22 @@ export type ModelCityConnection = {
   items:  Array<City | null >,
   nextToken?: string | null,
 };
+
+export type ModelStringKeyConditionInput = {
+  eq?: string | null,
+  le?: string | null,
+  lt?: string | null,
+  ge?: string | null,
+  gt?: string | null,
+  between?: Array< string | null > | null,
+  beginsWith?: string | null,
+};
+
+export enum ModelSortDirection {
+  ASC = "ASC",
+  DESC = "DESC",
+}
+
 
 export type ModelCordinateFilterInput = {
   id?: ModelIDInput | null,
@@ -176,6 +206,8 @@ export type ModelSubscriptionCityFilterInput = {
   id?: ModelSubscriptionIDInput | null,
   level?: ModelSubscriptionIntInput | null,
   submitter?: ModelSubscriptionStringInput | null,
+  type?: ModelSubscriptionStringInput | null,
+  createdAt?: ModelSubscriptionStringInput | null,
   and?: Array< ModelSubscriptionCityFilterInput | null > | null,
   or?: Array< ModelSubscriptionCityFilterInput | null > | null,
 };
@@ -249,7 +281,9 @@ export type CreateCityMutation = {
       updatedAt: string,
     },
     submitter: string,
+    type: string,
     createdAt: string,
+    owner?: string | null,
     updatedAt: string,
     cityPosId: string,
   } | null,
@@ -274,7 +308,9 @@ export type UpdateCityMutation = {
       updatedAt: string,
     },
     submitter: string,
+    type: string,
     createdAt: string,
+    owner?: string | null,
     updatedAt: string,
     cityPosId: string,
   } | null,
@@ -299,7 +335,9 @@ export type DeleteCityMutation = {
       updatedAt: string,
     },
     submitter: string,
+    type: string,
     createdAt: string,
+    owner?: string | null,
     updatedAt: string,
     cityPosId: string,
   } | null,
@@ -371,7 +409,9 @@ export type GetCityQuery = {
       updatedAt: string,
     },
     submitter: string,
+    type: string,
     createdAt: string,
+    owner?: string | null,
     updatedAt: string,
     cityPosId: string,
   } | null,
@@ -399,7 +439,44 @@ export type ListCitiesQuery = {
         updatedAt: string,
       },
       submitter: string,
+      type: string,
       createdAt: string,
+      owner?: string | null,
+      updatedAt: string,
+      cityPosId: string,
+    } | null >,
+    nextToken?: string | null,
+  } | null,
+};
+
+export type ListCitiesWithSortedTimeQueryVariables = {
+  type: string,
+  createdAt?: ModelStringKeyConditionInput | null,
+  sortDirection?: ModelSortDirection | null,
+  filter?: ModelCityFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type ListCitiesWithSortedTimeQuery = {
+  listCitiesWithSortedTime?:  {
+    __typename: "ModelCityConnection",
+    items:  Array< {
+      __typename: "City",
+      id: string,
+      level: number,
+      pos:  {
+        __typename: "Cordinate",
+        id: string,
+        x: number,
+        y: number,
+        createdAt: string,
+        updatedAt: string,
+      },
+      submitter: string,
+      type: string,
+      createdAt: string,
+      owner?: string | null,
       updatedAt: string,
       cityPosId: string,
     } | null >,
@@ -461,7 +538,9 @@ export type OnCreateCitySubscription = {
       updatedAt: string,
     },
     submitter: string,
+    type: string,
     createdAt: string,
+    owner?: string | null,
     updatedAt: string,
     cityPosId: string,
   } | null,
@@ -485,7 +564,9 @@ export type OnUpdateCitySubscription = {
       updatedAt: string,
     },
     submitter: string,
+    type: string,
     createdAt: string,
+    owner?: string | null,
     updatedAt: string,
     cityPosId: string,
   } | null,
@@ -509,7 +590,9 @@ export type OnDeleteCitySubscription = {
       updatedAt: string,
     },
     submitter: string,
+    type: string,
     createdAt: string,
+    owner?: string | null,
     updatedAt: string,
     cityPosId: string,
   } | null,

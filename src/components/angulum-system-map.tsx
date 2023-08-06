@@ -1,5 +1,17 @@
 import React, { useState } from "react";
-import { Container, Table, TableBody, TableHead, TableCell, TableRow, Button, TextField } from "@mui/material";
+import {
+    Container,
+    Table,
+    TableBody,
+    TableHead,
+    TableCell,
+    TableRow,
+    Button,
+    TextField,
+    Paper,
+    TableContainer,
+    TablePagination,
+} from "@mui/material";
 import { Stage, Layer, Star, Rect, Line, Text } from "react-konva";
 import { KonvaEventObject } from "konva/lib/Node";
 import { API, Auth } from "aws-amplify";
@@ -22,11 +34,13 @@ import * as queries from "../graphql/queries";
 import * as mutations from "../graphql/mutations";
 import {
     City,
-    ListCitiesQuery,
     CreateCityInput,
     CreateCityMutation,
     CreateCordinateInput,
     CreateCordinateMutation,
+    ModelSortDirection,
+    ListCitiesWithSortedTimeQuery,
+    ListCitiesWithSortedTimeQueryVariables,
 } from "../API";
 
 function AngulumMap() {
@@ -61,14 +75,21 @@ function Map() {
 
     async function fetchCities(): Promise<void> {
         try {
-            const apiData = await API.graphql<GraphQLQuery<ListCitiesQuery>>({
-                query: queries.listCities,
+            const vars: ListCitiesWithSortedTimeQueryVariables = {
+                type: "CITY",
+                limit: 1000,
+                sortDirection: ModelSortDirection.DESC,
+            };
+            const apiData = await API.graphql<GraphQLQuery<ListCitiesWithSortedTimeQuery>>({
+                query: queries.listCitiesWithSortedTime,
                 authMode: GRAPHQL_AUTH_MODE.AMAZON_COGNITO_USER_POOLS,
+                variables: vars,
             });
             if (apiData.data === undefined) throw new Error("Failed to fetch cities");
-            if (apiData.data.listCities === undefined || apiData.data.listCities === null)
+            if (apiData.data.listCitiesWithSortedTime === undefined || apiData.data.listCitiesWithSortedTime === null)
                 throw new Error("Failed to fetch cities");
-            const citiesFromAPI = apiData.data.listCities.items.filter((city) => city !== null) as City[];
+            const citiesFromAPI = apiData.data.listCitiesWithSortedTime.items.filter((city) => city !== null) as City[];
+            setSelectedCityIndex(-1);
             setCities(citiesFromAPI);
         } catch (error) {
             console.log(error);
@@ -99,7 +120,7 @@ function Map() {
             x={STAGE_WIDTH / 2 - 200}
             y={STAGE_HEIGHT / 2 - 100}
             width={400}
-            text="账户权限不足，请联系OZY获得更高权限以使用此功能。"
+            text="账户权限不足,请联系OZY获得更高权限以使用此功能。"
             fill="red"
             fontSize={30}
         />
@@ -117,9 +138,28 @@ function Map() {
                 </Stage>
             </div>
             <div className="map-selection">
+                <SelectedCityDisplay city={cities[selectedCityIndex]} index={selectedCityIndex} />
                 <CityTable cities={cities} selectedCity={selectedCityIndex} />
                 <AddCityContainer fetchCityCallBack={fetchCities} />
             </div>
+        </div>
+    );
+}
+
+function SelectedCityDisplay(props: { city: City | undefined; index: number }): JSX.Element {
+    const { city, index } = props;
+
+    if (city === undefined) return <div>未选择城市</div>;
+
+    return (
+        <div>
+            <div>编号: {index}</div>
+            <div>城市等级: {city.level}</div>
+            <div>
+                城市坐标: {city.pos.x}, {city.pos.y}
+            </div>
+            <div>发现人: {city.submitter}</div>
+            <div>上报时间：{city.createdAt}</div>
         </div>
     );
 }
@@ -150,6 +190,7 @@ function AddCityContainer(props: { fetchCityCallBack: () => Promise<void> }): JS
 
             const cityDetail: CreateCityInput = {
                 level: city.level,
+                type: "CITY",
                 submitter: userName,
                 cityPosId: newCoordinate.data.createCordinate.id,
             };
@@ -205,40 +246,78 @@ function AddCityContainer(props: { fetchCityCallBack: () => Promise<void> }): JS
                 <TextField label="坐标" variant="outlined" value={coordString} onChange={handleCoordinateChange} />
                 <Button onClick={() => createCity({ level: cityLevel, pos: cityCoord })}>添加城市</Button>
             </div>
-            <div className="add-city-label">{`城市等级： ${cityLevel},  坐标：(${cityCoord.x},${cityCoord.y})`}</div>
+            <div className="add-city-label">{`城市等级: ${cityLevel} 坐标:(${cityCoord.x},${cityCoord.y})`}</div>
         </div>
     );
 }
 
 function CityTable(props: { cities: City[]; selectedCity: number }): JSX.Element {
     const { cities } = props;
-    const rows = cities.map((city, index) => {
-        const className = index === props.selectedCity ? "map-city selected-city" : "map-city";
-        const time = new Date(city.createdAt);
-        return (
-            <TableRow key={index}>
-                <TableCell className={className} align="center">
-                    {city.level}
-                </TableCell>
-                <TableCell className={className}>{`(${city.pos.x},${city.pos.y})`}</TableCell>
-                <TableCell>{city.submitter}</TableCell>
-                <TableCell>{`${time.toLocaleDateString()} ${time.toLocaleTimeString()}`}</TableCell>
-            </TableRow>
-        );
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(8);
+
+    function handlePageChange(_e: React.MouseEvent<HTMLButtonElement> | null, newPage: number) {
+        setPage(newPage);
+    }
+
+    function handleRowsPerPageChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
+        setRowsPerPage(parseInt(e.target.value, 10));
+        setPage(0);
+    }
+
+    console.log(page);
+    const minRange = page * rowsPerPage;
+    const maxRange = (page + 1) * rowsPerPage;
+    const resultRows: JSX.Element[] = [];
+
+    cities.forEach((city, index) => {
+        if (index >= minRange && index < maxRange) {
+            const className = index === props.selectedCity ? "map-city selected-city" : "map-city";
+            const time = new Date(city.createdAt);
+            const hourMinuteString = `${time.getHours()}:${time.getMinutes()}:${time.getSeconds()}`;
+            const monthDayString = `${time.getMonth() + 1}/${time.getDate()}`;
+            const result = (
+                <TableRow key={index}>
+                    <TableCell className={className} align="center">
+                        {index}
+                    </TableCell>
+                    <TableCell className={className} align="center">
+                        {city.level}
+                    </TableCell>
+                    <TableCell className={className}>{`(${city.pos.x},${city.pos.y})`}</TableCell>
+                    <TableCell>{city.submitter}</TableCell>
+                    <TableCell>{`${monthDayString} - ${hourMinuteString}`}</TableCell>
+                </TableRow>
+            );
+            resultRows.push(result);
+        }
     });
 
     return (
-        <Table>
-            <TableHead>
-                <TableRow>
-                    <TableCell>等级</TableCell>
-                    <TableCell align="center">城市坐标</TableCell>
-                    <TableCell align="center">发现人</TableCell>
-                    <TableCell>发现日期</TableCell>
-                </TableRow>
-            </TableHead>
-            <TableBody>{rows}</TableBody>
-        </Table>
+        <div>
+            <TableContainer component={Paper}>
+                <Table>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell></TableCell>
+                            <TableCell>等级</TableCell>
+                            <TableCell align="center">城市坐标</TableCell>
+                            <TableCell align="center">发现人</TableCell>
+                            <TableCell>发现日期</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>{resultRows}</TableBody>
+                </Table>
+            </TableContainer>
+            <TablePagination
+                count={cities.length}
+                page={page}
+                onPageChange={handlePageChange}
+                rowsPerPage={rowsPerPage}
+                onRowsPerPageChange={handleRowsPerPageChange}
+                rowsPerPageOptions={[8, 16]}
+            />
+        </div>
     );
 }
 

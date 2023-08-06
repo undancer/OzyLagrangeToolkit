@@ -14,11 +14,6 @@ export const STAGE_HEIGHT = 1000;
 export const MAP_TO_STAGE_RATIO = STAGE_WIDTH / MAP_LENGTH;
 
 export const CITIES: CityData[] = [
-    { level: 4, pos: { x: 3838, y: 4367 } },
-    { level: 7, pos: { x: 3332, y: 4348 } },
-    { level: 2, pos: { x: 6590, y: 4231 } },
-    { level: 4, pos: { x: 6319, y: 5788 } },
-    { level: 5, pos: { x: 4525, y: 5988 } },
     { level: 4, pos: { x: 4759, y: 4631 } },
     { level: 4, pos: { x: 5459, y: 5347 } },
     { level: 7, pos: { x: 4926, y: 4128 } },

@@ -17,7 +17,7 @@ import {
     Tab,
     Tabs,
 } from "@mui/material";
-import { Stage, Layer, Star, Rect, Line, Text } from "react-konva";
+import { Stage, Layer, Star, Rect, Line, Text, Circle } from "react-konva";
 import { KonvaEventObject } from "konva/lib/Node";
 import { API, Auth } from "aws-amplify";
 import { GRAPHQL_AUTH_MODE, GraphQLQuery } from "@aws-amplify/api";
@@ -49,6 +49,13 @@ import {
     ListCitiesWithSortedTimeQuery,
     ListCitiesWithSortedTimeQueryVariables,
 } from "../API";
+
+const BACK_GROUND_COLOR = "#14213d";
+const BORDER_LINE_COLOR = "#ffffff";
+const SELECTED_COLOR = "#ff0000";
+const CITY_COLOR = "#caffbf";
+const POINT_OF_INTEREST_COLOR = "#ffc300";
+const CITY_ICON_RADIUS = 15;
 
 function AngulumMap() {
     const [hasUser, setHasUser] = useState<boolean>(false);
@@ -119,7 +126,7 @@ function Map() {
     }
 
     const borderLines = MAP_BORDERS.map((border, index) => (
-        <Line points={getLinePoints(border)} stroke={"black"} key={index} />
+        <Line points={getLinePoints(border)} stroke={BORDER_LINE_COLOR} key={index} />
     ));
     const stars = cityLabels(cities, mapScale, selectedCityIndex, selectCity);
 
@@ -138,7 +145,7 @@ function Map() {
             <div className="map-box">
                 <Stage width={STAGE_WIDTH} height={STAGE_HEIGHT}>
                     <Layer scaleX={mapScale} scaleY={mapScale} draggable onWheel={handleWheel}>
-                        <Rect x={0} y={0} width={STAGE_WIDTH} height={STAGE_HEIGHT} fill="white" />
+                        <Rect x={0} y={0} width={STAGE_WIDTH} height={STAGE_HEIGHT} fill={BACK_GROUND_COLOR} />
                         {stars}
                         {borderLines}
                         {unauthorized ? warningMessage : null}
@@ -193,7 +200,7 @@ function SelectedCityDisplay(props: {
     let pos = "( 0 . - )";
     let recentChangeTime = "无";
     if (selectedCity !== undefined) {
-        cityLevel = `${selectedCity.level}`;
+        cityLevel = selectedCity.level === 0 ? "X" : selectedCity.level.toString();
         pos = `(${selectedCity.pos.x}, ${selectedCity.pos.y})`;
         recentChangeTime = moment(selectedCity.updatedAt).fromNow();
     }
@@ -233,7 +240,7 @@ function SelectedCityDisplay(props: {
                         {city.submitter}
                     </TableCell>
                     <TableCell className={className} align="center" onClick={() => selectCity(index)}>
-                        {city.level}
+                        {city.level === 0 ? "X" : city.level.toString()}
                     </TableCell>
                     <TableCell className={className} align="center" onClick={() => selectCity(index)}>
                         {moment(city.updatedAt).fromNow()}
@@ -507,31 +514,44 @@ function cityLabels(
     selectedCity: number,
     selectCity: (e: KonvaEventObject<WheelEvent>) => void,
 ): JSX.Element[] {
-    const starRadius = 20;
     const uniqueCities = new Set<string>();
     const labels: JSX.Element[] = [];
     cities.forEach((city, index) => {
         if (uniqueCities.has(`${city.pos.x},${city.pos.y}`)) return;
         uniqueCities.add(`${city.pos.x},${city.pos.y}`);
         const coord = objCoord(city.pos);
-        const radius = starRatio(city.level) * (1 / mapScale) * starRadius;
-        let color = "#89b717";
-        if (index === selectedCity) color = "#ff0000";
-        labels.push(
-            <Star
-                x={coord.x}
-                y={coord.y}
-                innerRadius={radius / 2}
-                outerRadius={radius}
-                numPoints={city.level}
-                key={index}
-                id={index.toString()}
-                fill={color}
-                opacity={0.8}
-                rotation={0}
-                onClick={selectCity}
-            />,
-        );
+        const radius = starRatio(city.level) * (1 / mapScale) * CITY_ICON_RADIUS;
+        let color = city.level === 0 ? POINT_OF_INTEREST_COLOR : CITY_COLOR;
+        if (index === selectedCity) color = SELECTED_COLOR;
+        if (city.level === 0) {
+            labels.push(
+                <Circle
+                    x={coord.x}
+                    y={coord.y}
+                    radius={radius / 2}
+                    fill={color}
+                    key={index}
+                    id={index.toString()}
+                    onClick={selectCity}
+                />,
+            );
+        } else {
+            labels.push(
+                <Star
+                    x={coord.x}
+                    y={coord.y}
+                    innerRadius={radius / 2}
+                    outerRadius={radius}
+                    numPoints={city.level}
+                    key={index}
+                    id={index.toString()}
+                    fill={color}
+                    opacity={0.8}
+                    rotation={0}
+                    onClick={selectCity}
+                />,
+            );
+        }
     });
 
     return labels;

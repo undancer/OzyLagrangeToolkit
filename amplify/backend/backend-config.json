@@ -131,6 +131,14 @@
           "resourceName": "AdminQueries99b65b3a"
         }
       ]
+    },
+    "AMPLIFY_function_ozylagrangetoolkit69d6c401PostConfirmation_GROUP": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "ozylagrangetoolkit69d6c401PostConfirmation"
+        }
+      ]
     }
   }
 }

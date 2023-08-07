@@ -11,11 +11,18 @@ import {
     Paper,
     TableContainer,
     TablePagination,
+    Snackbar,
+    Alert,
+    Box,
+    Tab,
+    Tabs,
 } from "@mui/material";
 import { Stage, Layer, Star, Rect, Line, Text } from "react-konva";
 import { KonvaEventObject } from "konva/lib/Node";
 import { API, Auth } from "aws-amplify";
 import { GRAPHQL_AUTH_MODE, GraphQLQuery } from "@aws-amplify/api";
+import moment from "moment";
+import { Divider } from "@aws-amplify/ui-react";
 import { useAppSelector } from "../redux/utils/hooks";
 import { selectAllAccounts } from "../redux/game-account";
 import "./css/angulum-system-map.css";
@@ -68,6 +75,7 @@ function Map() {
     const [mapScale, setMapScale] = useState<number>(1);
     const [cities, setCities] = useState<City[]>([]);
     const [unauthorized, setUnauthorized] = useState<boolean>(false);
+    const [tabIndex, setTabIndex] = useState<number>(0);
 
     React.useEffect(() => {
         fetchCities();
@@ -138,39 +146,170 @@ function Map() {
                 </Stage>
             </div>
             <div className="map-selection">
-                <SelectedCityDisplay city={cities[selectedCityIndex]} index={selectedCityIndex} />
-                <CityTable cities={cities} selectedCity={selectedCityIndex} />
+                <Box>
+                    <Tabs value={tabIndex} onChange={(_e, newValue) => setTabIndex(newValue)}>
+                        <Tab label="城市报告" />
+                        <Tab label="总数据" />
+                    </Tabs>
+                </Box>
+                <div hidden={tabIndex === 0}>
+                    <CityTable cities={cities} selectedCity={selectedCityIndex} selectCity={setSelectedCityIndex} />
+                </div>
+                <div hidden={tabIndex === 1}>
+                    <SelectedCityDisplay
+                        cities={cities}
+                        selectedIndex={selectedCityIndex}
+                        selectCity={setSelectedCityIndex}
+                    />
+                </div>
                 <AddCityContainer fetchCityCallBack={fetchCities} />
             </div>
         </div>
     );
 }
 
-function SelectedCityDisplay(props: { city: City | undefined; index: number }): JSX.Element {
-    const { city, index } = props;
+function SelectedCityDisplay(props: {
+    cities: City[];
+    selectedIndex: number;
+    selectCity: (index: number) => void;
+}): JSX.Element {
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(4);
+    const { cities, selectedIndex, selectCity } = props;
+    const selectedCity = cities[selectedIndex];
 
-    if (city === undefined) return <div>未选择城市</div>;
+    function handlePageChange(_e: React.MouseEvent<HTMLButtonElement> | null, newPage: number) {
+        setPage(newPage);
+    }
+
+    function handleRowsPerPageChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
+        setRowsPerPage(parseInt(e.target.value, 10));
+        setPage(0);
+    }
+
+    const minRange = page * rowsPerPage;
+    const maxRange = (page + 1) * rowsPerPage;
+    let cityLevel = "无";
+    let pos = "( 0 . - )";
+    let recentChangeTime = "无";
+    if (selectedCity !== undefined) {
+        cityLevel = `${selectedCity.level}`;
+        pos = `(${selectedCity.pos.x}, ${selectedCity.pos.y})`;
+        recentChangeTime = moment(selectedCity.updatedAt).fromNow();
+    }
+
+    moment.updateLocale("zh", {
+        relativeTime: {
+            future: "%s内",
+            past: "%s前",
+            s: "几秒",
+            ss: "%d秒",
+            m: "1分钟",
+            mm: "%d分钟",
+            h: "1小时",
+            hh: "%d小时",
+            d: "1天",
+            dd: "%d天",
+            M: "1个月",
+            MM: "%d个月",
+            y: "1年",
+            yy: "%d年",
+        },
+    });
+    moment.locale("zh");
+
+    const filteredRow: JSX.Element[] = [];
+    const resultRows: JSX.Element[] = [];
+
+    cities.forEach((city, index) => {
+        if (city.pos.x === selectedCity?.pos.x && city.pos.y === selectedCity?.pos.y) {
+            const className = index === selectedIndex ? "map-city selected-city" : "map-city";
+            const result = (
+                <TableRow key={index}>
+                    <TableCell className={className} align="center" onClick={() => selectCity(index)}>
+                        {index}
+                    </TableCell>
+                    <TableCell className={className} align="center" onClick={() => selectCity(index)}>
+                        {city.submitter}
+                    </TableCell>
+                    <TableCell className={className} align="center" onClick={() => selectCity(index)}>
+                        {city.level}
+                    </TableCell>
+                    <TableCell className={className} align="center" onClick={() => selectCity(index)}>
+                        {moment(city.updatedAt).fromNow()}
+                    </TableCell>
+                </TableRow>
+            );
+            filteredRow.push(result);
+        }
+    });
+
+    filteredRow.forEach((city, index) => {
+        if (index >= minRange && index < maxRange) resultRows.push(city);
+    });
 
     return (
-        <div>
-            <div>编号: {index}</div>
-            <div>城市等级: {city.level}</div>
-            <div>
-                城市坐标: {city.pos.x}, {city.pos.y}
+        <div className="city-detail-container">
+            <div className="city-detail-title">城市讯息</div>
+            <Divider />
+            <div className="city-detail-content">
+                <div className="city-detail-info-box">
+                    <div className="city-detail-data-level">{cityLevel}</div>
+                    <div className="city-detail-data-label">当前等级</div>
+                </div>
+                <div className="city-detail-info-box">
+                    <div className="city-detail-data">{pos}</div>
+                    <div className="city-detail-data-label">坐标</div>
+                </div>
+                <div className="city-detail-info-box">
+                    <div className="city-detail-data">{recentChangeTime}</div>
+                    <div className="city-detail-data-label">最近更新</div>
+                </div>
             </div>
-            <div>发现人: {city.submitter}</div>
-            <div>上报时间：{city.createdAt}</div>
+            <Divider />
+            <div>
+                <TableContainer>
+                    <Table size="small">
+                        <TableHead>
+                            <TableRow>
+                                <TableCell></TableCell>
+                                <TableCell align="center">发现人</TableCell>
+                                <TableCell align="center">等级</TableCell>
+                                <TableCell align="center">更新日期</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>{resultRows}</TableBody>
+                    </Table>
+                </TableContainer>
+                <TablePagination
+                    count={resultRows.length}
+                    page={page}
+                    onPageChange={handlePageChange}
+                    rowsPerPage={rowsPerPage}
+                    onRowsPerPageChange={handleRowsPerPageChange}
+                    rowsPerPageOptions={[4, 8]}
+                />
+            </div>
         </div>
     );
 }
 
 function AddCityContainer(props: { fetchCityCallBack: () => Promise<void> }): JSX.Element {
-    const [cityLevel, setCityLevel] = useState<number>(0);
+    const [cityLevel, setCityLevel] = useState<number>(-1);
     const [coordString, setCoordString] = useState<string>("");
     const [cityCoord, setCityCoord] = useState<Coordinate>({ x: 0, y: 0 });
+    const [snackOpen, setSnackOpen] = useState<boolean>(false);
     const fetchCities = props.fetchCityCallBack;
 
     async function createCity(city: CityData) {
+        if ((city.level !== 0 && city.level < 2) || cityCoord.x === 0 || cityCoord.y === 0) {
+            setSnackOpen(true);
+            setCityLevel(-1);
+            setCoordString("");
+            setCityCoord({ x: 0, y: 0 });
+            return;
+        }
+
         const posDetail: CreateCordinateInput = {
             x: city.pos.x,
             y: city.pos.y,
@@ -207,52 +346,91 @@ function AddCityContainer(props: { fetchCityCallBack: () => Promise<void> }): JS
             throw error;
         }
 
+        setCityLevel(-1);
+        setCoordString("");
+        setCityCoord({ x: 0, y: 0 });
         fetchCities();
     }
 
     function handleSetCityLevel(e: React.ChangeEvent<HTMLInputElement>) {
         const { value } = e.target;
-        let level = parseInt(value, 10);
-        if (level > 10) level = 10;
-        if (level < 0) level = 0;
-        if (Number.isNaN(level)) level = 0;
-        setCityLevel(level);
+        if (e.target.value === "X" || e.target.value === "x") {
+            setCityLevel(0);
+            return;
+        }
+
+        const inputNumber = parseInt(value, 10);
+        let resultLevel = -1;
+
+        if (inputNumber > 0 && inputNumber <= 10) resultLevel = inputNumber;
+        else if (inputNumber > 10) resultLevel = 10;
+
+        setCityLevel(resultLevel);
+    }
+
+    function cityLevelToText(level: number): string {
+        if (level === -1) return "";
+        if (level === 0) return "X";
+        return level.toString();
+    }
+
+    function cityLevelToDisplayText(level: number): string {
+        if (level === -1) return "未知";
+        if (level === 0) return "消失";
+        return level.toString();
     }
 
     function handleCoordinateChange(e: React.ChangeEvent<HTMLInputElement>) {
         const { value } = e.target;
         // remove all non-digit characters except comma
         const newCoordString = value.replace(/[^\d,]/g, "");
-        console.log(`1: ${newCoordString}`);
         setCoordString(newCoordString);
         const coordArray = newCoordString.split(",");
-        if (coordArray.length !== 2) setCityCoord({ x: 0, y: 0 });
+        if (coordArray.length !== 2) {
+            setCityCoord({ x: 0, y: 0 });
+            return;
+        }
         const x = parseInt(coordArray[0], 10);
         const y = parseInt(coordArray[1], 10);
-        if (Number.isNaN(x) || Number.isNaN(y)) setCityCoord({ x: 0, y: 0 });
+        if (Number.isNaN(x) || Number.isNaN(y)) {
+            setCityCoord({ x: 0, y: 0 });
+            return;
+        }
         setCityCoord({ x, y });
     }
 
     return (
         <div>
+            <Snackbar
+                anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                open={snackOpen}
+                autoHideDuration={5000}
+                onClose={() => setSnackOpen(false)}
+            >
+                <Alert severity="error" onClose={() => setSnackOpen(false)}>
+                    添加失败
+                </Alert>
+            </Snackbar>
             <div className="map-add-city">
                 <TextField
                     className="add-city-level-input"
                     label="等级"
                     variant="outlined"
-                    value={cityLevel > 0 ? cityLevel : ""}
+                    value={cityLevelToText(cityLevel)}
                     onChange={handleSetCityLevel}
                 />
                 <TextField label="坐标" variant="outlined" value={coordString} onChange={handleCoordinateChange} />
                 <Button onClick={() => createCity({ level: cityLevel, pos: cityCoord })}>添加城市</Button>
             </div>
-            <div className="add-city-label">{`城市等级: ${cityLevel} 坐标:(${cityCoord.x},${cityCoord.y})`}</div>
+            <div className="add-city-label">{`城市等级: ${cityLevelToDisplayText(cityLevel)} 坐标:(${cityCoord.x},${
+                cityCoord.y
+            })`}</div>
         </div>
     );
 }
 
-function CityTable(props: { cities: City[]; selectedCity: number }): JSX.Element {
-    const { cities } = props;
+function CityTable(props: { cities: City[]; selectedCity: number; selectCity: (index: number) => void }): JSX.Element {
+    const { cities, selectCity } = props;
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(8);
 
@@ -265,7 +443,6 @@ function CityTable(props: { cities: City[]; selectedCity: number }): JSX.Element
         setPage(0);
     }
 
-    console.log(page);
     const minRange = page * rowsPerPage;
     const maxRange = (page + 1) * rowsPerPage;
     const resultRows: JSX.Element[] = [];
@@ -278,13 +455,16 @@ function CityTable(props: { cities: City[]; selectedCity: number }): JSX.Element
             const monthDayString = `${time.getMonth() + 1}/${time.getDate()}`;
             const result = (
                 <TableRow key={index}>
-                    <TableCell className={className} align="center">
+                    <TableCell className={className} align="center" onClick={() => selectCity(index)}>
                         {index}
                     </TableCell>
-                    <TableCell className={className} align="center">
+                    <TableCell className={className} align="center" onClick={() => selectCity(index)}>
                         {city.level}
                     </TableCell>
-                    <TableCell className={className}>{`(${city.pos.x},${city.pos.y})`}</TableCell>
+                    <TableCell
+                        className={className}
+                        onClick={() => selectCity(index)}
+                    >{`(${city.pos.x},${city.pos.y})`}</TableCell>
                     <TableCell>{city.submitter}</TableCell>
                     <TableCell>{`${monthDayString} - ${hourMinuteString}`}</TableCell>
                 </TableRow>
@@ -296,7 +476,7 @@ function CityTable(props: { cities: City[]; selectedCity: number }): JSX.Element
     return (
         <div>
             <TableContainer component={Paper}>
-                <Table>
+                <Table size="small">
                     <TableHead>
                         <TableRow>
                             <TableCell></TableCell>
@@ -328,12 +508,16 @@ function cityLabels(
     selectCity: (e: KonvaEventObject<WheelEvent>) => void,
 ): JSX.Element[] {
     const starRadius = 20;
-    const stars = cities.map((city, index) => {
+    const uniqueCities = new Set<string>();
+    const labels: JSX.Element[] = [];
+    cities.forEach((city, index) => {
+        if (uniqueCities.has(`${city.pos.x},${city.pos.y}`)) return;
+        uniqueCities.add(`${city.pos.x},${city.pos.y}`);
         const coord = objCoord(city.pos);
         const radius = starRatio(city.level) * (1 / mapScale) * starRadius;
         let color = "#89b717";
         if (index === selectedCity) color = "#ff0000";
-        return (
+        labels.push(
             <Star
                 x={coord.x}
                 y={coord.y}
@@ -346,11 +530,11 @@ function cityLabels(
                 opacity={0.8}
                 rotation={0}
                 onClick={selectCity}
-            />
+            />,
         );
     });
 
-    return stars;
+    return labels;
 }
 
 export default AngulumMap;

@@ -50,3 +50,41 @@
 .map-warning-message {
     color: red;
 }
+
+.city-detail-container {
+    border: #ccc 2px solid;
+    min-width: 435px;
+}
+
+.city-detail-title {
+    border: #ccc 2px solid;
+    font-size: 30px;
+    text-align: center;
+}
+
+.city-detail-content {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-evenly;
+    gap: 15px 8px;
+}
+
+.city-detail-info-box {
+    padding: 10px;
+    padding-left: 20px;
+    padding-right: 20px;
+    text-align: center;
+}
+
+.city-detail-data-level {
+    font-size: 30px;
+}
+
+.city-detail-data {
+    font-size: 25px;
+    padding-bottom: 7px;
+}
+
+.city-detail-data-label {
+    font-size: 13px;
+}

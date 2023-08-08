@@ -6,6 +6,7 @@ import timerGroupReducer from "../timer-group";
 import acquiredBluePrintReducer from "../acquired-blue-print";
 import selectedAccountReducer from "../selected-account";
 import fleetPlannerReducer from "../fleet-planner";
+import angulumCityDataReducer from "../angulum-city-data";
 
 export const store = configureStore({
     reducer: {
@@ -15,6 +16,7 @@ export const store = configureStore({
         acquiredBluePrint: acquiredBluePrintReducer,
         selectedAccount: selectedAccountReducer,
         fleetPlanner: fleetPlannerReducer,
+        angulumCityData: angulumCityDataReducer,
     },
     preloadedState: loadState(),
 });
@@ -27,6 +29,7 @@ store.subscribe(() => {
         acquiredBluePrint: store.getState().acquiredBluePrint,
         selectedAccount: store.getState().selectedAccount,
         fleetPlanner: store.getState().fleetPlanner,
+        angulumCityData: store.getState().angulumCityData,
     });
 });
 

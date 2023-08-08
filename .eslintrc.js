@@ -33,6 +33,7 @@ module.exports = {
         "@typescript-eslint/no-explicit-any": "error",
         "@typescript-eslint/no-use-before-define": "off",
         "prefer-destructuring": ["error", { array: false, object: true }],
+        "no-plusplus": ["error", { allowForLoopAfterthoughts: true }],
     },
     overrides: [
         {

@@ -44,7 +44,7 @@ function Map() {
     const [selectedCityIndex, setSelectedCityIndex] = useState<number>(-1);
     const [mapScale, setMapScale] = useState<number>(1);
     const [tabIndex, setTabIndex] = useState<number>(0);
-    const [cityLevelLimit, setCityLevelLimit] = useState<number>(0);
+    const [cityLevelLimit, setCityLevelLimit] = useState<number>(3);
     const dispatch = useAppDispatch();
     const unauthorized = useAppSelector((state) => state.angulumCityData.requestState === "failed");
     const levels = [10, 7, 5, 4, 3, 2];

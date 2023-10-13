@@ -6,10 +6,11 @@ import BrushIcon from "@mui/icons-material/Brush";
 import { displayControl, getAllFleets } from "../redux/selector/fleet-planner.selector";
 import { useAppDispatch, useAppSelector } from "../redux/utils/hooks";
 import "./css/fleet-plan.css";
-import { changeFleetName, Fleet, removeFleet } from "../redux/fleet-planner";
+import { changeFleetName, removeFleet } from "../redux/fleet-planner";
 import { getSelectedAccountId } from "../redux/selected-account";
 import { FleetPlanShipTable } from "./fleet-plan-ship-table";
 import { FleetPlanAircraftTable } from "./fleet-plan-aircraft-table";
+import { Fleet } from "../redux/types/fleet-planner.type";
 
 export function FleetPlan(): JSX.Element {
     const fleets = useAppSelector(getAllFleets);

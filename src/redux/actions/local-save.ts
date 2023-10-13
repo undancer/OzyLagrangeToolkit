@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { RootState } from "../core/store";
-import { FleetPlan } from "../fleet-planner";
 import { BPDisplayMode } from "../types/acquired-blue-print.type";
+import { FleetPlan } from "../types/fleet-planner.type";
 
 export const saveState = (state: RootState) => {
     try {

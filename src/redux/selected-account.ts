@@ -2,10 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { addAccount, removeAccount } from "./actions/game-account";
 import { RootState } from "./core/store";
-
-export interface SelectedAccountState {
-    accountId: string;
-}
+import { SelectedAccountState } from "./types/selected-account.types";
 
 const initialState: SelectedAccountState = { accountId: "" };
 

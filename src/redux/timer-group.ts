@@ -3,27 +3,7 @@ import { RootState } from "./core/store";
 import { addTimer, clearTimer, TimerType } from "./actions/game-timer";
 import { addAccount, removeAccount } from "./actions/game-account";
 import { removeElementByValue } from "./utils/arrayhelper";
-
-interface TimerGroupState {
-    [index: string]: TimerGroup;
-}
-
-interface TimerGroup {
-    accountId: string;
-
-    // Construction Category
-    construction: string[];
-    baseUpgrade: string[];
-
-    // Shipyard Category
-    ship: string[];
-    miner: string[];
-    capitalShip: string[];
-
-    // Research Category
-    research: string[];
-    agreement: string[];
-}
+import { TimerGroup, TimerGroupState } from "./types/timer-group.types";
 
 function emptyTimerGrup(id: string): TimerGroup {
     return {

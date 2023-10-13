@@ -2,16 +2,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { RootState } from "./core/store";
 import { addTimer, clearTimer } from "./actions/game-timer";
-
-interface TaskTimeStampState {
-    [index: string]: TaskTimeStamp;
-}
-
-interface TaskTimeStamp {
-    id: string;
-    duration: number;
-    startTime: number;
-}
+import { TaskTimeStampState } from "./types/task-time-stamp.types";
 
 const initialState: TaskTimeStampState = {};
 

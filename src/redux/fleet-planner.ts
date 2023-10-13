@@ -11,67 +11,11 @@ import {
     FleetPlannerSettings,
     FleetNameChange,
     RemoveFleet,
+    FleetPlan,
+    FleetPlannerState,
+    FleetType,
+    FleetPlannerSetting,
 } from "./types/fleet-planner.type";
-
-export enum FleetPlannerSetting {
-    DisplayOwned,
-    DisplayControl,
-    MainModuleFirst,
-}
-
-interface FleetPlannerState {
-    [index: string]: FleetPlan;
-}
-
-export enum FleetType {
-    main,
-    reinforcement,
-    aircraft,
-}
-
-export interface FleetPlan {
-    accountId: string;
-    availableShipTypes: ShipTypes[];
-    shipIgnoreList: string[];
-    maxPopulation: number;
-    onlyDisplayOwned: boolean;
-    displayControl: boolean;
-    mainModuleFirst: boolean;
-    selectedFleet: { index: number; type: FleetType };
-    fleetLimit: number;
-    fleets: Fleet[];
-}
-
-export interface Fleet {
-    name: string;
-    mainFleet: ShipInFleet[];
-    reinforcement: ShipInFleet[];
-    aircraft: AircraftInFleet[];
-}
-
-export interface ShipInFleet {
-    shipId: string;
-    variant: number;
-    count: number;
-    adjusted: boolean;
-    leveled: boolean;
-    inComplete?: boolean;
-}
-
-export interface AircraftInFleet {
-    shipId: string;
-    variant: number;
-    count: number;
-    distribution: AircraftDistribution[];
-    adjusted: boolean;
-    leveled: boolean;
-}
-
-interface AircraftDistribution {
-    shipId: string;
-    variant: number;
-    count: number;
-}
 
 function emptyAccountData(id: string): FleetPlan {
     return {

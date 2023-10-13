@@ -70,3 +70,17 @@ export interface UpdateBluePrintSetting {
     displayMode: BPDisplayMode;
     showZeroPercent: boolean;
 }
+
+export interface AcquiredBluePrints {
+    accountId: string;
+    editLock: boolean;
+    displayMode: BPDisplayMode;
+    showZeroPercentBluePrint: boolean;
+    superCapitals: AcquiredSuperCap[];
+    ships: AcquiredShip[];
+    aircraft: AcquiredAircraft[];
+}
+
+export interface AcquiredBluePrintsState {
+    [index: string]: AcquiredBluePrints;
+}

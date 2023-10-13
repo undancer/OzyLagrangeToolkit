@@ -9,13 +9,15 @@ import {
     TableContainer,
     TablePagination,
 } from "@mui/material";
-import { useAppSelector } from "../redux/utils/hooks";
+import { useAppDispatch, useAppSelector } from "../redux/utils/hooks";
+import { selectSelectedIndex, selectCity } from "../redux/angulum-city-data";
 
-function AngulumFullRecordTable(props: { selectedCity: number; selectCity: (index: number) => void }): JSX.Element {
-    const { selectCity } = props;
+function AngulumFullRecordTable(): JSX.Element {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(22);
     const cities = useAppSelector((state) => state.angulumCityData.cities);
+    const selectedCityIndex = useAppSelector(selectSelectedIndex);
+    const dispatch = useAppDispatch();
 
     function handlePageChange(_e: React.MouseEvent<HTMLButtonElement> | null, newPage: number) {
         setPage(newPage);
@@ -26,27 +28,31 @@ function AngulumFullRecordTable(props: { selectedCity: number; selectCity: (inde
         setPage(0);
     }
 
+    function handleSelectCity(index: number) {
+        dispatch(selectCity(index));
+    }
+
     const minRange = page * rowsPerPage;
     const maxRange = (page + 1) * rowsPerPage;
     const resultRows: JSX.Element[] = [];
 
     cities.forEach((city, index) => {
         if (index >= minRange && index < maxRange) {
-            const className = index === props.selectedCity ? "map-city selected-city" : "map-city";
+            const className = index === selectedCityIndex ? "map-city selected-city" : "map-city";
             const time = new Date(city.createdAt);
             const hourMinuteString = `${time.getHours()}:${time.getMinutes()}:${time.getSeconds()}`;
             const monthDayString = `${time.getMonth() + 1}/${time.getDate()}`;
             const result = (
                 <TableRow key={index}>
-                    <TableCell className={className} align="center" onClick={() => selectCity(index)}>
+                    <TableCell className={className} align="center" onClick={() => handleSelectCity(index)}>
                         {index}
                     </TableCell>
-                    <TableCell className={className} align="center" onClick={() => selectCity(index)}>
+                    <TableCell className={className} align="center" onClick={() => handleSelectCity(index)}>
                         {city.level}
                     </TableCell>
                     <TableCell
                         className={className}
-                        onClick={() => selectCity(index)}
+                        onClick={() => handleSelectCity(index)}
                     >{`(${city.pos.x},${city.pos.y})`}</TableCell>
                     <TableCell>{city.submitter}</TableCell>
                     <TableCell>{`${monthDayString} - ${hourMinuteString}`}</TableCell>

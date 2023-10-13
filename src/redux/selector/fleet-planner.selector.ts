@@ -3,9 +3,9 @@ import { addCapacity, AirCapacity, ShipAirCapacity, SuperCapAirCapacity } from "
 import { lookUpShipById } from "../../components/data/ship-data";
 import { ShipTypes } from "../../components/data/ship-data-types";
 import { RootState } from "../core/store";
-import { FleetPlannerSetting, FleetType } from "../fleet-planner";
 import { getOwnedSuperCapLookUpTable } from "./acquired-blue-prints";
 import { techPointDisplayData } from "../../components/fleet-plan-ship-table";
+import { FleetType, FleetPlannerSetting } from "../types/fleet-planner.type";
 
 export function selectAvailableShipTypes(state: RootState) {
     const { accountId } = state.selectedAccount;

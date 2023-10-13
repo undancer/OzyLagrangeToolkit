@@ -13,10 +13,7 @@ import {
 import { useAppDispatch, useAppSelector } from "../redux/utils/hooks";
 import "./css/fleet-plan.css";
 import {
-    AircraftInFleet,
     decreaseShipCount,
-    Fleet,
-    FleetType,
     flipAdjustedFlag,
     flipLeveledFlag,
     increaseShipCount,
@@ -25,7 +22,7 @@ import {
 import { getSelectedAccountId } from "../redux/selected-account";
 import { lookUpShipById } from "./data/ship-data";
 import { isShipData, ShipTypes } from "./data/ship-data-types";
-import { EditRemoveShipOrAircraft } from "../redux/types/fleet-planner.type";
+import { AircraftInFleet, EditRemoveShipOrAircraft, Fleet, FleetType } from "../redux/types/fleet-planner.type";
 import { AirCapacity } from "./data/air-capacity";
 
 export function FleetPlanAircraftTable(props: { fleet: Fleet; fleetIndex: number }): JSX.Element | null {

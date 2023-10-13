@@ -8,7 +8,7 @@ import { selectAllAccounts } from "../redux/game-account";
 import "./css/angulum-system-map.css";
 import NoAccountWarning from "./no-account-warning";
 import { getLinePoints, MAP_BORDERS, objCoord, STAGE_HEIGHT, STAGE_WIDTH, starRatio } from "./data/coordinates";
-import { fetchCities } from "../redux/angulum-city-data";
+import { fetchCities, selectSelectedIndex, selectCity } from "../redux/angulum-city-data";
 import AddAngulumCity from "./add-angulum-city";
 import AngulumFullRecordTable from "./angulum-full-record-table";
 import AngulumSelectedCity from "./angulum-selected-city";
@@ -41,11 +41,11 @@ function AngulumMap() {
 }
 
 function Map() {
-    const [selectedCityIndex, setSelectedCityIndex] = useState<number>(-1);
     const [mapScale, setMapScale] = useState<number>(1);
     const [tabIndex, setTabIndex] = useState<number>(0);
     const [cityLevelLimit, setCityLevelLimit] = useState<number>(3);
     const dispatch = useAppDispatch();
+    const selectedIndex = useAppSelector(selectSelectedIndex);
     const unauthorized = useAppSelector((state) => state.angulumCityData.requestState === "failed");
     const levels = [10, 7, 5, 4, 3, 2];
 
@@ -53,8 +53,9 @@ function Map() {
         dispatch(fetchCities());
     }, []);
 
-    function selectCity(e: KonvaEventObject<MouseEvent>): void {
-        setSelectedCityIndex(parseInt(e.target.id(), 10));
+    function uiCitySelection(e: KonvaEventObject<MouseEvent>): void {
+        const index = parseInt(e.target.id(), 10);
+        dispatch(selectCity(index));
     }
 
     function handleWheel(e: KonvaEventObject<WheelEvent>) {
@@ -67,7 +68,7 @@ function Map() {
     const borderLines = MAP_BORDERS.map((border, index) => (
         <Line points={getLinePoints(border)} stroke={BORDER_LINE_COLOR} key={index} />
     ));
-    const stars = cityLabels(mapScale, selectedCityIndex, selectCity, levels[cityLevelLimit]);
+    const stars = cityLabels(mapScale, selectedIndex, uiCitySelection, levels[cityLevelLimit]);
 
     const warningMessage = (
         <Text
@@ -83,7 +84,6 @@ function Map() {
     const marks: { value: number; label: string }[] = [];
     levels.forEach((level, index) => marks.push({ value: index, label: level.toString() }));
 
-    console.log(`TabIndex: ${tabIndex}`);
     return (
         <div className="map-container">
             <div className="map-box">
@@ -105,10 +105,10 @@ function Map() {
                     </Tabs>
                 </Box>
                 <div hidden={tabIndex !== 0}>
-                    <AngulumSelectedCity selectedIndex={selectedCityIndex} selectCity={setSelectedCityIndex} />
+                    <AngulumSelectedCity />
                 </div>
                 <div hidden={tabIndex !== 1}>
-                    <AngulumFullRecordTable selectedCity={selectedCityIndex} selectCity={setSelectedCityIndex} />
+                    <AngulumFullRecordTable />
                 </div>
                 <div hidden={tabIndex !== 2}>
                     <label>城市等级</label>
@@ -133,7 +133,7 @@ function Map() {
 function cityLabels(
     mapScale: number,
     selectedCity: number,
-    selectCity: (e: KonvaEventObject<WheelEvent>) => void,
+    uiCitySelect: (e: KonvaEventObject<WheelEvent>) => void,
     levelFilter: number,
 ): JSX.Element[] {
     const cities = useAppSelector((state) => state.angulumCityData.cities);
@@ -156,7 +156,7 @@ function cityLabels(
                     fill={color}
                     key={index}
                     id={index.toString()}
-                    onClick={selectCity}
+                    onClick={uiCitySelect}
                 />,
             );
         } else {
@@ -172,7 +172,7 @@ function cityLabels(
                     fill={color}
                     opacity={0.8}
                     rotation={0}
-                    onClick={selectCity}
+                    onClick={uiCitySelect}
                 />,
             );
         }

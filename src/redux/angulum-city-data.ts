@@ -8,12 +8,8 @@ import {
     ModelSortDirection,
 } from "../API";
 import * as queries from "../graphql/queries";
-
-interface AngulumCityDataState {
-    requestState: "idle" | "loading" | "succeeded" | "failed";
-    cities: City[];
-    error: string | undefined;
-}
+import { RootState } from "./core/store";
+import { AngulumCityDataState } from "./types/angulum-city-data.types";
 
 const initialState: AngulumCityDataState = {
     requestState: "idle",
@@ -24,7 +20,14 @@ const initialState: AngulumCityDataState = {
 const angulumCityDataSlice = createSlice({
     name: "angulumCityData",
     initialState,
-    reducers: {},
+    reducers: {
+        selectCity(state, action) {
+            state.selectedIndex = action.payload;
+        },
+        clearSelectedCity(state) {
+            state.selectedIndex = undefined;
+        },
+    },
     extraReducers: (builder) => {
         builder.addCase(fetchCities.fulfilled, (state, action) => {
             const cities = action.payload;
@@ -61,3 +64,6 @@ export const fetchCities = createAsyncThunk("angulumCityData/fetch", async () =>
 });
 
 export default angulumCityDataSlice.reducer;
+export const { selectCity, clearSelectedCity } = angulumCityDataSlice.actions;
+export const selectCities = (state: RootState) => state.angulumCityData.cities;
+export const selectSelectedIndex = (state: RootState) => state.angulumCityData.selectedIndex ?? -1;

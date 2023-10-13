@@ -2,13 +2,16 @@ import { Table, TableBody, TableHead, TableCell, TableRow, TableContainer, Table
 import moment from "moment";
 import React, { useState } from "react";
 import { Divider } from "@aws-amplify/ui-react";
-import { useAppSelector } from "../redux/utils/hooks";
+import { useAppDispatch, useAppSelector } from "../redux/utils/hooks";
+import { selectSelectedIndex, selectCity } from "../redux/angulum-city-data";
 
-function AngulumSelectedCity(props: { selectedIndex: number; selectCity: (index: number) => void }): JSX.Element {
+function AngulumSelectedCity(): JSX.Element {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(4);
-    const { selectedIndex, selectCity } = props;
     const cities = useAppSelector((state) => state.angulumCityData.cities);
+    const selectedIndex = useAppSelector(selectSelectedIndex);
+    const dispatch = useAppDispatch();
+
     const selectedCity = cities[selectedIndex];
 
     function handlePageChange(_e: React.MouseEvent<HTMLButtonElement> | null, newPage: number) {
@@ -59,16 +62,16 @@ function AngulumSelectedCity(props: { selectedIndex: number; selectCity: (index:
             const className = index === selectedIndex ? "map-city selected-city" : "map-city";
             const result = (
                 <TableRow key={index}>
-                    <TableCell className={className} align="center" onClick={() => selectCity(index)}>
+                    <TableCell className={className} align="center" onClick={() => dispatch(selectCity(index))}>
                         {index}
                     </TableCell>
-                    <TableCell className={className} align="center" onClick={() => selectCity(index)}>
+                    <TableCell className={className} align="center" onClick={() => dispatch(selectCity(index))}>
                         {city.submitter}
                     </TableCell>
-                    <TableCell className={className} align="center" onClick={() => selectCity(index)}>
+                    <TableCell className={className} align="center" onClick={() => dispatch(selectCity(index))}>
                         {city.level === 0 ? "X" : city.level.toString()}
                     </TableCell>
-                    <TableCell className={className} align="center" onClick={() => selectCity(index)}>
+                    <TableCell className={className} align="center" onClick={() => dispatch(selectCity(index))}>
                         {moment(city.updatedAt).fromNow()}
                     </TableCell>
                 </TableRow>

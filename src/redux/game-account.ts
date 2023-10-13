@@ -1,16 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "./core/store";
 import { addAccount, removeAccount } from "./actions/game-account";
-import { AccountNameChangeAction } from "./types/game-account.type";
-
-interface GameAccountState {
-    [index: string]: GameAccount;
-}
-
-interface GameAccount {
-    id: string;
-    name: string;
-}
+import { AccountNameChangeAction, GameAccountState } from "./types/game-account.type";
 
 const initialState: GameAccountState = {};
 

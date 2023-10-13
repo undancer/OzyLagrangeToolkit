@@ -5,14 +5,7 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import TuneIcon from "@mui/icons-material/Tune";
 import DeveloperBoardIcon from "@mui/icons-material/DeveloperBoard";
 // import DeveloperBoardOffIcon from "@mui/icons-material/DeveloperBoardOff";
-import {
-    addFleet,
-    changeSelectedFleet,
-    FleetPlannerSetting,
-    FleetType,
-    updateAvailableShipTypes,
-    updateSettings,
-} from "../redux/fleet-planner";
+import { addFleet, changeSelectedFleet, updateAvailableShipTypes, updateSettings } from "../redux/fleet-planner";
 import { selectAllAccounts } from "../redux/game-account";
 import { changeSelectedAccount, getSelectedAccountId } from "../redux/selected-account";
 import {
@@ -29,7 +22,7 @@ import { ShipTypes } from "./data/ship-data-types";
 import { FleetShipPicker } from "./fleet-ship-picker";
 import { FleetPlan } from "./fleet-plan";
 import { randomFleetName } from "./utils/randomName";
-import { FleetPlannerSettings } from "../redux/types/fleet-planner.type";
+import { FleetPlannerSetting, FleetPlannerSettings, FleetType } from "../redux/types/fleet-planner.type";
 
 function FleetPlaner(): JSX.Element {
     return (

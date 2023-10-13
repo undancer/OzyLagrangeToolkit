@@ -6,7 +6,7 @@ import { CreateCityInput, CreateCityMutation, CreateCordinateInput, CreateCordin
 import * as mutations from "../graphql/mutations";
 import { CityData, Coordinate } from "./data/coordinates";
 import { useAppDispatch } from "../redux/utils/hooks";
-import { fetchCities } from "../redux/angulum-city-data";
+import { fetchCities, selectCity } from "../redux/angulum-city-data";
 
 function AddAngulumCity(): JSX.Element {
     const [cityLevel, setCityLevel] = useState<number>(-1);
@@ -63,7 +63,8 @@ function AddAngulumCity(): JSX.Element {
         setCityLevel(-1);
         setCoordString("");
         setCityCoord({ x: 0, y: 0 });
-        dispatch(fetchCities());
+        await dispatch(fetchCities());
+        dispatch(selectCity(0));
     }
 
     function handleSetCityLevel(e: React.ChangeEvent<HTMLInputElement>) {

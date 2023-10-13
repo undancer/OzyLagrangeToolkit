@@ -2,6 +2,8 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { addAccount, removeAccount } from "./actions/game-account";
 import {
     AcquiredAircraft,
+    AcquiredBluePrints,
+    AcquiredBluePrintsState,
     AcquiredShip,
     AcquiredSuperCap,
     AddRemoveAircraftAction,
@@ -13,20 +15,6 @@ import {
     UpdateTechPoint,
 } from "./types/acquired-blue-print.type";
 import { ShipTypes } from "../components/data/ship-data-types";
-
-export interface AcquiredBluePrintsState {
-    [index: string]: AcquiredBluePrints;
-}
-
-export interface AcquiredBluePrints {
-    accountId: string;
-    editLock: boolean;
-    displayMode: BPDisplayMode;
-    showZeroPercentBluePrint: boolean;
-    superCapitals: AcquiredSuperCap[];
-    ships: AcquiredShip[];
-    aircraft: AcquiredAircraft[];
-}
 
 function emptyAccountData(id: string): AcquiredBluePrints {
     return {

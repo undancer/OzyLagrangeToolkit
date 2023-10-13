@@ -6,13 +6,10 @@ import MilitaryTechIcon from "@mui/icons-material/MilitaryTech";
 import ScienceIcon from "@mui/icons-material/Science";
 import {
     decreaseShipCount,
-    Fleet,
-    FleetType,
     flipAdjustedFlag,
     flipLeveledFlag,
     increaseShipCount,
     removeShipOrAircraft,
-    ShipInFleet,
 } from "../redux/fleet-planner";
 import { lookUpShipById } from "./data/ship-data";
 import { isShipData } from "./data/ship-data-types";
@@ -22,7 +19,7 @@ import {
     getFleetDataTotal,
     getFleetShipTechPointLookupTable,
 } from "../redux/selector/fleet-planner.selector";
-import { EditRemoveShipOrAircraft } from "../redux/types/fleet-planner.type";
+import { EditRemoveShipOrAircraft, Fleet, FleetType, ShipInFleet } from "../redux/types/fleet-planner.type";
 import { getSelectedAccountId } from "../redux/selected-account";
 
 export interface techPointDisplayData {

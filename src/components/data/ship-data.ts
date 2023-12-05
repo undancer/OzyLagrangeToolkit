@@ -279,6 +279,7 @@ const FRIGATE_DATA: ShipData[] = [
         limit: 10,
         variants: ["轨道炮", "粒子炮", "防卫型"],
     },
+    { id: "d10", name: "雨海级", type: ShipTypes.frigate, pop: 6, limit: 10, variants: ["轨道炮", "脉冲型"] },
     {
         id: "d4",
         name: "卡里莱恩级",
@@ -369,6 +370,7 @@ const AIRCRAFT_DATA: AircraftData[] = [
     { id: "a9", name: "佩刀Aer410", type: ShipTypes.aircraft, pop: 1, limit: 10, aircraftType: "mid" },
     { id: "a6", name: "平衡安德森", type: ShipTypes.aircraft, pop: 1, limit: 10, aircraftType: "mid" },
     { id: "a10", name: "SC002", type: ShipTypes.aircraft, pop: 1, limit: 10, aircraftType: "mid" },
+    { id: "a11", name: "AT021", type: ShipTypes.aircraft, pop: 1, limit: 15, aircraftType: "mid" },
 ];
 
 const CORVETTE_DATA: ShipData[] = [

@@ -44,7 +44,9 @@
           ],
           "defaultAuthentication": {
             "apiKeyConfig": {
-              "apiKeyExpirationDays": 7
+              "apiKeyExpirationDate": "2025-03-22T01:11:47.647Z",
+              "apiKeyExpirationDays": 365,
+              "description": "Ozytool Kit Api"
             },
             "authenticationType": "API_KEY"
           }

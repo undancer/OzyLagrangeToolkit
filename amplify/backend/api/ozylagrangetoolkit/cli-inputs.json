@@ -5,13 +5,16 @@
     "serviceName": "AppSync",
     "defaultAuthType": {
       "mode": "API_KEY",
-      "expirationTime": 7
+      "expirationTime": 365,
+      "apiKeyExpirationDate": "2025-03-22T01:11:47.647Z",
+      "keyDescription": "Ozytool Kit Api"
     },
     "additionalAuthTypes": [
       {
         "mode": "AMAZON_COGNITO_USER_POOLS",
         "cognitoUserPoolId": "authozylagrangetoolkit6a64cf156a64cf15"
       }
-    ]
+    ],
+    "conflictResolution": {}
   }
 }

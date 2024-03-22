@@ -8,9 +8,10 @@
 import * as React from "react";
 import { Button, Flex, Grid, TextField } from "@aws-amplify/ui-react";
 import { fetchByPath, getOverrideProps, validateField } from "./utils";
-import { API } from "aws-amplify";
+import { generateClient } from "aws-amplify/api";
 import { getCordinate } from "../graphql/queries";
 import { updateCordinate } from "../graphql/mutations";
+const client = generateClient();
 export default function CordinateUpdateForm(props) {
   const {
     id: idProp,
@@ -44,7 +45,7 @@ export default function CordinateUpdateForm(props) {
     const queryData = async () => {
       const record = idProp
         ? (
-            await API.graphql({
+            await client.graphql({
               query: getCordinate.replaceAll("__typename", ""),
               variables: { id: idProp },
             })
@@ -116,7 +117,7 @@ export default function CordinateUpdateForm(props) {
               modelFields[key] = null;
             }
           });
-          await API.graphql({
+          await client.graphql({
             query: updateCordinate.replaceAll("__typename", ""),
             variables: {
               input: {

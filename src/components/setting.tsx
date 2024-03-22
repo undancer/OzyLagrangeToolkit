@@ -157,13 +157,10 @@ export function SettingContent() {
         <div>
             <div className="data-manager-header">登陆用户</div>
             <Authenticator>
-                {({ signOut, user }) => {
-                    const attributes = user !== undefined ? user.attributes : undefined;
-                    let userName = "";
-                    if (attributes !== undefined) userName = attributes.name;
+                {({ signOut }) => {
                     return (
                         <div className="grey-themed">
-                            <div className="container-add-account">你好 {userName}</div>
+                            <div className="container-add-account">你好</div>
                             <Button onClick={signOut}>登出</Button>
                         </div>
                     );

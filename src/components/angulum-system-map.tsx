@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Container, Box, Tab, Tabs, Slider } from "@mui/material";
 import { Stage, Layer, Star, Rect, Line, Text, Circle } from "react-konva";
 import { KonvaEventObject } from "konva/lib/Node";
-import { Auth } from "aws-amplify";
+import { getCurrentUser } from "aws-amplify/auth";
 import { useAppDispatch, useAppSelector } from "../redux/utils/hooks";
 import { selectAllAccounts } from "../redux/game-account";
 import "./css/angulum-system-map.css";
@@ -25,7 +25,7 @@ function AngulumMap() {
     const gameAccounts = useAppSelector((state) => selectAllAccounts(state));
 
     React.useEffect(() => {
-        Auth.currentAuthenticatedUser()
+        getCurrentUser()
             .then(() => setHasUser(true))
             .catch(() => setHasUser(false));
     }, []);

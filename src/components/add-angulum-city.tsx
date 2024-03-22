@@ -1,6 +1,6 @@
 import { Button, TextField, Snackbar, Alert } from "@mui/material";
-import { API, Auth } from "aws-amplify";
-import { GRAPHQL_AUTH_MODE, GraphQLQuery } from "@aws-amplify/api";
+import { GraphQLQuery, generateClient } from "@aws-amplify/api";
+import { fetchUserAttributes } from "aws-amplify/auth";
 import { useState } from "react";
 import { CreateCityInput, CreateCityMutation, CreateCordinateInput, CreateCordinateMutation } from "../API";
 import * as mutations from "../graphql/mutations";
@@ -14,6 +14,7 @@ function AddAngulumCity(): JSX.Element {
     const [cityCoord, setCityCoord] = useState<Coordinate>({ x: 0, y: 0 });
     const [snackOpen, setSnackOpen] = useState<boolean>(false);
     const dispatch = useAppDispatch();
+    const client = generateClient({ authMode: "userPool" });
 
     async function createCity(city: CityData) {
         if ((city.level !== 0 && city.level < 2) || cityCoord.x === 0 || cityCoord.y === 0) {
@@ -29,17 +30,16 @@ function AddAngulumCity(): JSX.Element {
             y: city.pos.y,
         };
         try {
-            const newCoordinate = await API.graphql<GraphQLQuery<CreateCordinateMutation>>({
+            const newCoordinate = await client.graphql<GraphQLQuery<CreateCordinateMutation>>({
                 query: mutations.createCordinate,
                 variables: { input: posDetail },
-                authMode: GRAPHQL_AUTH_MODE.AMAZON_COGNITO_USER_POOLS,
             });
 
             if (newCoordinate.data === undefined) throw new Error("Failed to create coordinate");
             if (newCoordinate.data.createCordinate === undefined || newCoordinate.data.createCordinate === null)
                 throw new Error("Failed to create coordinate");
-            const user = await Auth.currentAuthenticatedUser();
-            const userName = user.attributes.name;
+            const attributes = await fetchUserAttributes();
+            const userName = attributes.name || "";
 
             const cityDetail: CreateCityInput = {
                 level: city.level,
@@ -48,10 +48,9 @@ function AddAngulumCity(): JSX.Element {
                 cityPosId: newCoordinate.data.createCordinate.id,
             };
 
-            const newCity = await API.graphql<GraphQLQuery<CreateCityMutation>>({
+            const newCity = await client.graphql<GraphQLQuery<CreateCityMutation>>({
                 query: mutations.createCity,
                 variables: { input: cityDetail },
-                authMode: GRAPHQL_AUTH_MODE.AMAZON_COGNITO_USER_POOLS,
             });
 
             if (newCity.data === undefined) throw new Error("Failed to create city");

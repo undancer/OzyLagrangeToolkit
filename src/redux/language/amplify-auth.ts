@@ -1,5 +1,5 @@
-import { I18n } from "aws-amplify";
 import { translations } from "@aws-amplify/ui-react";
+import { I18n } from "aws-amplify/utils";
 
 function setTranslations() {
     I18n.putVocabularies(translations);

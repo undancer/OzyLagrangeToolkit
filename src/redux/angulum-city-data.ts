@@ -1,6 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { API } from "aws-amplify";
-import { GRAPHQL_AUTH_MODE, GraphQLQuery } from "@aws-amplify/api";
+import { GraphQLQuery, generateClient } from "@aws-amplify/api";
 import {
     City,
     ListCitiesWithSortedTimeQuery,
@@ -46,14 +45,14 @@ const angulumCityDataSlice = createSlice({
 });
 
 export const fetchCities = createAsyncThunk("angulumCityData/fetch", async () => {
+    const client = generateClient({ authMode: "userPool" });
     const vars: ListCitiesWithSortedTimeQueryVariables = {
         type: "CITY",
         limit: 1000,
         sortDirection: ModelSortDirection.DESC,
     };
-    const apiData = await API.graphql<GraphQLQuery<ListCitiesWithSortedTimeQuery>>({
+    const apiData = await client.graphql<GraphQLQuery<ListCitiesWithSortedTimeQuery>>({
         query: queries.listCitiesWithSortedTime,
-        authMode: GRAPHQL_AUTH_MODE.AMAZON_COGNITO_USER_POOLS,
         variables: vars,
     });
     if (apiData.data === undefined) throw new Error("Failed to fetch cities");

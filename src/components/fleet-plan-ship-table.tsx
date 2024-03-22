@@ -106,7 +106,7 @@ function DisplayShipRow(props: {
     let addOn = "";
     if (isShipData(shipData) && shipData.variants[0] !== "") addOn = ` - ${shipData.variants[variant]}`;
 
-    const techDisplayData = techPointLookupTable[shipId] || { text: "n/a", type: "tech-normal" };
+    const techDisplayData = techPointLookupTable[shipId] || { text: "V1.00", type: "tech-normal" };
 
     return (
         <TableRow>

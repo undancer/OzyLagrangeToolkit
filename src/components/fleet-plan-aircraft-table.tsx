@@ -102,7 +102,7 @@ function DisplayAircraftRow(props: { aircraft: AircraftInFleet; fleetIndex: numb
     const isCorvette = data.type === ShipTypes.corvette;
     let addOn = "";
     if (isShipData(data) && data.variants[0] !== "") addOn = ` - ${data.variants[variant]}`;
-    const techDisplayData = techPointLookupTable[shipId] || { text: "n/a", type: "tech-normal" };
+    const techDisplayData = techPointLookupTable[shipId] || { text: "V1.00", type: "tech-normal" };
 
     const tagCell: JSX.Element = (
         <TableCell width={88}>

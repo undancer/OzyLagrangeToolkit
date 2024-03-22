@@ -10,6 +10,7 @@ import angulumCityDataReducer from "../angulum-city-data";
 
 export const store = configureStore({
     reducer: {
+        // @ts-ignore can't get type working here
         gameAccount: gameAccountReducer,
         timerGroup: timerGroupReducer,
         taskTimeStamp: taskTimeStampReducer,
@@ -34,5 +35,4 @@ store.subscribe(() => {
 });
 
 export type RootState = ReturnType<typeof store.getState>;
-
 export type AppDispatch = typeof store.dispatch;

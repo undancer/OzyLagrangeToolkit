@@ -6,6 +6,7 @@ export enum ShipTypes {
     frigate,
     corvette,
     aircraft,
+    bomber,
 }
 
 export interface ShipData {
@@ -13,16 +14,15 @@ export interface ShipData {
     name: string;
     type: ShipWithVariants;
     variants: string[];
-    pop: number;
+    pop: number[];
     limit: number;
 }
 
 export interface AircraftData {
     id: string;
     name: string;
-    type: ShipTypes.aircraft;
-    aircraftType: "mid" | "large";
-    pop: number;
+    type: ShipTypes.aircraft | ShipTypes.bomber | ShipTypes.corvette;
+    variants: string[];
     limit: number;
 }
 
@@ -46,8 +46,11 @@ export interface SuperCapModule {
 }
 
 export type UnitDataGroup = ShipDataGroup | SuperCapDataGroup | AircraftDataGroup;
+export type UnitDataWithVariants = ShipData | AircraftData;
+export type UnitDataWithPopulation = ShipData | SuperCapData;
 export type UnitData = ShipData | SuperCapData | AircraftData;
-export type ShipWithVariants = ShipTypes.cruiser | ShipTypes.destroyer | ShipTypes.frigate | ShipTypes.corvette;
+export type ShipWithVariants = ShipTypes.cruiser | ShipTypes.destroyer | ShipTypes.frigate;
+export type AircraftWithVariants = ShipTypes.aircraft | ShipTypes.bomber | ShipTypes.corvette;
 export type ShipWithModules = ShipTypes.battleCruiser | ShipTypes.carrier;
 
 interface ShipDataGroup {
@@ -64,7 +67,7 @@ interface SuperCapDataGroup {
 
 interface AircraftDataGroup {
     label: string;
-    type: ShipTypes.aircraft;
+    type: AircraftWithVariants;
     list: AircraftData[];
 }
 
@@ -75,15 +78,29 @@ export interface UnitDataBase {
     destroyers: ShipDataGroup;
     frigates: ShipDataGroup;
     aircrafts: AircraftDataGroup;
-    corvettes: ShipDataGroup;
+    bombers: AircraftDataGroup;
+    corvettes: AircraftDataGroup;
+}
+
+export function combineAircraft(data: AircraftDataGroup[]): AircraftDataGroup {
+    const list: AircraftData[] = [];
+    data.forEach((group) => {
+        list.push(...group.list);
+    });
+    return { label: data[0].label, type: ShipTypes.aircraft, list };
 }
 
 export function isShipData(data: UnitData): data is ShipData {
     const { type } = data;
-    return (
-        type === ShipTypes.cruiser ||
-        type === ShipTypes.destroyer ||
-        type === ShipTypes.frigate ||
-        type === ShipTypes.corvette
-    );
+    return type === ShipTypes.cruiser || type === ShipTypes.destroyer || type === ShipTypes.frigate;
+}
+
+export function isAircraft(data: UnitData): data is AircraftData {
+    const { type } = data;
+    return type === ShipTypes.aircraft || type === ShipTypes.bomber || type === ShipTypes.corvette;
+}
+
+export function isSuperCap(data: UnitData): data is SuperCapData {
+    const { type } = data;
+    return type === ShipTypes.battleCruiser || type === ShipTypes.carrier;
 }

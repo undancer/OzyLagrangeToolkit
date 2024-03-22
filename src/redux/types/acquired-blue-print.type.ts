@@ -13,20 +13,10 @@ export interface AcquiredShip {
     partialComplete: Record<number, number>;
 }
 
-export interface AcquiredAircraft {
-    id: string;
-    techPoint: number;
-}
-
 export interface AddRemoveShipAction {
     accountId: string;
     shipId: string;
     variant: number;
-}
-
-export interface AddRemoveAircraftAction {
-    accountId: string;
-    aircraftId: string;
 }
 
 export interface AddRemoveSuperCapAction {
@@ -78,7 +68,6 @@ export interface AcquiredBluePrints {
     showZeroPercentBluePrint: boolean;
     superCapitals: AcquiredSuperCap[];
     ships: AcquiredShip[];
-    aircraft: AcquiredAircraft[];
 }
 
 export interface AcquiredBluePrintsState {

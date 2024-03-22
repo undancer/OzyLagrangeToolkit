@@ -1,12 +1,10 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { addAccount, removeAccount } from "./actions/game-account";
 import {
-    AcquiredAircraft,
     AcquiredBluePrints,
     AcquiredBluePrintsState,
     AcquiredShip,
     AcquiredSuperCap,
-    AddRemoveAircraftAction,
     AddRemoveModel,
     AddRemoveShipAction,
     AddRemoveSuperCapAction,
@@ -24,7 +22,6 @@ function emptyAccountData(id: string): AcquiredBluePrints {
         showZeroPercentBluePrint: false,
         superCapitals: [],
         ships: [],
-        aircraft: [],
     };
 }
 
@@ -38,8 +35,6 @@ export const acquiredBluePrintSlice = createSlice({
         addShip: handleAddShip,
         removeShip: handleRemoveShip,
         updateShipProgress: handleUpdateProgress,
-        addAircraft: handleAddAircraft,
-        removeAircraft: handleRemoveAircraft,
         addSuperCap: handleAddSuperCapital,
         removeSuperCap: handleRemoveSuperCapital,
         updateTechPoint: handleUpdateTechPoint,
@@ -99,33 +94,6 @@ function handleRemoveShip(state: AcquiredBluePrintsState, action: PayloadAction<
     if (index !== -1) ship.variants.splice(index, 1);
 
     if (ship.variants.length <= 0) account.ships.splice(shipIndex, 1);
-}
-
-function handleAddAircraft(state: AcquiredBluePrintsState, action: PayloadAction<AddRemoveAircraftAction>) {
-    const { accountId, aircraftId } = action.payload;
-
-    const account = getAccountByAccountId(state, accountId);
-    if (!account) return;
-    if (account.editLock) return;
-
-    let aircraft = account.aircraft.find((craft) => craft.id === aircraftId);
-    if (aircraft === undefined) {
-        aircraft = { id: aircraftId, techPoint: 0 };
-        account.aircraft.push(aircraft);
-    }
-}
-
-function handleRemoveAircraft(state: AcquiredBluePrintsState, action: PayloadAction<AddRemoveAircraftAction>) {
-    const { accountId, aircraftId } = action.payload;
-
-    const account = getAccountByAccountId(state, accountId);
-    if (!account) return;
-    if (account.editLock) return;
-
-    const aircraftIndex = account.aircraft.findIndex((craft) => craft.id === aircraftId);
-    if (aircraftIndex === -1) return;
-
-    account.aircraft.splice(aircraftIndex, 1);
 }
 
 function handleAddSuperCapital(state: AcquiredBluePrintsState, action: PayloadAction<AddRemoveSuperCapAction>) {
@@ -193,7 +161,7 @@ function handleUpdateTechPoint(state: AcquiredBluePrintsState, action: PayloadAc
     if (!account) return;
     if (account.editLock) return;
 
-    let bluePrint: AcquiredAircraft | AcquiredShip | AcquiredSuperCap | undefined;
+    let bluePrint: AcquiredShip | AcquiredSuperCap | undefined;
     let index = -1;
 
     switch (shipType) {
@@ -201,12 +169,10 @@ function handleUpdateTechPoint(state: AcquiredBluePrintsState, action: PayloadAc
         case ShipTypes.destroyer:
         case ShipTypes.frigate:
         case ShipTypes.corvette:
+        case ShipTypes.aircraft:
+        case ShipTypes.bomber:
             index = account.ships.findIndex((ship) => ship.id === shipId);
             if (index !== -1) bluePrint = account.ships[index];
-            break;
-        case ShipTypes.aircraft:
-            index = account.aircraft.findIndex((ship) => ship.id === shipId);
-            if (index !== -1) bluePrint = account.aircraft[index];
             break;
         case ShipTypes.battleCruiser:
         case ShipTypes.carrier:
@@ -266,8 +232,6 @@ export const {
     addShip,
     removeShip,
     updateShipProgress,
-    addAircraft,
-    removeAircraft,
     addSuperCap,
     removeSuperCap,
     updateTechPoint,

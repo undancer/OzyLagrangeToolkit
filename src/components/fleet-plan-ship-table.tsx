@@ -12,7 +12,7 @@ import {
     removeShipOrAircraft,
 } from "../redux/fleet-planner";
 import { lookUpShipById } from "./data/ship-data";
-import { isShipData } from "./data/ship-data-types";
+import { isShipData, isSuperCap } from "./data/ship-data-types";
 import { useAppDispatch, useAppSelector } from "../redux/utils/hooks";
 import {
     displayControl,
@@ -71,11 +71,16 @@ function DisplayShipRow(props: {
     const techPointLookupTable = useAppSelector(getFleetShipTechPointLookupTable);
 
     const shipData = lookUpShipById(shipId);
+
     if (!shipData) return <></>;
 
-    const { name, pop } = shipData;
-
-    const totalPopulation = pop * count;
+    const { name } = shipData;
+    let totalPopulation = 0;
+    if (isShipData(shipData)) {
+        totalPopulation = shipData.pop[variant] * count;
+    } else if (isSuperCap(shipData)) {
+        totalPopulation = shipData.pop * count;
+    }
 
     function handleLeveled() {
         const action: EditRemoveShipOrAircraft = { accountId, shipIndex, fleetIndex, type };
@@ -144,6 +149,15 @@ function EditShipRow(props: {
     }
 
     const data = lookUpShipById(shipId);
+    let population = 0;
+    if (data === undefined) {
+        // do nothing
+    } else if (isShipData(data)) {
+        population = data.pop[variant];
+    } else if (isSuperCap(data)) {
+        population = data.pop;
+    }
+
     if (!data) return null;
     let addOn = "";
     if (isShipData(data) && data.variants[0] !== "") addOn = ` - ${data.variants[variant]}`;
@@ -165,9 +179,9 @@ function EditShipRow(props: {
         <TableRow>
             {controlCell}
             <TableCell>{`${data.name}${addOn}`}</TableCell>
-            <TableCell align="center">{data.pop}</TableCell>
+            <TableCell align="center">{population}</TableCell>
             <TableCell align="center">{count}</TableCell>
-            <TableCell align="right">{data.pop * count}</TableCell>
+            <TableCell align="right">{population * count}</TableCell>
         </TableRow>
     );
 }

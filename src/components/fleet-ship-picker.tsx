@@ -10,11 +10,7 @@ import { AircraftData, ShipData, ShipTypes, SuperCapData, UnitDataGroup } from "
 import "./css/fleet-ship-picker.css";
 import { addAircraft, addShip } from "../redux/fleet-planner";
 import { getSelectedAccountId } from "../redux/selected-account";
-import {
-    getOwnedAircraftLookUpTable,
-    getOwnedShipLookUpTable,
-    getOwnedSuperCapLookUpTable,
-} from "../redux/selector/acquired-blue-prints";
+import { getOwnedShipLookUpTable, getOwnedSuperCapLookUpTable } from "../redux/selector/acquired-blue-prints";
 import { TechIcon } from "./Icons/tech";
 
 export function FleetShipPicker(): JSX.Element {
@@ -38,6 +34,9 @@ export function FleetShipPicker(): JSX.Element {
                 break;
             case ShipTypes.aircraft:
                 resultCards = resultCards.concat(shipCardsByType({ data: UNIT_DATA_BASE.aircrafts }));
+                break;
+            case ShipTypes.bomber:
+                resultCards = resultCards.concat(shipCardsByType({ data: UNIT_DATA_BASE.bombers }));
                 break;
             case ShipTypes.battleCruiser:
                 resultCards = resultCards.concat(shipCardsByType({ data: UNIT_DATA_BASE.battleCruisers }));
@@ -64,10 +63,9 @@ function shipCardsByType(props: { data: UnitDataGroup }): JSX.Element[] {
         case ShipTypes.destroyer:
         case ShipTypes.frigate:
         case ShipTypes.corvette:
-            shipCards = list.map((data) => <ShipCard shipData={data} key={data.id} />);
-            break;
         case ShipTypes.aircraft:
-            shipCards = list.map((data) => <AircraftCard airData={data} key={data.id} />);
+        case ShipTypes.bomber:
+            shipCards = list.map((data) => <ShipCard shipData={data} key={data.id} />);
             break;
         case ShipTypes.battleCruiser:
         case ShipTypes.carrier:
@@ -110,37 +108,7 @@ function SuperCapCard(props: { superCapData: SuperCapData; disabled?: boolean })
     );
 }
 
-function AircraftCard(props: { airData: AircraftData; disabled?: boolean }): JSX.Element | null {
-    const { airData, disabled } = props;
-    const shipId = airData.id;
-    const dispatch = useAppDispatch();
-    const accountId = useAppSelector(getSelectedAccountId);
-    const ownedLookupTable = useAppSelector(getOwnedAircraftLookUpTable);
-    const onlyDisplayOnwed = useAppSelector(displayOnlyOwnedShip);
-    const ownedAircraft = ownedLookupTable[shipId];
-    const hasAircraft = ownedAircraft !== null && ownedAircraft !== undefined;
-    if (!hasAircraft && onlyDisplayOnwed) return null;
-
-    function handleAddShip() {
-        dispatch(addAircraft({ accountId, shipId, variant: -1 }));
-    }
-
-    return (
-        <Card key={airData.id} variant="outlined">
-            <Typography textAlign={"center"} className="typography-ship-name">
-                {airData.name} <TechIcon className="ship-picker-icon svg-fill-tech-icon" />{" "}
-                {ownedAircraft?.techPoint || 0}
-            </Typography>
-            <div className="ship-picker-button-container">
-                <Button size="small" variant="text" disabled={disabled || !hasAircraft} onClick={handleAddShip}>
-                    {"基础型"}
-                </Button>
-            </div>
-        </Card>
-    );
-}
-
-function ShipCard(props: { shipData: ShipData; disabled?: boolean }): JSX.Element | null {
+function ShipCard(props: { shipData: ShipData | AircraftData; disabled?: boolean }): JSX.Element | null {
     const { shipData, disabled } = props;
     const shipId = shipData.id;
     const dispatch = useAppDispatch();
@@ -154,7 +122,8 @@ function ShipCard(props: { shipData: ShipData; disabled?: boolean }): JSX.Elemen
     if (!hasShip && onlyDisplayOnwed) return null;
 
     function handleAddShip(variant: number) {
-        if (ship?.type === ShipTypes.corvette) {
+        const type = ship?.type;
+        if (type === ShipTypes.corvette || type === ShipTypes.aircraft || type === ShipTypes.bomber) {
             dispatch(addAircraft({ accountId, shipId, variant }));
             return;
         }

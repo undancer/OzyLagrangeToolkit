@@ -1,7 +1,7 @@
 import { createSelector } from "@reduxjs/toolkit";
 import { addCapacity, AirCapacity, ShipAirCapacity, SuperCapAirCapacity } from "../../components/data/air-capacity";
 import { lookUpShipById } from "../../components/data/ship-data";
-import { ShipTypes } from "../../components/data/ship-data-types";
+import { isShipData, isSuperCap, ShipTypes } from "../../components/data/ship-data-types";
 import { RootState } from "../core/store";
 import { getOwnedSuperCapLookUpTable } from "./acquired-blue-prints";
 import { techPointDisplayData } from "../../components/fleet-plan-ship-table";
@@ -74,7 +74,15 @@ export function getFleetDataTotal(state: RootState) {
     const result = plan.fleets.map((fleet) => {
         const main = fleet.mainFleet.reduce(
             (acc, cur) => {
-                const population = lookUpShipById(cur.shipId)?.pop ?? 0;
+                const shipData = lookUpShipById(cur.shipId);
+                let population = 0;
+                if (shipData === undefined) {
+                    // do nothing
+                } else if (isShipData(shipData)) {
+                    population = shipData.pop[cur.variant];
+                } else if (isSuperCap(shipData)) {
+                    population = shipData.pop;
+                }
                 acc.count += cur.count;
                 acc.population += population * cur.count;
                 return acc;
@@ -83,7 +91,15 @@ export function getFleetDataTotal(state: RootState) {
         );
         const reinforce = fleet.reinforcement.reduce(
             (acc, cur) => {
-                const population = lookUpShipById(cur.shipId)?.pop ?? 0;
+                const shipData = lookUpShipById(cur.shipId);
+                let population = 0;
+                if (shipData === undefined) {
+                    // do nothing
+                } else if (isShipData(shipData)) {
+                    population = shipData.pop[cur.variant];
+                } else if (isSuperCap(shipData)) {
+                    population = shipData.pop;
+                }
                 acc.count += cur.count;
                 acc.population += population * cur.count;
                 return acc;
@@ -107,9 +123,9 @@ export function getFleetAirTotal(state: RootState) {
             if (!data) return;
             if (data.type === ShipTypes.corvette) {
                 total.corvette += plane.count;
-            } else if (data.type === ShipTypes.aircraft && data.aircraftType === "mid") {
+            } else if (data.type === ShipTypes.aircraft) {
                 total.midAir += plane.count;
-            } else if (data.type === ShipTypes.aircraft && data.aircraftType === "large") {
+            } else if (data.type === ShipTypes.bomber) {
                 total.heavyAir += plane.count;
             }
         });
@@ -162,10 +178,7 @@ export const getFleetShipTechPointLookupTable = createSelector(
             const { aircraft, mainFleet, reinforcement } = fleet;
             aircraft.forEach((ship) => {
                 const { shipId } = ship;
-                let bluePrint = bluePrints.aircraft.find((bp) => bp.id === shipId);
-                if (!bluePrint) {
-                    bluePrint = bluePrints.ships.find((bp) => bp.id === shipId);
-                }
+                const bluePrint = bluePrints.ships.find((bp) => bp.id === shipId);
                 if (!bluePrint) return;
 
                 lookUpObject[shipId] = techPointsToDisplayValue(bluePrint.techPoint, shipId);

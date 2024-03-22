@@ -8,7 +8,7 @@ import {
     InputAdornment,
     Button,
 } from "@mui/material";
-import { ShipData, ShipTypes } from "./data/ship-data-types";
+import { AircraftData, ShipData, ShipTypes } from "./data/ship-data-types";
 import { useAppDispatch, useAppSelector } from "../redux/utils/hooks";
 import { addShip, removeShip, updateShipProgress, updateTechPoint } from "../redux/acquired-blue-print";
 import { TechIcon } from "./Icons/tech";
@@ -112,7 +112,7 @@ function InputShipTechPoint(props: { shipId: string }): JSX.Element {
     );
 }
 
-export function ListItemShip(props: { data: ShipData }): JSX.Element {
+export function ListItemShip(props: { data: ShipData | AircraftData }): JSX.Element {
     const { data } = props;
     const points = useAppSelector((state) => techPointsByShip(state, ShipTypes.destroyer, data.id));
     const checked = points >= 0;
@@ -122,6 +122,16 @@ export function ListItemShip(props: { data: ShipData }): JSX.Element {
         const key = `${data.id}-${index}`;
         shipList.push(<ShipVariantCheckBox shipId={data.id} variant={index} key={key} label={label} />);
     });
+
+    if (data.variants.length === 1) {
+        return (
+            <ListItem className="list-item-aircraft-data">
+                <ListItemText primary={data.name} />
+                {checked ? <InputShipTechPoint shipId={data.id} /> : null}
+                <List disablePadding>{shipList}</List>
+            </ListItem>
+        );
+    }
 
     return (
         <ListItem className="list-item-ship-data">

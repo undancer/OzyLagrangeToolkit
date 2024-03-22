@@ -3,10 +3,9 @@ import TaskIcon from "@mui/icons-material/Task";
 import { BluePrintTaskBar } from "./blue-print-task-bar";
 import { TechIcon } from "./Icons/tech";
 import { ListItemShip } from "./list-item-ship";
-import { ListItemAircraft } from "./list-item-aircraft";
 import { ListItemSuperCap } from "./list-item-super-cap";
 import { useAppSelector } from "../redux/utils/hooks";
-import { ShipTypes, UnitDataGroup } from "./data/ship-data-types";
+import { ShipTypes, UnitDataGroup, combineAircraft } from "./data/ship-data-types";
 import { UNIT_DATA_BASE } from "./data/ship-data";
 import { BPDisplayMode } from "../redux/types/acquired-blue-print.type";
 import "./css/individual-blue-print.css";
@@ -60,16 +59,17 @@ function ListByShipType(props: { data: UnitDataGroup }): JSX.Element {
         case ShipTypes.cruiser:
         case ShipTypes.destroyer:
         case ShipTypes.frigate:
-        case ShipTypes.corvette:
             data.list.forEach((ship, index) => {
                 if (index > 0) ships.push(<Divider key={`${ship.id}-div`} />);
                 ships.push(<ListItemShip data={ship} key={ship.id} />);
             });
             break;
+        case ShipTypes.corvette:
         case ShipTypes.aircraft:
+        case ShipTypes.bomber:
             data.list.forEach((ship, index) => {
                 if (index > 0) ships.push(<Divider key={`${ship.id}-div`} />);
-                ships.push(<ListItemAircraft data={ship} key={ship.id} />);
+                ships.push(<ListItemShip data={ship} key={ship.id} />);
             });
             break;
         case ShipTypes.battleCruiser:
@@ -119,7 +119,7 @@ function IndividualBluePrint(): JSX.Element {
             <ListByShipType data={UNIT_DATA_BASE.destroyers} />
             <ListByShipType data={UNIT_DATA_BASE.frigates} />
             <ListByShipType data={UNIT_DATA_BASE.corvettes} />
-            <ListByShipType data={UNIT_DATA_BASE.aircrafts} />
+            <ListByShipType data={combineAircraft([UNIT_DATA_BASE.aircrafts, UNIT_DATA_BASE.bombers])} />
         </div>
     );
 }

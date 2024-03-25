@@ -282,7 +282,7 @@ const CRUISER_DATA: ShipData[] = [
         id: "c8",
         name: "CAS066級",
         type: ShipTypes.cruiser,
-        pop: [18, 18, 18],
+        pop: [18, 18, 18, 18],
         limit: 12,
         variants: ["綜合型", "炮击型", "载机型", "支援型"],
     },

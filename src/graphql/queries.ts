@@ -39,6 +39,14 @@ export const listCities = /* GraphQL */ `query ListCities(
     items {
       id
       level
+      pos {
+        id
+        x
+        y
+        createdAt
+        updatedAt
+        __typename
+      }
       submitter
       type
       createdAt
@@ -74,6 +82,14 @@ export const listCitiesWithSortedTime = /* GraphQL */ `query ListCitiesWithSorte
     items {
       id
       level
+      pos {
+        id
+        x
+        y
+        createdAt
+        updatedAt
+        __typename
+      }
       submitter
       type
       createdAt

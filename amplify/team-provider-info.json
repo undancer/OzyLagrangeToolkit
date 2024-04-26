@@ -49,7 +49,7 @@
       "function": {
         "AdminQueries99b65b3a": {
           "deploymentBucketName": "amplify-ozylagrangetoolkit-master-204918-deployment",
-          "s3Key": "amplify-builds/AdminQueries99b65b3a-7861344b5152566b6533-build.zip"
+          "s3Key": "amplify-builds/AdminQueries99b65b3a-6b6b454d3869496b384d-build.zip"
         },
         "ozylagrangetoolkit6a64cf156a64cf15": {}
       },

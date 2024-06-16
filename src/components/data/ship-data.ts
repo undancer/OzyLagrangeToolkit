@@ -260,7 +260,7 @@ const CRUISER_DATA: ShipData[] = [
         limit: 8,
         variants: ["鱼雷型", "反舰型", "支援型"],
     },
-    { id: "c4", name: "猎兵级", type: ShipTypes.cruiser, pop: [18, 18], limit: 8, variants: ["支援型", "反舰型"] },
+    { id: "c4", name: "猎兵级", type: ShipTypes.cruiser, pop: [22, 18], limit: 8, variants: ["支援型", "反舰型"] },
     { id: "c6", name: "康納混沌级", type: ShipTypes.cruiser, pop: [20, 20], limit: 8, variants: ["轨道炮", "电浆型"] },
     {
         id: "c7",
@@ -274,7 +274,7 @@ const CRUISER_DATA: ShipData[] = [
         id: "c5",
         name: "狩猎者级",
         type: ShipTypes.cruiser,
-        pop: [22, 18, 18],
+        pop: [18, 18, 18],
         limit: 8,
         variants: ["通用型", "战术型", "防空型"],
     },

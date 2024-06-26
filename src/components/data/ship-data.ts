@@ -294,6 +294,7 @@ const CRUISER_DATA: ShipData[] = [
         limit: 12,
         variants: ["綜合型", "载机型", "轨道炮", "脉冲型"],
     },
+    { id: "c10", name: "游骑兵级", type: ShipTypes.cruiser, pop: [18, 18], limit: 8, variants: ["综合型", "离子炮"] },
 ];
 
 const FRIGATE_DATA: ShipData[] = [

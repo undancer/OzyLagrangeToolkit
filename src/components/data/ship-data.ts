@@ -440,6 +440,7 @@ const CORVETTE_DATA: AircraftData[] = [
     { id: "e3", name: "蜂巢守卫者", type: ShipTypes.corvette, limit: 10, variants: [""] },
     { id: "e4", name: "S-列维9号", type: ShipTypes.corvette, limit: 10, variants: [""] },
     { id: "e5", name: "虚灵", type: ShipTypes.corvette, limit: 10, variants: [""] },
+    { id: "e10", name: "海尔波普", type: ShipTypes.corvette, limit: 10, variants: ["多功能", "对接型"] },
     { id: "e6", name: "RB7-13", type: ShipTypes.corvette, limit: 10, variants: [""] },
     { id: "e7", name: "鳐", type: ShipTypes.corvette, limit: 10, variants: [""] },
     {

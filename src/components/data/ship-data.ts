@@ -350,7 +350,7 @@ const FRIGATE_DATA: ShipData[] = [
     },
     { id: "d8", name: "云海级", type: ShipTypes.frigate, pop: [4, 4], limit: 10, variants: ["突擊型", "防空型"] },
     {
-        id: "d10",
+        id: "d11",
         name: "狼蜥级",
         type: ShipTypes.frigate,
         pop: [6, 6, 8],

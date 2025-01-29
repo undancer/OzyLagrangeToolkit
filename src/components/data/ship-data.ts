@@ -350,6 +350,14 @@ const FRIGATE_DATA: ShipData[] = [
     },
     { id: "d8", name: "云海级", type: ShipTypes.frigate, pop: [4, 4], limit: 10, variants: ["突擊型", "防空型"] },
     {
+        id: "d10",
+        name: "狼蜥级",
+        type: ShipTypes.frigate,
+        pop: [6, 6, 8],
+        limit: 10,
+        variants: ["防御型", "突击型", "特种型"],
+    },
+    {
         id: "d9",
         name: "FG300级",
         type: ShipTypes.frigate,
@@ -441,6 +449,7 @@ const CORVETTE_DATA: AircraftData[] = [
     { id: "e4", name: "S-列维9号", type: ShipTypes.corvette, limit: 10, variants: [""] },
     { id: "e5", name: "虚灵", type: ShipTypes.corvette, limit: 10, variants: [""] },
     { id: "e10", name: "海尔波普", type: ShipTypes.corvette, limit: 10, variants: ["多功能", "对接型"] },
+    { id: "e11", name: "坦普尔1号", type: ShipTypes.corvette, limit: 10, variants: ["干扰型", "预警型"] },
     { id: "e6", name: "RB7-13", type: ShipTypes.corvette, limit: 10, variants: [""] },
     { id: "e7", name: "鳐", type: ShipTypes.corvette, limit: 10, variants: [""] },
     {

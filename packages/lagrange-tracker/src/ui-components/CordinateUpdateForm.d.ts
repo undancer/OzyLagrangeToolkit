@@ -6,7 +6,7 @@
 
 import * as React from "react";
 import { GridProps, TextFieldProps } from "@aws-amplify/ui-react";
-import { Cordinate } from "../API.ts";
+import { Cordinate } from "../API.js";
 export declare type EscapeHatchProps = {
     [elementHierarchy: string]: Record<string, unknown>;
 } | null;

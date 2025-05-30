@@ -1,7 +1,7 @@
 import { Table, TableBody, TableHead, TableCell, TableRow, TableContainer, TablePagination } from "@mui/material";
 import moment from "moment";
 import React, { useState } from "react";
-import { Divider } from "@aws-amplify/ui-react";
+// import { Divider } from "@aws-amplify/ui-react";
 import { useAppDispatch, useAppSelector } from "../redux/utils/hooks";
 import { selectSelectedIndex, selectCity } from "../redux/angulum-city-data";
 
@@ -87,7 +87,9 @@ function AngulumSelectedCity(): JSX.Element {
     return (
         <div className="city-detail-container">
             <div className="city-detail-title">城市讯息</div>
+            {/*
             <Divider />
+            */}
             <div className="city-detail-content">
                 <div className="city-detail-info-box">
                     <div className="city-detail-data-level">{cityLevel}</div>
@@ -102,7 +104,9 @@ function AngulumSelectedCity(): JSX.Element {
                     <div className="city-detail-data-label">最近更新</div>
                 </div>
             </div>
+            {/*
             <Divider />
+            */}
             <div>
                 <TableContainer>
                     <Table size="small">

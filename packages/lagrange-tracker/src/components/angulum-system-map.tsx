@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Container, Box, Tab, Tabs, Slider } from "@mui/material";
 import { Stage, Layer, Star, Rect, Line, Text, Circle } from "react-konva";
 import { KonvaEventObject } from "konva/lib/Node";
-import { getCurrentUser } from "aws-amplify/auth";
+// import { getCurrentUser } from "aws-amplify/auth";
 import { useAppDispatch, useAppSelector } from "../redux/utils/hooks";
 import { selectAllAccounts } from "../redux/game-account";
 import "./css/angulum-system-map.css";
@@ -21,14 +21,14 @@ const POINT_OF_INTEREST_COLOR = "#ffc300";
 const CITY_ICON_RADIUS = 15;
 
 function AngulumMap() {
-    const [hasUser, setHasUser] = useState<boolean>(false);
+    const [hasUser, setHasUser] = useState<boolean>(false); // eslint-disable-line @typescript-eslint/no-unused-vars
     const gameAccounts = useAppSelector((state) => selectAllAccounts(state));
 
-    React.useEffect(() => {
-        getCurrentUser()
-            .then(() => setHasUser(true))
-            .catch(() => setHasUser(false));
-    }, []);
+    // React.useEffect(() => {
+    //     getCurrentUser()
+    //         .then(() => setHasUser(true))
+    //         .catch(() => setHasUser(false));
+    // }, []);
 
     const warningMessage = (
         <div className="map-warning-message">本功能为赤树风暴注册用户专有功能，请注册后找OZY认证账号后使用。</div>

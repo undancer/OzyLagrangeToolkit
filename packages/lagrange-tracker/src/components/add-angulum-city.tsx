@@ -1,9 +1,9 @@
 import { Button, TextField, Snackbar, Alert } from "@mui/material";
-import { GraphQLQuery, generateClient } from "@aws-amplify/api";
-import { fetchUserAttributes } from "aws-amplify/auth";
+// import { GraphQLQuery, generateClient } from "@aws-amplify/api";
+// import { fetchUserAttributes } from "aws-amplify/auth";
 import { useState } from "react";
-import { CreateCityInput, CreateCityMutation, CreateCordinateInput, CreateCordinateMutation } from "../API";
-import * as mutations from "../graphql/mutations";
+// import { CreateCityInput, CreateCityMutation, CreateCordinateInput, CreateCordinateMutation } from "../API";
+// import * as mutations from "../graphql/mutations";
 import { CityData, Coordinate } from "./data/coordinates";
 import { useAppDispatch } from "../redux/utils/hooks";
 import { fetchCities, selectCity } from "../redux/angulum-city-data";
@@ -14,7 +14,7 @@ function AddAngulumCity(): JSX.Element {
     const [cityCoord, setCityCoord] = useState<Coordinate>({ x: 0, y: 0 });
     const [snackOpen, setSnackOpen] = useState<boolean>(false);
     const dispatch = useAppDispatch();
-    const client = generateClient({ authMode: "userPool" });
+    // const client = generateClient({ authMode: "userPool" });
 
     async function createCity(city: CityData) {
         if ((city.level !== 0 && city.level < 2) || cityCoord.x === 0 || cityCoord.y === 0) {
@@ -25,39 +25,39 @@ function AddAngulumCity(): JSX.Element {
             return;
         }
 
-        const posDetail: CreateCordinateInput = {
-            x: city.pos.x,
-            y: city.pos.y,
-        };
-        try {
-            const newCoordinate = await client.graphql<GraphQLQuery<CreateCordinateMutation>>({
-                query: mutations.createCordinate,
-                variables: { input: posDetail },
-            });
+        // const posDetail: CreateCordinateInput = {
+        //     x: city.pos.x,
+        //     y: city.pos.y,
+        // };
+        // try {
+        //     const newCoordinate = await client.graphql<GraphQLQuery<CreateCordinateMutation>>({
+        //         query: mutations.createCordinate,
+        //         variables: { input: posDetail },
+        //     });
 
-            if (newCoordinate.data === undefined) throw new Error("Failed to create coordinate");
-            if (newCoordinate.data.createCordinate === undefined || newCoordinate.data.createCordinate === null)
-                throw new Error("Failed to create coordinate");
-            const attributes = await fetchUserAttributes();
-            const userName = attributes.name || "";
+        //     if (newCoordinate.data === undefined) throw new Error("Failed to create coordinate");
+        //     if (newCoordinate.data.createCordinate === undefined || newCoordinate.data.createCordinate === null)
+        //         throw new Error("Failed to create coordinate");
+        //     const attributes = await fetchUserAttributes();
+        //     const userName = attributes.name || "";
 
-            const cityDetail: CreateCityInput = {
-                level: city.level,
-                type: "CITY",
-                submitter: userName,
-                cityPosId: newCoordinate.data.createCordinate.id,
-            };
+        //     const cityDetail: CreateCityInput = {
+        //         level: city.level,
+        //         type: "CITY",
+        //         submitter: userName,
+        //         cityPosId: newCoordinate.data.createCordinate.id,
+        //     };
 
-            const newCity = await client.graphql<GraphQLQuery<CreateCityMutation>>({
-                query: mutations.createCity,
-                variables: { input: cityDetail },
-            });
+        //     const newCity = await client.graphql<GraphQLQuery<CreateCityMutation>>({
+        //         query: mutations.createCity,
+        //         variables: { input: cityDetail },
+        //     });
 
-            if (newCity.data === undefined) throw new Error("Failed to create city");
-        } catch (error) {
-            console.log(error);
-            throw error;
-        }
+        //     if (newCity.data === undefined) throw new Error("Failed to create city");
+        // } catch (error) {
+        //     console.log(error);
+        //     throw error;
+        // }
 
         setCityLevel(-1);
         setCoordString("");

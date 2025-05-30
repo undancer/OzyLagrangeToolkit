@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Container, Button, IconButton, Input, TextField, Typography } from "@mui/material";
-import { Authenticator } from "@aws-amplify/ui-react";
+// import { Authenticator } from "@aws-amplify/ui-react";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import DoneIcon from "@mui/icons-material/Done";
@@ -8,7 +8,7 @@ import CasinoIcon from "@mui/icons-material/Casino";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import { useAppSelector, useAppDispatch } from "../redux/utils/hooks";
 import { selectAllAccounts, changeAccountName } from "../redux/game-account";
-import "@aws-amplify/ui-react/styles.css";
+// import "@aws-amplify/ui-react/styles.css";
 import "./css/setting.css";
 import NoAccountWarning from "./no-account-warning";
 import { getStateExportLink, importStateIntoLocalStorage } from "../redux/actions/state-import-export";
@@ -156,6 +156,7 @@ export function SettingContent() {
     return (
         <div>
             <div className="data-manager-header">登陆用户</div>
+            {/*
             <Authenticator>
                 {({ signOut }) => {
                     return (
@@ -166,6 +167,7 @@ export function SettingContent() {
                     );
                 }}
             </Authenticator>
+            */}
         </div>
     );
 }

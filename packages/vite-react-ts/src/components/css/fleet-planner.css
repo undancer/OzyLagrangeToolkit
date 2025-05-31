@@ -1,0 +1,55 @@
+.container-main-fleet-planner {
+    max-width: 1850px;
+}
+
+.fleet-plan-content-container {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-evenly;
+    gap: 15px 8px;
+    margin-top: 20px;
+}
+
+.typography-ship-name {
+    margin-left: 10px !important; 
+    margin-right: 10px !important;
+}
+
+.fleet-planner-control-bar {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.typography-ship-type {
+    min-width: 130px;
+}
+
+.fleet-planner-fleet-control {
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+}
+
+.fleet-planer-general-control {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 10px;
+}
+
+.tech-normal {
+    padding: 1px 3px 1px 3px;
+    border: 1.5px;
+    border-style: solid;
+    border-color: white;
+}
+
+.tech-gold {
+    padding: 1px 3px 1px 3px;
+    border: 1.5px;
+    border-style: solid;
+    border-color: gold;
+    color: gold;
+}

@@ -1,0 +1,19 @@
+.timer-adder {
+    margin-top: 20px;
+}
+
+.icon-choice-container {
+    display: block;
+}
+
+.time-selector-container {
+    margin-top: 13px;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    width: 100%;
+}
+
+.time-input {
+    width: 140px;
+}

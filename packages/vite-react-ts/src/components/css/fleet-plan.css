@@ -1,0 +1,42 @@
+.fleet-manager-table-title-box {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: center;
+    background-color: black;
+    padding-bottom: 8px;
+    padding-top: 8px;
+}
+
+.fleet-manager-table-title-button-group {
+    margin-right: -30px;
+}
+
+.fleet-manager-table-footer {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    width: 100%;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.fleet-manager-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 10px 10px;
+    width: 100%;
+}
+
+.fleet-table-total {
+    padding-right: 30px;
+}
+
+.fleet-plan-table-divider {
+    padding-top: 30px;
+}
+
+.no-border {
+    border: 0 !important
+}

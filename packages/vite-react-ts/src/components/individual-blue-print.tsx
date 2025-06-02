@@ -1,45 +1,65 @@
-import { Card, List, ListSubheader, Divider, Typography } from "@mui/material";
+import { Card, Divider, List, ListSubheader, Typography } from "@mui/material";
 import TaskIcon from "@mui/icons-material/Task";
 import { BluePrintTaskBar } from "./blue-print-task-bar";
 import { TechIcon } from "./Icons/tech";
 import { ListItemShip } from "./list-item-ship";
 import { ListItemSuperCap } from "./list-item-super-cap";
-import { useAppSelector } from "../redux/utils/hooks";
-import { ShipTypes, UnitDataGroup, combineAircraft } from "./data/ship-data-types";
-import { UNIT_DATA_BASE } from "./data/ship-data";
-import { BPDisplayMode } from "../redux/types/acquired-blue-print.type";
-import "./css/individual-blue-print.css";
 import {
-    bluePrintSettingForSelectedAccount,
-    reportForSelectedAccount,
-    techPointByShipType,
-} from "../redux/selector/acquired-blue-prints";
+    combineAircraft,
+    ShipTypes,
+    UnitDataGroup,
+} from "./data/ship-data-types";
+import { UNIT_DATA_BASE } from "./data/ship-data";
+import { useAcquiredBlueprint, useAppContext } from "../context";
+import "./css/individual-blue-print.css";
+import React, { useMemo } from "react";
 
-function CardSubHeader(props: { data: UnitDataGroup }): JSX.Element {
+function CardSubHeader(props: { data: UnitDataGroup }): React.JSX.Element {
     const { data } = props;
-    const { displayMode } = useAppSelector(bluePrintSettingForSelectedAccount);
-    const { totalTechPoint, totalBluePrint, acquiredBluePrint } = useAppSelector((state) =>
-        techPointByShipType(state, data.type),
+    const { getBlueprintSettingForSelectedAccount, techPointByShipType } =
+        useAcquiredBlueprint();
+    const { state } = useAppContext();
+    const selectedAccountId = state.selectedAccountId;
+    
+    // 使用useMemo缓存计算结果，添加selectedAccountId作为依赖项
+    const { displayMode } = useMemo(
+        () => getBlueprintSettingForSelectedAccount(),
+        [getBlueprintSettingForSelectedAccount, selectedAccountId]
+    );
+    const { totalTechPoint, totalBluePrint, acquiredBluePrint } = useMemo(
+        () => techPointByShipType(data.type),
+        [techPointByShipType, data.type, selectedAccountId]
     );
 
-    const percent = Math.floor((acquiredBluePrint / totalBluePrint) * 100);
+    // 使用useMemo缓存计算结果
+    const percent = useMemo(() => {
+        // 添加检查，确保totalBluePrint不为0，避免NaN结果
+        return totalBluePrint > 0 ? Math.floor((acquiredBluePrint / totalBluePrint) * 100) : 0;
+    }, [totalBluePrint, acquiredBluePrint]);
 
-    const displayText =
-        displayMode === BPDisplayMode.percent ? `${percent}%` : `${acquiredBluePrint}/${totalBluePrint}`;
+    const displayText = useMemo(() => {
+        return displayMode === "percent"
+            ? `${percent}%`
+            : `${acquiredBluePrint}/${totalBluePrint}`;
+    }, [displayMode, percent, acquiredBluePrint, totalBluePrint]);
 
-    const percentReport =
-        acquiredBluePrint > 0 ? (
+    const percentReport = useMemo(() => {
+        return acquiredBluePrint > 0 ? (
             <div>
-                <TaskIcon className="subheader-blueprint-icon svg-fill-tech-icon" /> {displayText}
+                <TaskIcon className="subheader-blueprint-icon svg-fill-tech-icon" />{" "}
+                {displayText}
             </div>
         ) : null;
+    }, [acquiredBluePrint, displayText]);
 
-    const techReport =
-        totalTechPoint > 0 ? (
+    const techReport = useMemo(() => {
+        return totalTechPoint > 0 ? (
             <div>
-                <TechIcon className="subheader-icon  svg-fill-tech-icon" /> {totalTechPoint}
+                <TechIcon className="subheader-icon  svg-fill-tech-icon" />{" "}
+                {totalTechPoint}
             </div>
         ) : null;
+    }, [totalTechPoint]);
 
     return (
         <ListSubheader component="div" className="subheader-card">
@@ -51,39 +71,49 @@ function CardSubHeader(props: { data: UnitDataGroup }): JSX.Element {
     );
 }
 
-function ListByShipType(props: { data: UnitDataGroup }): JSX.Element {
+function ListByShipType(props: { data: UnitDataGroup }): React.JSX.Element {
     const { data } = props;
-    const ships: JSX.Element[] = [];
+    
+    // 使用useMemo缓存子组件列表
+    const ships = useMemo(() => {
+        const shipElements: React.JSX.Element[] = [];
 
-    switch (data.type) {
-        case ShipTypes.cruiser:
-        case ShipTypes.destroyer:
-        case ShipTypes.frigate:
-            data.list.forEach((ship, index) => {
-                if (index > 0) ships.push(<Divider key={`${ship.id}-div`} />);
-                ships.push(<ListItemShip data={ship} key={ship.id} />);
-            });
-            break;
-        case ShipTypes.corvette:
-        case ShipTypes.aircraft:
-        case ShipTypes.bomber:
-            data.list.forEach((ship, index) => {
-                if (index > 0) ships.push(<Divider key={`${ship.id}-div`} />);
-                ships.push(<ListItemShip data={ship} key={ship.id} />);
-            });
-            break;
-        case ShipTypes.battleCruiser:
-        case ShipTypes.carrier:
-            data.list.forEach((ship, index) => {
-                if (index > 0) ships.push(<Divider key={`${ship.id}-div`} />);
-                ships.push(<ListItemSuperCap data={ship} key={ship.id} />);
-            });
-            break;
-        default:
-        // Do nothing
-    }
-    let cardListClass = "card-ship-list";
-    if (data.type === ShipTypes.battleCruiser || data.type === ShipTypes.carrier) cardListClass = "card-super-cap-list";
+        switch (data.type) {
+            case ShipTypes.cruiser:
+            case ShipTypes.destroyer:
+            case ShipTypes.frigate:
+                data.list.forEach((ship, index) => {
+                    if (index > 0) shipElements.push(<Divider key={`${ship.id}-div`} />);
+                    shipElements.push(<ListItemShip data={ship} key={ship.id} />);
+                });
+                break;
+            case ShipTypes.corvette:
+            case ShipTypes.aircraft:
+            case ShipTypes.bomber:
+                data.list.forEach((ship, index) => {
+                    if (index > 0) shipElements.push(<Divider key={`${ship.id}-div`} />);
+                    shipElements.push(<ListItemShip data={ship} key={ship.id} />);
+                });
+                break;
+            case ShipTypes.battleCruiser:
+            case ShipTypes.carrier:
+                data.list.forEach((ship, index) => {
+                    if (index > 0) shipElements.push(<Divider key={`${ship.id}-div`} />);
+                    shipElements.push(<ListItemSuperCap data={ship} key={ship.id} />);
+                });
+                break;
+            default:
+            // Do nothing
+        }
+        return shipElements;
+    }, [data]);
+    
+    // 使用useMemo缓存计算结果
+    const cardListClass = useMemo(() => {
+        return data.type === ShipTypes.battleCruiser || data.type === ShipTypes.carrier
+            ? "card-super-cap-list"
+            : "card-ship-list";
+    }, [data.type]);
 
     return (
         <Card elevation={2} className={cardListClass}>
@@ -94,22 +124,66 @@ function ListByShipType(props: { data: UnitDataGroup }): JSX.Element {
     );
 }
 
-function IndividualBluePrint(): JSX.Element {
-    const { totalBluePrint, totalTechPoint, acquiredBluePrint } = useAppSelector(reportForSelectedAccount);
-    const { displayMode } = useAppSelector(bluePrintSettingForSelectedAccount);
-    const percent = Math.floor((acquiredBluePrint / totalBluePrint) * 100);
+function IndividualBluePrint(): React.JSX.Element {
+    const {
+        getReportForSelectedAccount,
+        getBlueprintSettingForSelectedAccount
+    } = useAcquiredBlueprint();
+    const { state } = useAppContext();
+    const selectedAccountId = state.selectedAccountId;
+    
+    // 使用useMemo缓存计算结果，添加selectedAccountId作为依赖项
+    const {
+        totalBluePrint,
+        totalTechPoint,
+        acquiredBluePrint
+    } = useMemo(
+        () => getReportForSelectedAccount(),
+        [getReportForSelectedAccount, selectedAccountId]
+    );
+    
+    const {
+        displayMode
+    } = useMemo(
+        () => getBlueprintSettingForSelectedAccount(),
+        [getBlueprintSettingForSelectedAccount, selectedAccountId]
+    );
+    
+    // 使用useMemo缓存计算结果
+    const percent = useMemo(() => {
+        // 添加检查，确保totalBluePrint不为0，避免NaN结果
+        return totalBluePrint > 0 ? Math.floor((acquiredBluePrint / totalBluePrint) * 100) : 0;
+    }, [totalBluePrint, acquiredBluePrint]);
 
-    const displayText =
-        displayMode === BPDisplayMode.percent ? `${percent}%` : `${acquiredBluePrint}/${totalBluePrint}`;
+    const displayText = useMemo(() => {
+        return displayMode === "percent"
+            ? `${percent}%`
+            : `${acquiredBluePrint}/${totalBluePrint}`;
+    }, [displayMode, percent, acquiredBluePrint, totalBluePrint]);
+
+    // 使用useMemo缓存组合的飞行器数据
+    const combinedAircraft = useMemo(() => {
+        return combineAircraft([
+            UNIT_DATA_BASE.aircrafts,
+            UNIT_DATA_BASE.bombers,
+        ]);
+    }, []);
 
     return (
         <div className="account-content-container">
             <BluePrintTaskBar />
             <Card className="account-title-card">
                 <Typography variant="h4" className="blue-print-account-tittle">
-                    全蓝图收集: <TaskIcon fontSize="large" className="svg-fill-tech-icon header-icon" />
+                    全蓝图收集:{" "}
+                    <TaskIcon
+                        fontSize="large"
+                        className="svg-fill-tech-icon header-icon"
+                    />
                     {displayText} &nbsp;&nbsp;总科技点:&nbsp;
-                    <TechIcon fontSize="large" className="svg-fill-tech-icon header-icon" />
+                    <TechIcon
+                        fontSize="large"
+                        className="svg-fill-tech-icon header-icon"
+                    />
                     {totalTechPoint}
                 </Typography>
             </Card>
@@ -119,7 +193,7 @@ function IndividualBluePrint(): JSX.Element {
             <ListByShipType data={UNIT_DATA_BASE.destroyers} />
             <ListByShipType data={UNIT_DATA_BASE.frigates} />
             <ListByShipType data={UNIT_DATA_BASE.corvettes} />
-            <ListByShipType data={combineAircraft([UNIT_DATA_BASE.aircrafts, UNIT_DATA_BASE.bombers])} />
+            <ListByShipType data={combinedAircraft} />
         </div>
     );
 }

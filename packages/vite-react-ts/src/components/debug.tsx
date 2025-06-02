@@ -1,23 +1,23 @@
 import "./css/debug.css";
 import { Container } from "@mui/material";
 import ReactJson from "react-json-view";
-import { useAppSelector } from "../redux/utils/hooks";
+import { useAppState } from "../context";
 
 function DevelopmnentDebug() {
-    const store = useAppSelector((state) => state);
-    const serializedState = localStorage.getItem("state");
-    let stateStore = { nothing: "nothing" };
-    if (serializedState) stateStore = JSON.parse(serializedState);
-    const version = localStorage.getItem("stateVersion");
-    return (
-        <Container maxWidth="xl">
-            <div className="debug-content-container">
-                <ReactJson src={store} />
-                <ReactJson src={stateStore} />
-                <div>Version: {version}</div>
-            </div>
-        </Container>
-    );
+  const state = useAppState();
+  const serializedState = localStorage.getItem("state");
+  let stateStore = { nothing: "nothing" };
+  if (serializedState) stateStore = JSON.parse(serializedState);
+  const version = localStorage.getItem("stateVersion");
+  return (
+    <Container maxWidth="xl">
+      <div className="debug-content-container">
+        <ReactJson src={state} />
+        <ReactJson src={stateStore} />
+        <div>Version: {version}</div>
+      </div>
+    </Container>
+  );
 }
 
 export default DevelopmnentDebug;

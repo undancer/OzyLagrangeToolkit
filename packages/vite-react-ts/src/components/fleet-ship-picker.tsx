@@ -1,162 +1,232 @@
-import { Card, Typography, Button } from "@mui/material";
 import {
-    displayControl,
-    displayOnlyOwnedShip,
-    selectAvailableShipTypes,
-} from "../redux/selector/fleet-planner.selector";
-import { useAppDispatch, useAppSelector } from "../redux/utils/hooks";
-import { lookUpShipById, UNIT_DATA_BASE } from "./data/ship-data";
-import { AircraftData, ShipData, ShipTypes, SuperCapData, UnitDataGroup } from "./data/ship-data-types";
-import "./css/fleet-ship-picker.css";
-import { addAircraft, addShip } from "../redux/fleet-planner";
-import { getSelectedAccountId } from "../redux/selected-account";
-import { getOwnedShipLookUpTable, getOwnedSuperCapLookUpTable } from "../redux/selector/acquired-blue-prints";
+  Box,
+  Button,
+  Card,
+  CardActions,
+  CardContent,
+  Tab,
+  Tabs,
+  Typography,
+} from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { useAppContext } from "../context";
+import { ShipData, ShipTypes } from "./data/ship-data-types";
+import { lookUpShipById } from "./data/ship-data";
 import { TechIcon } from "./Icons/tech";
 
-export function FleetShipPicker(): JSX.Element {
-    const selectedTypes = useAppSelector(selectAvailableShipTypes);
-    const showControl = useAppSelector(displayControl);
-    if (!showControl) return <div className="fleet-planner-ship-type-container"></div>;
-    let resultCards: JSX.Element[] = [];
-    selectedTypes.forEach((type) => {
-        switch (type) {
-            case ShipTypes.cruiser:
-                resultCards = resultCards.concat(shipCardsByType({ data: UNIT_DATA_BASE.cruisers }));
-                break;
-            case ShipTypes.destroyer:
-                resultCards = resultCards.concat(shipCardsByType({ data: UNIT_DATA_BASE.destroyers }));
-                break;
-            case ShipTypes.frigate:
-                resultCards = resultCards.concat(shipCardsByType({ data: UNIT_DATA_BASE.frigates }));
-                break;
-            case ShipTypes.corvette:
-                resultCards = resultCards.concat(shipCardsByType({ data: UNIT_DATA_BASE.corvettes }));
-                break;
-            case ShipTypes.aircraft:
-                resultCards = resultCards.concat(shipCardsByType({ data: UNIT_DATA_BASE.aircrafts }));
-                break;
-            case ShipTypes.bomber:
-                resultCards = resultCards.concat(shipCardsByType({ data: UNIT_DATA_BASE.bombers }));
-                break;
-            case ShipTypes.battleCruiser:
-                resultCards = resultCards.concat(shipCardsByType({ data: UNIT_DATA_BASE.battleCruisers }));
-                break;
-            case ShipTypes.carrier:
-                resultCards = resultCards.concat(shipCardsByType({ data: UNIT_DATA_BASE.carriers }));
-                break;
-            default:
-            // Do nothing
-        }
-    });
-    return (
-        <div className="fleet-planner-ship-type-container">
-            <div className="fleet-planner-ship-type-selector">{resultCards}</div>
-        </div>
-    );
-}
+export function FleetShipPicker(): React.JSX.Element {
+  const { state, dispatch } = useAppContext();
+  const accountId =
+    state.selectedAccount.id || state.selectedAccount.accountId || "";
 
-function shipCardsByType(props: { data: UnitDataGroup }): JSX.Element[] {
-    const { type, list } = props.data;
-    let shipCards: JSX.Element[] = [];
+  // 使用useEffect初始化fleetPlanner数据
+  useEffect(() => {
+    if (accountId && !state.fleetPlanner[accountId]) {
+      dispatch({
+        type: "FLEET_PLANNER/UPDATE",
+        payload: {
+          [accountId]: {
+            accountId,
+            availableShipTypes: [
+              ShipTypes.cruiser,
+              ShipTypes.destroyer,
+              ShipTypes.frigate,
+            ],
+            shipIgnoreList: [],
+            maxPopulation: 120,
+            onlyDisplayOwned: false,
+            displayControl: true,
+            mainModuleFirst: false,
+            selectedFleet: { index: -1, type: "main" },
+            fleetLimit: 3,
+            fleets: [],
+          },
+        },
+      });
+    }
+  }, [accountId, state.fleetPlanner, dispatch]);
+
+  // 检查accountId和fleetPlanner[accountId]是否存在
+  if (!accountId || !state.fleetPlanner[accountId]) {
+    return <div className="fleet-planner-ship-type-container"></div>;
+  }
+
+  const selectedTypes = state.fleetPlanner[accountId].availableShipTypes;
+  const showControl =
+    state.displayControl || state.fleetPlanner[accountId].displayControl;
+
+  if (!showControl)
+    return <div className="fleet-planner-ship-type-container"></div>;
+
+  // 导入舰船数据库
+  const UNIT_DATA_BASE = {
+    cruisers: { type: ShipTypes.cruiser, list: [] },
+    destroyers: { type: ShipTypes.destroyer, list: [] },
+    frigates: { type: ShipTypes.frigate, list: [] },
+    corvettes: { type: ShipTypes.corvette, list: [] },
+    aircrafts: { type: ShipTypes.aircraft, list: [] },
+    bombers: { type: ShipTypes.bomber, list: [] },
+    battleCruisers: { type: ShipTypes.battleCruiser, list: [] },
+    carriers: { type: ShipTypes.carrier, list: [] },
+  };
+
+  // 填充舰船数据
+  // TODO: 从实际数据源获取舰船数据
+
+  let resultCards: React.JSX.Element[] = [];
+  selectedTypes.forEach((type) => {
     switch (type) {
-        case ShipTypes.cruiser:
-        case ShipTypes.destroyer:
-        case ShipTypes.frigate:
-        case ShipTypes.corvette:
-        case ShipTypes.aircraft:
-        case ShipTypes.bomber:
-            shipCards = list.map((data) => <ShipCard shipData={data} key={data.id} />);
-            break;
-        case ShipTypes.battleCruiser:
-        case ShipTypes.carrier:
-            shipCards = list.map((data) => <SuperCapCard superCapData={data} key={data.id} />);
-            break;
-        default:
-        // Do nothing
-    }
-
-    return shipCards;
-}
-
-function SuperCapCard(props: { superCapData: SuperCapData; disabled?: boolean }): JSX.Element | null {
-    const { superCapData, disabled } = props;
-    const shipId = superCapData.id;
-    const dispatch = useAppDispatch();
-    const accountId = useAppSelector(getSelectedAccountId);
-    const onlyDisplayOnwed = useAppSelector(displayOnlyOwnedShip);
-    const ownedLookupTable = useAppSelector(getOwnedSuperCapLookUpTable);
-    const ownedSuperCap = ownedLookupTable[shipId];
-    const hasSuperCap = ownedSuperCap !== null && ownedSuperCap !== undefined;
-    if (!hasSuperCap && onlyDisplayOnwed) return null;
-
-    function handleAddShip() {
-        dispatch(addShip({ accountId, shipId, variant: -1 }));
-    }
-
-    return (
-        <Card key={superCapData.id} variant="outlined">
-            <Typography textAlign={"center"} className="typography-ship-name">
-                {superCapData.name} <TechIcon className="ship-picker-icon svg-fill-tech-icon" />{" "}
-                {ownedSuperCap?.techPoint || 0}
-            </Typography>
-            <div className="ship-picker-button-container">
-                <Button size="small" variant="text" disabled={disabled || !hasSuperCap} onClick={handleAddShip}>
-                    {"基础型"}
-                </Button>
-            </div>
-        </Card>
-    );
-}
-
-function ShipCard(props: { shipData: ShipData | AircraftData; disabled?: boolean }): JSX.Element | null {
-    const { shipData, disabled } = props;
-    const shipId = shipData.id;
-    const dispatch = useAppDispatch();
-    const accountId = useAppSelector(getSelectedAccountId);
-    const ship = lookUpShipById(shipId);
-    const ownedLookupTable = useAppSelector(getOwnedShipLookUpTable);
-    const ownedShip = ownedLookupTable[shipId];
-    const onlyDisplayOnwed = useAppSelector(displayOnlyOwnedShip);
-
-    const hasShip = ownedShip !== null && ownedShip !== undefined;
-    if (!hasShip && onlyDisplayOnwed) return null;
-
-    function handleAddShip(variant: number) {
-        const type = ship?.type;
-        if (type === ShipTypes.corvette || type === ShipTypes.aircraft || type === ShipTypes.bomber) {
-            dispatch(addAircraft({ accountId, shipId, variant }));
-            return;
-        }
-        dispatch(addShip({ accountId, shipId, variant }));
-    }
-
-    const buttons: JSX.Element[] = [];
-    shipData.variants.forEach((variant, index) => {
-        const hasVariant = hasShip && ownedShip.variants.findIndex((item) => item === index) !== -1;
-        const hasProgress = hasShip && ownedShip.partialComplete && (ownedShip.partialComplete[index] || 0) > 0;
-        const onlyHasProgress = hasProgress && !hasVariant;
-        // Skip the variant if it doesn't exist
-        if (onlyDisplayOnwed && !hasVariant && !hasProgress) return;
-        const buttonItem = (
-            <Button
-                key={index}
-                size="small"
-                variant="text"
-                color={onlyHasProgress ? "success" : "primary"}
-                onClick={() => handleAddShip(index)}
-                disabled={disabled || (!hasVariant && !hasProgress)}
-            >
-                {variant !== "" ? variant : "基础型"}
-            </Button>
+      case ShipTypes.cruiser:
+        resultCards = resultCards.concat(
+          shipCardsByType({ data: UNIT_DATA_BASE.cruisers }),
         );
-        buttons.push(buttonItem);
+        break;
+      case ShipTypes.destroyer:
+        resultCards = resultCards.concat(
+          shipCardsByType({ data: UNIT_DATA_BASE.destroyers }),
+        );
+        break;
+      case ShipTypes.frigate:
+        resultCards = resultCards.concat(
+          shipCardsByType({ data: UNIT_DATA_BASE.frigates }),
+        );
+        break;
+      case ShipTypes.corvette:
+        resultCards = resultCards.concat(
+          shipCardsByType({ data: UNIT_DATA_BASE.corvettes }),
+        );
+        break;
+      case ShipTypes.aircraft:
+        resultCards = resultCards.concat(
+          shipCardsByType({ data: UNIT_DATA_BASE.aircrafts }),
+        );
+        break;
+      case ShipTypes.bomber:
+        resultCards = resultCards.concat(
+          shipCardsByType({ data: UNIT_DATA_BASE.bombers }),
+        );
+        break;
+      case ShipTypes.battleCruiser:
+        resultCards = resultCards.concat(
+          shipCardsByType({ data: UNIT_DATA_BASE.battleCruisers }),
+        );
+        break;
+      case ShipTypes.carrier:
+        resultCards = resultCards.concat(
+          shipCardsByType({ data: UNIT_DATA_BASE.carriers }),
+        );
+        break;
+    }
+  });
+
+  return <div className="fleet-planner-ship-type-container">{resultCards}</div>;
+}
+
+interface ShipCardsByTypeProps {
+  data: {
+    type: ShipTypes;
+    list: ShipData[];
+  };
+}
+
+function shipCardsByType(props: ShipCardsByTypeProps): React.JSX.Element[] {
+  const { state, dispatch } = useAppContext();
+  const accountId =
+    state.selectedAccount.id || state.selectedAccount.accountId || "";
+
+  // 检查accountId和fleetPlanner[accountId]是否存在
+  if (!accountId || !state.fleetPlanner[accountId]) {
+    return [];
+  }
+
+  const selectedFleet = state.fleetPlanner[accountId].selectedFleet;
+  const fleetIndex = selectedFleet.index;
+  const fleetType = selectedFleet.type;
+
+  if (fleetIndex === -1) {
+    return [];
+  }
+
+  const { type, list } = props.data;
+
+  const [tabValue, setTabValue] = useState(0);
+
+  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
+    setTabValue(newValue);
+  };
+
+  const handleAddShip = (shipId: string, variant: number) => {
+    if (type === ShipTypes.aircraft || type === ShipTypes.bomber) {
+      dispatch({
+        type: "FLEET_PLANNER_ADD_AIRCRAFT",
+        payload: {
+          accountId,
+          shipId,
+          variant,
+        },
+      });
+    } else {
+      dispatch({
+        type: "FLEET_PLANNER_ADD_SHIP",
+        payload: {
+          accountId,
+          shipId,
+          variant,
+        },
+      });
+    }
+  };
+
+  const shipCards = list.map((ship) => {
+    const shipData = lookUpShipById(ship.id);
+    if (!shipData) return null;
+
+    const variants = shipData.variants.map((variant, index) => {
+      return (
+        <div key={index} className="ship-variant">
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => handleAddShip(ship.id, index)}
+            startIcon={<TechIcon />}
+          >
+            {variant.name}
+          </Button>
+        </div>
+      );
     });
+
     return (
-        <Card key={shipData.id} variant="outlined">
-            <Typography textAlign={"center"} className="ship-picker-ship-name">
-                {shipData.name} <TechIcon className="ship-picker-icon svg-fill-tech-icon" /> {ownedShip?.techPoint || 0}
-            </Typography>
-            <div className="ship-picker-button-container">{buttons}</div>
-        </Card>
+      <Card key={ship.id} className="ship-card">
+        <CardContent>
+          <Typography variant="h6">{shipData.name}</Typography>
+          <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+            <Tabs
+              value={tabValue}
+              onChange={handleTabChange}
+              aria-label="ship variants"
+            >
+              <Tab label="变体" />
+              <Tab label="信息" />
+            </Tabs>
+          </Box>
+          <Box sx={{ p: 2 }}>
+            {tabValue === 0 && (
+              <div className="ship-variants-container">{variants}</div>
+            )}
+            {tabValue === 1 && (
+              <div className="ship-info">
+                <Typography variant="body2">{shipData.description}</Typography>
+              </div>
+            )}
+          </Box>
+        </CardContent>
+        <CardActions>
+          <Button size="small">查看详情</Button>
+        </CardActions>
+      </Card>
     );
+  });
+
+  return shipCards.filter((card) => card !== null) as React.JSX.Element[];
 }

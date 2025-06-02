@@ -1,96 +1,154 @@
-import { Paper, TableContainer, Typography, IconButton, Input } from "@mui/material";
-import { useState } from "react";
+import {
+  IconButton,
+  Input,
+  Paper,
+  TableContainer,
+  Typography,
+} from "@mui/material";
+import React, { useEffect, useState } from "react";
 import DoneIcon from "@mui/icons-material/Done";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import BrushIcon from "@mui/icons-material/Brush";
-import { displayControl, getAllFleets } from "../redux/selector/fleet-planner.selector";
-import { useAppDispatch, useAppSelector } from "../redux/utils/hooks";
 import "./css/fleet-plan.css";
-import { changeFleetName, removeFleet } from "../redux/fleet-planner";
-import { getSelectedAccountId } from "../redux/selected-account";
 import { FleetPlanShipTable } from "./fleet-plan-ship-table";
 import { FleetPlanAircraftTable } from "./fleet-plan-aircraft-table";
-import { Fleet } from "../redux/types/fleet-planner.type";
+import { useAppContext , Fleet } from "../context";
+import { ShipTypes } from "./data/ship-data-types";
 
-export function FleetPlan(): JSX.Element {
-    const fleets = useAppSelector(getAllFleets);
-    if (fleets.length < 0)
-        return (
-            <div className="fleet-manager-container">
-                <Typography>没有舰队啊。</Typography>
-            </div>
-        );
+export function FleetPlan(): React.JSX.Element {
+  const { state, dispatch } = useAppContext();
+  const accountId =
+    state.selectedAccount.id || state.selectedAccount.accountId || "";
 
-    const fleetControls: JSX.Element[] = fleets.map((fleet, index) => {
-        return <IndividualFleetPlanner fleet={fleet} fleetIndex={index} key={index} />;
-    });
+  // 使用useEffect初始化fleetPlanner数据
+  useEffect(() => {
+    if (accountId && !state.fleetPlanner[accountId]) {
+      dispatch({
+        type: "FLEET_PLANNER/UPDATE",
+        payload: {
+          [accountId]: {
+            accountId,
+            availableShipTypes: [
+              ShipTypes.cruiser,
+              ShipTypes.destroyer,
+              ShipTypes.frigate,
+            ],
+            shipIgnoreList: [],
+            maxPopulation: 120,
+            onlyDisplayOwned: false,
+            displayControl: true,
+            mainModuleFirst: false,
+            selectedFleet: { index: -1, type: "main" },
+            fleetLimit: 3,
+            fleets: [],
+          },
+        },
+      });
+    }
+  }, [accountId, state.fleetPlanner, dispatch]);
 
-    return <div className="fleet-manager-container">{fleetControls}</div>;
+  // 检查accountId和fleetPlanner[accountId]是否存在
+  if (!accountId || !state.fleetPlanner[accountId]) {
+    return (
+      <div className="fleet-manager-container">
+        <Typography>加载中...</Typography>
+      </div>
+    );
+  }
+
+  const fleets = state.fleetPlanner[accountId].fleets;
+
+  if (!fleets || fleets.length === 0) {
+    return (
+      <div className="fleet-manager-container">
+        <Typography>没有舰队，请添加一个舰队。</Typography>
+      </div>
+    );
+  }
+
+  const fleetControls: React.JSX.Element[] = fleets.map((fleet, index) => {
+    return (
+      <IndividualFleetPlanner fleet={fleet} fleetIndex={index} key={index} />
+    );
+  });
+
+  return <div className="fleet-manager-container">{fleetControls}</div>;
 }
 
-function IndividualFleetPlanner(props: { fleet: Fleet; fleetIndex: number }): JSX.Element {
-    const accountId = useAppSelector(getSelectedAccountId);
-    const showControl = useAppSelector(displayControl);
-    const dispatch = useAppDispatch();
-    const [changingName, setChangingName] = useState(false);
-    const [name, setName] = useState("");
-    const { fleet, fleetIndex } = props;
+function IndividualFleetPlanner(props: {
+  fleet: Fleet;
+  fleetIndex: number;
+}): React.JSX.Element {
+  const { state, dispatch } = useAppContext();
+  const accountId =
+    state.selectedAccount.id || state.selectedAccount.accountId || "";
+  const showControl = state.displayControl;
+  const [changingName, setChangingName] = useState(false);
+  const [name, setName] = useState("");
+  const { fleet, fleetIndex } = props;
 
-    function handleRemoveFleet() {
-        dispatch(removeFleet({ accountId, index: fleetIndex }));
+  function handleRemoveFleet() {
+    dispatch({
+      type: "FLEET_PLANNER_REMOVE_FLEET",
+      payload: { accountId, index: fleetIndex },
+    });
+  }
+
+  function handleNameChange() {
+    if (name !== "") {
+      dispatch({
+        type: "FLEET_PLANNER_CHANGE_FLEET_NAME",
+        payload: { accountId, fleetIndex, name },
+      });
+      setChangingName(false);
     }
+  }
 
-    function handleNameChange() {
-        if (name !== "") dispatch(changeFleetName({ accountId, fleetIndex, name }));
-        setName("");
-        setChangingName(false);
-    }
+  function handleNameChangeCancel() {
+    setChangingName(false);
+  }
 
-    function updateFleetName(event: React.ChangeEvent<HTMLInputElement>) {
-        setName(event.target.value);
-    }
-
-    let fleetTitleBox: JSX.Element = (
-        <div className="fleet-manager-table-title-box">
-            <Typography variant="h5">{fleet.name}</Typography>
-        </div>
-    );
-
-    if (showControl) {
-        if (!changingName) {
-            fleetTitleBox = (
-                <div className="fleet-manager-table-title-box">
-                    <Typography variant="h5">{fleet.name}</Typography>
-                    <div className="fleet-manager-table-title-button-group">
-                        <IconButton color="primary" size="small" onClick={() => setChangingName(true)}>
-                            <BrushIcon />
-                        </IconButton>
-                        <IconButton color="error" size="small" onClick={handleRemoveFleet}>
-                            <HighlightOffIcon />
-                        </IconButton>
-                    </div>
-                </div>
-            );
-        } else {
-            fleetTitleBox = (
-                <div className="fleet-manager-table-title-box">
-                    <Input placeholder={fleet.name} value={name} onChange={updateFleetName} />
-                    <IconButton color="success" size="small" onClick={handleNameChange}>
-                        <DoneIcon />
-                    </IconButton>
-                </div>
-            );
-        }
-    }
-
-    return (
-        <TableContainer component={Paper} sx={{ width: 560 }}>
-            {fleetTitleBox}
-            <FleetPlanShipTable fleet={fleet} fleetIndex={fleetIndex} type="main" />
-            <div className="fleet-plan-table-divider"></div>
-            <FleetPlanShipTable fleet={fleet} fleetIndex={fleetIndex} type="reinforce" />
-            <div className="fleet-plan-table-divider"></div>
+  return (
+    <div className="fleet-planner-fleet-container">
+      <div className="fleet-planner-fleet-header">
+        {changingName ? (
+          <div className="fleet-planner-fleet-name-change">
+            <Input
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="fleet-planner-fleet-name-input"
+            />
+            <IconButton onClick={handleNameChange}>
+              <DoneIcon />
+            </IconButton>
+            <IconButton onClick={handleNameChangeCancel}>
+              <HighlightOffIcon />
+            </IconButton>
+          </div>
+        ) : (
+          <div className="fleet-planner-fleet-name">
+            <Typography variant="h6">{fleet.name}</Typography>
+            <IconButton onClick={() => setChangingName(true)}>
+              <BrushIcon />
+            </IconButton>
+          </div>
+        )}
+        <IconButton onClick={handleRemoveFleet}>
+          <HighlightOffIcon />
+        </IconButton>
+      </div>
+      <div className="fleet-planner-fleet-content">
+        <Paper className="fleet-planner-fleet-table-container">
+          <TableContainer>
+            <FleetPlanShipTable fleet={fleet} fleetIndex={fleetIndex} />
+          </TableContainer>
+        </Paper>
+        <Paper className="fleet-planner-fleet-table-container">
+          <TableContainer>
             <FleetPlanAircraftTable fleet={fleet} fleetIndex={fleetIndex} />
-        </TableContainer>
-    );
+          </TableContainer>
+        </Paper>
+      </div>
+    </div>
+  );
 }

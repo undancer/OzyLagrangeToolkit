@@ -1,137 +1,194 @@
-import { List, ListItem, ListItemText, Checkbox, TextField, InputAdornment, Chip, Avatar } from "@mui/material";
-import React from "react";
+import {
+  Avatar,
+  Checkbox,
+  Chip,
+  InputAdornment,
+  List,
+  ListItem,
+  ListItemText,
+  TextField,
+} from "@mui/material";
+import React, { useMemo } from "react";
 import { TechIcon } from "./Icons/tech";
-import { useAppDispatch, useAppSelector } from "../redux/utils/hooks";
 import "./css/list-item-super-cap.css";
-import { ShipTypes, SuperCapData, SuperCapModule } from "./data/ship-data-types";
-import { addModel, addSuperCap, removeModel, removeSuperCap, updateTechPoint } from "../redux/acquired-blue-print";
-import { UpdateTechPoint } from "../redux/types/acquired-blue-print.type";
-import { stringToTech } from "../redux/utils/tech-cal";
-import { getSelectedAccountId } from "../redux/selected-account";
-import { hasModule, hasSuperCap, techPointsByShip } from "../redux/selector/acquired-blue-prints";
+import {
+  ShipTypes,
+  SuperCapData,
+  SuperCapModule,
+} from "./data/ship-data-types";
+import { stringToTech } from "../context/utils/tech-utils";
+import { useAcquiredBlueprint, useAppContext } from "../context";
 
-function ModuleChip(props: { superCapModule: SuperCapModule; superCapId: string }): JSX.Element {
-    const { superCapModule, superCapId } = props;
-    const moduleId = superCapModule.id;
+function ModuleChip(props: {
+  superCapModule: SuperCapModule;
+  superCapId: string;
+}): React.JSX.Element {
+  const { superCapModule, superCapId } = props;
+  const moduleId = superCapModule.id;
 
-    const dispatch = useAppDispatch();
-    const checked = useAppSelector((state) => hasModule(state, superCapId, superCapModule.id));
-    const accountId = useAppSelector(getSelectedAccountId);
+  const { state } = useAppContext();
+  const accountId = state.selectedAccountId;
+  const { hasModule, addModule, removeModule } = useAcquiredBlueprint();
+  
+  // 使用useMemo缓存计算结果，添加accountId作为依赖项
+  const checked = useMemo(() => hasModule(superCapId, superCapModule.id), [hasModule, superCapId, superCapModule.id, accountId]);
 
-    function handleClick() {
-        if (checked) dispatch(removeModel({ accountId, superCapId, moduleId }));
-        else dispatch(addModel({ accountId, superCapId, moduleId }));
-    }
+  function handleClick() {
+    if (!accountId) return;
+    if (checked) removeModule(accountId, superCapId, moduleId);
+    else addModule(accountId, superCapId, moduleId);
+  }
 
-    let chipColor: "default" | "primary" | "secondary" = "default";
-    if (superCapModule.important && checked) chipColor = "primary";
-    else if (checked) chipColor = "secondary";
+  // 使用useMemo缓存计算结果
+  const chipColor = useMemo(() => {
+    if (superCapModule.important && checked) return "primary";
+    else if (checked) return "secondary";
+    return "default";
+  }, [superCapModule.important, checked]) as "default" | "primary" | "secondary";
 
-    const label = moduleId.toUpperCase();
-    return (
-        <Chip
-            variant={checked ? "filled" : "outlined"}
-            avatar={<Avatar>{label}</Avatar>}
-            label={superCapModule.shortName}
-            size={"small"}
-            onClick={handleClick}
-            color={chipColor}
-            disabled={superCapModule.isBase}
-        />
-    );
+  const label = moduleId.toUpperCase();
+  return (
+    <Chip
+      variant={checked ? "filled" : "outlined"}
+      avatar={<Avatar>{label}</Avatar>}
+      label={superCapModule.shortName}
+      size={"small"}
+      onClick={handleClick}
+      color={chipColor}
+      disabled={superCapModule.isBase}
+    />
+  );
 }
 
 function ModuleListItems(props: {
-    superCapModules: { [key: string]: SuperCapModule };
-    superCapId: string;
-}): JSX.Element {
-    const { superCapModules, superCapId } = props;
+  superCapModules: { [key: string]: SuperCapModule };
+  superCapId: string;
+}): React.JSX.Element {
+  const { superCapModules, superCapId } = props;
+  const { state } = useAppContext();
+  const accountId = state.selectedAccountId;
 
+  // 使用useMemo缓存模块组列表，添加accountId作为依赖项
+  const moduleGroup = useMemo(() => {
     const moduleTypes = ["m", "a", "b", "c", "d", "e", "f"];
-    const moduleGroup = moduleTypes.map((type) => {
-        const moduleList: JSX.Element[] = [];
-        Object.keys(superCapModules).forEach((key) => {
-            const superCapModule = superCapModules[key];
-            if (key.startsWith(type))
-                moduleList.push(<ModuleChip superCapModule={superCapModule} key={key} superCapId={superCapId} />);
-        });
-        if (moduleList.length <= 0) return null;
-        return (
-            <ListItem disablePadding className="list-item-module-holder" key={type}>
-                {moduleList}
-            </ListItem>
-        );
-    });
-
-    return <React.Fragment>{moduleGroup}</React.Fragment>;
-}
-
-function SuperCapCheckBox(props: { superCapId: string }): JSX.Element {
-    const { superCapId } = props;
-    const dispatch = useAppDispatch();
-    const checked = useAppSelector((state) => hasSuperCap(state, superCapId));
-    const accountId = useAppSelector(getSelectedAccountId);
-
-    function handleChange() {
-        if (checked) dispatch(removeSuperCap({ accountId, superCapId }));
-        else dispatch(addSuperCap({ accountId, superCapId }));
-    }
-
-    return (
-        <ListItem disablePadding>
-            <Checkbox checked={checked} className="checkbox-aircraft-variant" color="success" onChange={handleChange} />
+    return moduleTypes.map((type) => {
+      const moduleList: React.JSX.Element[] = [];
+      Object.keys(superCapModules).forEach((key) => {
+        const superCapModule = superCapModules[key];
+        if (key.startsWith(type))
+          moduleList.push(
+            <ModuleChip
+              superCapModule={superCapModule}
+              key={key}
+              superCapId={superCapId}
+            />,
+          );
+      });
+      if (moduleList.length <= 0) return null;
+      return (
+        <ListItem disablePadding className="list-item-module-holder" key={type}>
+          {moduleList}
         </ListItem>
-    );
+      );
+    });
+  }, [superCapModules, superCapId, accountId]);
+
+  return <React.Fragment>{moduleGroup}</React.Fragment>;
 }
 
-function InputSuperCapTechPoint(props: { superCapId: string }): JSX.Element {
-    const { superCapId } = props;
-    const dispatch = useAppDispatch();
-    const checked = useAppSelector((state) => hasSuperCap(state, superCapId));
-    const points = useAppSelector((state) => techPointsByShip(state, ShipTypes.carrier, superCapId));
-    const accountId = useAppSelector(getSelectedAccountId);
+function SuperCapCheckBox(props: { superCapId: string }): React.JSX.Element {
+  const { superCapId } = props;
+  const { state } = useAppContext();
+  const accountId = state.selectedAccountId;
+  
+  const { hasSuperCap, addSuperCap, removeSuperCap } = useAcquiredBlueprint();
+  
+  // 使用useMemo缓存计算结果，添加accountId作为依赖项
+  const checked = useMemo(() => hasSuperCap(superCapId), [hasSuperCap, superCapId, accountId]);
 
-    function handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
-        if (!checked) return;
-        const techPoint = stringToTech(event.target.value);
-        const action: UpdateTechPoint = { accountId, shipId: superCapId, shipType: ShipTypes.carrier, techPoint };
-        dispatch(updateTechPoint(action));
+  function handleChange() {
+    if (!accountId) return;
+    if (checked) {
+      removeSuperCap(accountId, superCapId);
+    } else {
+      addSuperCap(accountId, superCapId);
     }
+  }
 
-    return (
-        <TextField
-            id="temp"
-            value={points <= 0 ? "" : points}
-            InputProps={{
-                startAdornment: (
-                    <InputAdornment position="start">
-                        <TechIcon className="svg-fill-tech-icon" />
-                    </InputAdornment>
-                ),
-            }}
-            className="input-box-tech-point"
-            size="small"
-            color="primary"
-            variant="standard"
-            onChange={handleInputChange}
-        />
-    );
+  return (
+    <ListItem disablePadding>
+      <Checkbox
+        checked={checked}
+        className="checkbox-aircraft-variant"
+        color="success"
+        onChange={handleChange}
+      />
+    </ListItem>
+  );
 }
 
-export function ListItemSuperCap(props: { data: SuperCapData }): JSX.Element {
-    const { data } = props;
-    const checked = useAppSelector((state) => hasSuperCap(state, data.id));
+function InputSuperCapTechPoint(props: {
+  superCapId: string;
+}): React.JSX.Element {
+  const { superCapId } = props;
+  const { state } = useAppContext();
+  const accountId = state.selectedAccountId;
+  const { hasSuperCap, techPointsByShip, addSuperCap } = useAcquiredBlueprint();
+  
+  // 使用useMemo缓存计算结果，添加accountId作为依赖项
+  const checked = useMemo(() => hasSuperCap(superCapId), [hasSuperCap, superCapId, accountId]);
+  const points = useMemo(() => techPointsByShip(ShipTypes.carrier, superCapId), [techPointsByShip, superCapId, accountId]);
 
-    return (
-        <React.Fragment>
-            <ListItem className="list-item-aircraft-data">
-                <ListItemText primary={data.name} />
-                {checked ? <InputSuperCapTechPoint superCapId={data.id} /> : null}
-                <List disablePadding>
-                    <SuperCapCheckBox superCapId={data.id} key={data.id} />
-                </List>
-            </ListItem>
-            {checked ? <ModuleListItems superCapModules={data.modules} superCapId={data.id} /> : null}
-        </React.Fragment>
-    );
+  function handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
+    if (!checked || !accountId) return;
+    const techPoint = stringToTech(event.target.value);
+    // 在Context系统中，我们通过addSuperCap来更新科技点
+    addSuperCap(accountId, superCapId, techPoint);
+  }
+
+  return (
+    <TextField
+      id={`super-cap-tech-point-${superCapId}`}
+      value={points <= 0 ? "" : points}
+      InputProps={{
+        startAdornment: (
+          <InputAdornment position="start">
+            <TechIcon className="svg-fill-tech-icon" />
+          </InputAdornment>
+        ),
+      }}
+      className="input-box-tech-point"
+      size="small"
+      color="primary"
+      variant="standard"
+      onChange={handleInputChange}
+    />
+  );
+}
+
+export function ListItemSuperCap(props: {
+  data: SuperCapData;
+}): React.JSX.Element {
+  const { data } = props;
+  const { hasSuperCap } = useAcquiredBlueprint();
+  const { state } = useAppContext();
+  const accountId = state.selectedAccountId;
+  
+  // 使用useMemo缓存计算结果，添加accountId作为依赖项
+  const checked = useMemo(() => hasSuperCap(data.id), [hasSuperCap, data.id, accountId]);
+
+  return (
+    <React.Fragment>
+      <ListItem className="list-item-aircraft-data">
+        <ListItemText primary={data.name} />
+        {checked ? <InputSuperCapTechPoint superCapId={data.id} /> : null}
+        <List disablePadding>
+          <SuperCapCheckBox superCapId={data.id} key={data.id} />
+        </List>
+      </ListItem>
+      {checked ? (
+        <ModuleListItems superCapModules={data.modules} superCapId={data.id} />
+      ) : null}
+    </React.Fragment>
+  );
 }

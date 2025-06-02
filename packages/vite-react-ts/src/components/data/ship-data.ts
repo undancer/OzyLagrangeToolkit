@@ -1,11 +1,11 @@
 import {
-    AircraftData,
-    ShipData,
-    ShipTypes,
-    SuperCapData,
-    UnitData,
-    UnitDataBase,
-    UnitDataGroup,
+  AircraftData,
+  ShipData,
+  ShipTypes,
+  SuperCapData,
+  UnitData,
+  UnitDataBase,
+  UnitDataGroup,
 } from "./ship-data-types";
 
 const CARRIER_DATA: SuperCapData[] = [

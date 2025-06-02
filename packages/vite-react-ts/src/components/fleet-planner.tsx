@@ -1,14 +1,8 @@
-import {
-  Button,
-  Container,
-  ToggleButton,
-  ToggleButtonGroup,
-} from "@mui/material";
 import React from "react";
-import AddIcon from "@mui/icons-material/Add";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import TuneIcon from "@mui/icons-material/Tune";
-import DeveloperBoardIcon from "@mui/icons-material/DeveloperBoard";
+import { AddIcon } from "./svg/add-icon";
+import { VisibilityIcon } from "./svg/visibility-icon";
+import { TuneIcon } from "./svg/tune-icon";
+import { DeveloperBoardIcon } from "./svg/developer-board-icon";
 // import DeveloperBoardOffIcon from "@mui/icons-material/DeveloperBoardOff";
 // 移除Redux导入
 // import { addFleet, changeSelectedFleet, updateAvailableShipTypes, updateSettings } from "../redux/fleet-planner";
@@ -33,13 +27,13 @@ import { FleetPlannerSetting, FleetType, useAppContext } from "../context";
 
 function FleetPlaner(): React.JSX.Element {
   return (
-    <Container maxWidth={false} className="container-main-fleet-planner">
+    <div className="container-main-fleet-planner w-full max-w-none px-4 py-6">
       <div className="fleet-plan-content-container">
         <ControlBar />
         <FleetShipPicker />
         <FleetPlan />
       </div>
-    </Container>
+    </div>
   );
 }
 
@@ -72,7 +66,7 @@ function FleetControl(): React.JSX.Element {
   }
 
   function handleSelectedFleetChange(
-    event: React.MouseEvent<HTMLElement>,
+    _event: React.MouseEvent<HTMLElement>,
     newIndex: string,
   ) {
     const index = Number(newIndex);
@@ -84,14 +78,19 @@ function FleetControl(): React.JSX.Element {
 
   const fleetToggleButtons = fleets.map((fleet, index) => {
     return (
-      <ToggleButton value={index} key={index}>
+      <button
+        key={index}
+        className={`px-3 py-1 text-sm border ${selectedFleet.index === index ? "bg-blue-600 text-white border-blue-700" : "bg-gray-700 border-gray-600 hover:bg-gray-600"} rounded transition-colors`}
+        onClick={(e) => handleSelectedFleetChange(e, index.toString())}
+        disabled={!showControl}
+      >
         {fleet.name}
-      </ToggleButton>
+      </button>
     );
   });
 
   function handleFleetTypeChange(
-    event: React.MouseEvent<HTMLElement>,
+    _event: React.MouseEvent<HTMLElement>,
     type: FleetType,
   ) {
     dispatch({
@@ -101,39 +100,38 @@ function FleetControl(): React.JSX.Element {
   }
 
   const fleetTypeToggleButtons: React.JSX.Element = (
-    <ToggleButtonGroup
-      exclusive
-      value={showControl ? selectedFleet.type : null}
-      size="small"
-      onChange={handleFleetTypeChange}
-      disabled={!showControl}
-    >
-      <ToggleButton value={FleetType.main}>主队</ToggleButton>
-      <ToggleButton value={FleetType.reinforcement}>增援</ToggleButton>
-    </ToggleButtonGroup>
+    <div className="inline-flex rounded-md shadow-sm" role="group">
+      <button
+        className={`px-3 py-1 text-sm border border-r-0 rounded-l ${selectedFleet.type === FleetType.main ? "bg-blue-600 text-white border-blue-700" : "bg-gray-700 border-gray-600 hover:bg-gray-600"} transition-colors`}
+        onClick={(e) => handleFleetTypeChange(e, FleetType.main)}
+        disabled={!showControl}
+      >
+        主队
+      </button>
+      <button
+        className={`px-3 py-1 text-sm border rounded-r ${selectedFleet.type === FleetType.reinforcement ? "bg-blue-600 text-white border-blue-700" : "bg-gray-700 border-gray-600 hover:bg-gray-600"} transition-colors`}
+        onClick={(e) => handleFleetTypeChange(e, FleetType.reinforcement)}
+        disabled={!showControl}
+      >
+        增援
+      </button>
+    </div>
   );
 
   return (
-    <div className="fleet-planner-fleet-control">
-      <ToggleButtonGroup
-        onChange={handleSelectedFleetChange}
-        exclusive
-        value={showControl ? selectedFleet.index : null}
-        size="small"
-        disabled={!showControl}
-      >
+    <div className="fleet-planner-fleet-control flex items-center space-x-3">
+      <div className="inline-flex space-x-1" role="group">
         {fleetToggleButtons}
-      </ToggleButtonGroup>
+      </div>
       {fleets.length > 0 ? fleetTypeToggleButtons : null}
-      <Button
-        variant="outlined"
-        startIcon={<AddIcon />}
-        size="small"
+      <button
+        className="px-3 py-1 text-sm border border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white rounded flex items-center space-x-1 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         onClick={handleNewFleet}
         disabled={fleets.length >= 3 || !showControl}
       >
-        新舰队
-      </Button>
+        <AddIcon className="w-4 h-4" />
+        <span>新舰队</span>
+      </button>
     </div>
   );
 }
@@ -143,13 +141,15 @@ function GeneralControl(): React.JSX.Element {
   const { state, dispatch } = useAppContext();
   const accountId = state.selectedAccountId;
   const selectedTypes = state.fleetPlanner[accountId]?.availableShipTypes || [];
-  const onlyDisplayOwned = state.fleetPlanner[accountId]?.onlyDisplayOwned || false;
+  const onlyDisplayOwned =
+    state.fleetPlanner[accountId]?.onlyDisplayOwned || false;
   const displayControl = state.fleetPlanner[accountId]?.displayControl || false;
-  const mainModuleFirst = state.fleetPlanner[accountId]?.mainModuleFirst || false;
+  const mainModuleFirst =
+    state.fleetPlanner[accountId]?.mainModuleFirst || false;
   const showControl = displayControl;
 
   const handleTypeChange = (
-    event: React.MouseEvent<HTMLElement>,
+    _event: React.MouseEvent<HTMLElement>,
     newSelectedTypes: string[],
   ) => {
     dispatch({
@@ -162,62 +162,107 @@ function GeneralControl(): React.JSX.Element {
 
   Object.values(UNIT_DATA_BASE).forEach((value) => {
     shipTypeToggleButtons.push(
-      <ToggleButton color="primary" value={value.type} key={value.type}>
+      <button
+        key={value.type}
+        className={`px-3 py-1 text-sm border ${selectedTypes.includes(value.type) ? "bg-green-600 text-white border-green-700" : "bg-gray-700 border-gray-600 hover:bg-gray-600"} rounded transition-colors mx-0.5`}
+        onClick={(e) => {
+          const newTypes = selectedTypes.includes(value.type)
+            ? selectedTypes.filter((t) => t !== value.type)
+            : [...selectedTypes, value.type];
+          handleTypeChange(e, newTypes);
+        }}
+        disabled={!showControl}
+      >
         {value.label}
-      </ToggleButton>,
+      </button>,
     );
   });
 
   function handleUpdateSetting(
-    event: React.MouseEvent<HTMLElement>,
+    _event: React.MouseEvent<HTMLElement>,
     outputs: string[],
   ) {
     const settings = outputs.map((output) => Number(output));
-    const newOnlyDisplayOwned = settings.includes(FleetPlannerSetting.DisplayOwned);
-    const newDisplayControl = settings.includes(FleetPlannerSetting.DisplayControl);
-    const newMainModuleFirst = settings.includes(FleetPlannerSetting.MainModuleFirst);
-    
+    const newOnlyDisplayOwned = settings.includes(
+      FleetPlannerSetting.DisplayOwned,
+    );
+    const newDisplayControl = settings.includes(
+      FleetPlannerSetting.DisplayControl,
+    );
+    const newMainModuleFirst = settings.includes(
+      FleetPlannerSetting.MainModuleFirst,
+    );
+
     dispatch({
       type: "FLEET_PLANNER_UPDATE_SETTINGS",
-      payload: { 
-        accountId, 
+      payload: {
+        accountId,
         onlyDisplayOwned: newOnlyDisplayOwned,
         displayControl: newDisplayControl,
-        mainModuleFirst: newMainModuleFirst 
+        mainModuleFirst: newMainModuleFirst,
       },
     });
   }
 
   return (
-    <div className="fleet-planer-general-control">
-      <ToggleButtonGroup
-        color="success"
-        onChange={handleTypeChange}
-        value={showControl ? selectedTypes : null}
-        size="small"
-        disabled={!showControl}
-      >
-        {shipTypeToggleButtons}
-      </ToggleButtonGroup>
-      <ToggleButtonGroup
-        value={[
-          ...(onlyDisplayOwned ? [FleetPlannerSetting.DisplayOwned.toString()] : []),
-          ...(displayControl ? [FleetPlannerSetting.DisplayControl.toString()] : []),
-          ...(mainModuleFirst ? [FleetPlannerSetting.MainModuleFirst.toString()] : [])
-        ]}
-        onChange={handleUpdateSetting}
-        size="small"
-      >
-        <ToggleButton value={FleetPlannerSetting.DisplayOwned}>
-          <VisibilityIcon fontSize="small" />
-        </ToggleButton>
-        <ToggleButton value={FleetPlannerSetting.DisplayControl}>
-          <TuneIcon fontSize="small" />
-        </ToggleButton>
-        <ToggleButton value={FleetPlannerSetting.MainModuleFirst}>
-          <DeveloperBoardIcon fontSize="small" />
-        </ToggleButton>
-      </ToggleButtonGroup>
+    <div className="fleet-planer-general-control flex flex-wrap items-center space-x-2">
+      <div className="flex flex-wrap">{shipTypeToggleButtons}</div>
+      <div className="inline-flex rounded-md shadow-sm" role="group">
+        <button
+          className={`p-2 border border-r-0 rounded-l ${onlyDisplayOwned ? "bg-green-600 text-white border-green-700" : "bg-gray-700 border-gray-600 hover:bg-gray-600"} transition-colors`}
+          onClick={(e) => {
+            const settings = [
+              ...(displayControl
+                ? [FleetPlannerSetting.DisplayControl.toString()]
+                : []),
+              ...(mainModuleFirst
+                ? [FleetPlannerSetting.MainModuleFirst.toString()]
+                : []),
+            ];
+            if (!onlyDisplayOwned)
+              settings.push(FleetPlannerSetting.DisplayOwned.toString());
+            handleUpdateSetting(e, settings);
+          }}
+        >
+          <VisibilityIcon className="w-5 h-5" />
+        </button>
+        <button
+          className={`p-2 border border-r-0 ${displayControl ? "bg-green-600 text-white border-green-700" : "bg-gray-700 border-gray-600 hover:bg-gray-600"} transition-colors`}
+          onClick={(e) => {
+            const settings = [
+              ...(onlyDisplayOwned
+                ? [FleetPlannerSetting.DisplayOwned.toString()]
+                : []),
+              ...(mainModuleFirst
+                ? [FleetPlannerSetting.MainModuleFirst.toString()]
+                : []),
+            ];
+            if (!displayControl)
+              settings.push(FleetPlannerSetting.DisplayControl.toString());
+            handleUpdateSetting(e, settings);
+          }}
+        >
+          <TuneIcon className="w-5 h-5" />
+        </button>
+        <button
+          className={`p-2 border rounded-r ${mainModuleFirst ? "bg-green-600 text-white border-green-700" : "bg-gray-700 border-gray-600 hover:bg-gray-600"} transition-colors`}
+          onClick={(e) => {
+            const settings = [
+              ...(onlyDisplayOwned
+                ? [FleetPlannerSetting.DisplayOwned.toString()]
+                : []),
+              ...(displayControl
+                ? [FleetPlannerSetting.DisplayControl.toString()]
+                : []),
+            ];
+            if (!mainModuleFirst)
+              settings.push(FleetPlannerSetting.MainModuleFirst.toString());
+            handleUpdateSetting(e, settings);
+          }}
+        >
+          <DeveloperBoardIcon className="w-5 h-5" />
+        </button>
+      </div>
     </div>
   );
 }
@@ -229,7 +274,7 @@ function AccountControl(): React.JSX.Element {
   const gameAccounts = Object.values(state.gameAccounts || {});
 
   function handleAccountChange(
-    event: React.MouseEvent<HTMLElement>,
+    _event: React.MouseEvent<HTMLElement>,
     newId: string,
   ) {
     dispatch({
@@ -240,27 +285,16 @@ function AccountControl(): React.JSX.Element {
 
   const accountToggleButtons = gameAccounts.map((account) => {
     return (
-      <ToggleButton
-        value={account.id}
-        className="account-toggle-button"
-        size="small"
+      <button
         key={account.id}
+        className={`px-3 py-1 text-sm border ${accountId === account.id ? "bg-green-600 text-white border-green-700" : "bg-gray-700 border-gray-600 hover:bg-gray-600"} rounded-md mx-0.5 transition-colors account-toggle-button`}
+        onClick={(e) => handleAccountChange(e, account.id)}
       >
         {account.name}
-      </ToggleButton>
+      </button>
     );
   });
-  return (
-    <ToggleButtonGroup
-      value={accountId}
-      exclusive
-      onChange={handleAccountChange}
-      color="success"
-      size="small"
-    >
-      {accountToggleButtons}
-    </ToggleButtonGroup>
-  );
+  return <div className="flex flex-wrap">{accountToggleButtons}</div>;
 }
 
 export default FleetPlaner;

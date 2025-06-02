@@ -1,4 +1,3 @@
-import { Alert, Button, Snackbar, TextField } from "@mui/material";
 // import { GraphQLQuery, generateClient } from "@aws-amplify/api";
 // import { fetchUserAttributes } from "aws-amplify/auth";
 import React, { useState } from "react";
@@ -6,6 +5,10 @@ import React, { useState } from "react";
 // import * as mutations from "../graphql/mutations";
 import { CityData, Coordinate } from "./data/coordinates";
 import { useAppContext } from "../context";
+import { Button } from "./ui/button";
+import { TextField } from "./ui/text-field";
+import { Alert } from "./ui/alert";
+import { Snackbar } from "./ui/snackbar";
 
 export function AddAngulumCity(): React.JSX.Element {
   const [cityLevel, setCityLevel] = useState<number>(-1);
@@ -159,6 +162,7 @@ export function AddAngulumCity(): React.JSX.Element {
           onChange={handleCoordinateChange}
         />
         <Button
+          variant="contained"
           onClick={() => createCity({ level: cityLevel, pos: cityCoord })}
         >
           添加城市

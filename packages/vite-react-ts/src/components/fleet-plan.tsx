@@ -1,19 +1,17 @@
-import {
-  IconButton,
-  Input,
-  Paper,
-  TableContainer,
-  Typography,
-} from "@mui/material";
 import React, { useEffect, useState } from "react";
-import DoneIcon from "@mui/icons-material/Done";
-import HighlightOffIcon from "@mui/icons-material/HighlightOff";
-import BrushIcon from "@mui/icons-material/Brush";
 import "./css/fleet-plan.css";
 import { FleetPlanShipTable } from "./fleet-plan-ship-table";
 import { FleetPlanAircraftTable } from "./fleet-plan-aircraft-table";
-import { useAppContext , Fleet } from "../context";
+import { Fleet, useAppContext } from "../context";
 import { ShipTypes } from "./data/ship-data-types";
+import { Typography } from "./ui/typography";
+import { IconButton } from "./ui/icon-button";
+import { Input } from "./ui/input";
+import { Paper } from "./ui/paper";
+import { TableContainer } from "./ui/table-container";
+import { DoneIcon } from "./svg/done-icon";
+import HighlightOffIcon from "./svg/highlight-off-icon";
+import BrushIcon from "./svg/brush-icon";
 
 export function FleetPlan(): React.JSX.Element {
   const { state, dispatch } = useAppContext();

@@ -1,9 +1,9 @@
-import { Container } from "@mui/material";
 import { useGameAccount } from "../context";
 import "./css/tracker.css";
 import { AccountTimerGroup } from "./account-timer-group";
 import NoAccountWarning from "./no-account-warning";
 import React from "react";
+import { Container } from "./ui/container";
 
 function Tracker(): React.JSX.Element {
   const { getAllAccounts } = useGameAccount();

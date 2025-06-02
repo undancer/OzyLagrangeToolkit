@@ -1,5 +1,4 @@
 import "./css/blue-print.css";
-import { Container } from "@mui/material";
 import { useGameAccount } from "../context";
 import IndividualBluePrint from "./individual-blue-print";
 import NoAccountWarning from "./no-account-warning";
@@ -15,9 +14,9 @@ function BluePrint(): React.JSX.Element {
   }
 
   return (
-    <Container maxWidth={false} className="container-main-blue-print">
+    <div className="container w-full max-w-none p-4 container-main-blue-print">
       {content}
-    </Container>
+    </div>
   );
 }
 

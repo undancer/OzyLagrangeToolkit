@@ -1,7 +1,7 @@
-import AnchorIcon from "@mui/icons-material/Anchor";
 import { TimerType } from "../context";
 import { IndividualTimer } from "./individual-timer";
 import { TimerIcon } from "./timer-icon";
+import { AnchorIcon } from "./svg/anchor-icon";
 import "./css/account-section.css";
 import React from "react";
 

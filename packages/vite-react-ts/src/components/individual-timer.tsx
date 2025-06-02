@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-import HourglassDisabledIcon from "@mui/icons-material/HourglassDisabled";
-import { IconButton, LinearProgress, styled } from "@mui/material";
+import { HourglassDisabledIcon } from "./svg/hourglass-disabled-icon";
 import { TimerType, useTaskTimeStamp } from "../context";
 import { finishingHourString, timeString } from "./utils/timeToString";
 import "./css/individual-timer.css";
@@ -11,11 +10,6 @@ interface IndividualTimerProps {
   accountId: string;
   type: TimerType;
 }
-
-const BorderLinearProgress = styled(LinearProgress)(() => ({
-  height: 15,
-  borderRadius: 5,
-}));
 
 export function IndividualTimer(
   props: IndividualTimerProps,
@@ -58,21 +52,17 @@ export function IndividualTimer(
 
   if (completed) {
     progressBarCol = (
-      <BorderLinearProgress
-        className="progress-bar-extra"
-        variant="determinate"
-        color="success"
-        value={100}
-      />
+      <div className="h-[15px] rounded-md bg-green-500 w-full" />
     );
   } else {
     const val = Math.floor((timePassed / duration) * 100);
     progressBarCol = (
-      <BorderLinearProgress
-        className="progress-bar-extra"
-        variant="determinate"
-        value={val}
-      />
+      <div className="h-[15px] rounded-md bg-gray-200 w-full overflow-hidden">
+        <div
+          className="h-full bg-blue-500 transition-all duration-500"
+          style={{ width: `${val}%` }}
+        />
+      </div>
     );
   }
 
@@ -99,9 +89,12 @@ export function IndividualTimer(
           {progressBarCol}
         </div>
         <div className="timer-back">
-          <IconButton color="info" size="small" onClick={handleRemoveTimer}>
-            <HourglassDisabledIcon />
-          </IconButton>
+          <button
+            className="p-1 rounded-full text-blue-500 hover:bg-blue-100"
+            onClick={handleRemoveTimer}
+          >
+            <HourglassDisabledIcon className="text-sm" />
+          </button>
         </div>
       </div>
       {countdown}

@@ -1,18 +1,8 @@
-import {
-  Box,
-  Button,
-  Card,
-  CardActions,
-  CardContent,
-  Tab,
-  Tabs,
-  Typography,
-} from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useAppContext } from "../context";
 import { ShipData, ShipTypes } from "./data/ship-data-types";
 import { lookUpShipById } from "./data/ship-data";
-import { TechIcon } from "./Icons/tech";
+import { TechIcon } from "./svg/tech-icon";
 
 export function FleetShipPicker(): React.JSX.Element {
   const { state, dispatch } = useAppContext();
@@ -184,47 +174,59 @@ function shipCardsByType(props: ShipCardsByTypeProps): React.JSX.Element[] {
     const variants = shipData.variants.map((variant, index) => {
       return (
         <div key={index} className="ship-variant">
-          <Button
-            variant="contained"
-            color="primary"
+          <button
+            className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded flex items-center gap-2"
             onClick={() => handleAddShip(ship.id, index)}
-            startIcon={<TechIcon />}
           >
+            <TechIcon />
             {variant.name}
-          </Button>
+          </button>
         </div>
       );
     });
 
     return (
-      <Card key={ship.id} className="ship-card">
-        <CardContent>
-          <Typography variant="h6">{shipData.name}</Typography>
-          <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-            <Tabs
-              value={tabValue}
-              onChange={handleTabChange}
-              aria-label="ship variants"
-            >
-              <Tab label="变体" />
-              <Tab label="信息" />
-            </Tabs>
-          </Box>
-          <Box sx={{ p: 2 }}>
+      <div
+        key={ship.id}
+        className="ship-card bg-white dark:bg-gray-800 rounded-md shadow-md overflow-hidden"
+      >
+        <div className="p-4">
+          <h2 className="text-lg font-semibold mb-2">{shipData.name}</h2>
+          <div className="border-b border-gray-300 dark:border-gray-700">
+            <div className="flex">
+              <button
+                className={`px-4 py-2 ${tabValue === 0 ? "border-b-2 border-blue-500 text-blue-500" : "text-gray-600 dark:text-gray-400"}`}
+                onClick={(e) => handleTabChange(e, 0)}
+                aria-label="ship variants"
+              >
+                变体
+              </button>
+              <button
+                className={`px-4 py-2 ${tabValue === 1 ? "border-b-2 border-blue-500 text-blue-500" : "text-gray-600 dark:text-gray-400"}`}
+                onClick={(e) => handleTabChange(e, 1)}
+                aria-label="ship info"
+              >
+                信息
+              </button>
+            </div>
+          </div>
+          <div className="p-2">
             {tabValue === 0 && (
               <div className="ship-variants-container">{variants}</div>
             )}
             {tabValue === 1 && (
               <div className="ship-info">
-                <Typography variant="body2">{shipData.description}</Typography>
+                <p className="text-sm">{shipData.description}</p>
               </div>
             )}
-          </Box>
-        </CardContent>
-        <CardActions>
-          <Button size="small">查看详情</Button>
-        </CardActions>
-      </Card>
+          </div>
+        </div>
+        <div className="px-4 py-2 bg-gray-100 dark:bg-gray-700 flex justify-end">
+          <button className="text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300">
+            查看详情
+          </button>
+        </div>
+      </div>
     );
   });
 

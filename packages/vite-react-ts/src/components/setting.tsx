@@ -1,19 +1,9 @@
 import React, { useState } from "react";
-import {
-  Button,
-  Container,
-  IconButton,
-  Input,
-  TextField,
-  Typography,
-} from "@mui/material";
-// import { Authenticator } from "@aws-amplify/ui-react";
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
-import DoneIcon from "@mui/icons-material/Done";
-import CasinoIcon from "@mui/icons-material/Casino";
-import PersonAddIcon from "@mui/icons-material/PersonAdd";
-// import "@aws-amplify/ui-react/styles.css";
+import { DeleteIcon } from "./svg/delete-icon";
+import { EditIcon } from "./svg/edit-icon";
+import { DoneIcon } from "./svg/done-icon";
+import { CasinoIcon } from "./svg/casino-icon";
+import { PersonAddIcon } from "./svg/person-add-icon";
 import "./css/setting.css";
 import NoAccountWarning from "./no-account-warning";
 import { randomName } from "./utils/randomName";
@@ -32,7 +22,7 @@ function Setting(): React.JSX.Element {
   );
   if (gameAccounts.length <= 0) content = <NoAccountWarning />;
 
-  return <Container maxWidth="xl">{content}</Container>;
+  return <div className="container mx-auto px-4">{content}</div>;
 }
 
 function AccountManagement() {
@@ -40,7 +30,8 @@ function AccountManagement() {
   const [newAccountName, setNewAccountName] = useState("");
   const [name, setName] = useState("");
   const { dispatch } = useAppContext();
-  const { getAllAccounts, addAccount, removeAccount, changeAccountName } = useGameAccount();
+  const { getAllAccounts, addAccount, removeAccount, changeAccountName } =
+    useGameAccount();
   const gameAccounts = getAllAccounts();
 
   function handleAddAccount() {
@@ -85,22 +76,22 @@ function AccountManagement() {
     if (editAccountId !== account.id) {
       return (
         <div key={account.id} className="account-list-line-item grey-themed">
-          <Typography color="white">{account.name}</Typography>
+          <p className="text-white">{account.name}</p>
           <div>
-            <IconButton
+            <button
               aria-label="edit"
               onClick={() => editAccount(account.id)}
-              size="small"
+              className="p-1 rounded-full text-gray-300 hover:bg-gray-700"
             >
-              <EditIcon fontSize="inherit" />
-            </IconButton>
-            <IconButton
+              <EditIcon className="text-sm" />
+            </button>
+            <button
               aria-label="delete"
               onClick={() => handleRemoveAccount(account.id)}
-              size="small"
+              className="p-1 rounded-full text-red-500 hover:bg-red-100"
             >
-              <DeleteIcon fontSize="inherit" color="error" />
-            </IconButton>
+              <DeleteIcon className="text-sm" />
+            </button>
           </div>
         </div>
       );
@@ -108,20 +99,21 @@ function AccountManagement() {
     return (
       <div key={account.id} className="account-list-line-item">
         <div>
-          <Input
+          <input
+            className="px-2 py-1 border border-gray-300 rounded"
             placeholder={account.name}
             value={newAccountName}
             onChange={handleUpdateAccountName}
           />
         </div>
         <div>
-          <IconButton
+          <button
             aria-label="edit"
             onClick={() => handleAccountNameChange(account.name)}
-            size="small"
+            className="p-1 rounded-full text-green-500 hover:bg-green-100"
           >
-            <DoneIcon fontSize="inherit" color="success" />
-          </IconButton>
+            <DoneIcon className="text-sm" />
+          </button>
         </div>
       </div>
     );
@@ -132,18 +124,24 @@ function AccountManagement() {
       <div className="account-manager-header">账号管理</div>
       {accountListItems}
       <div className="container-add-account grey-themed">
-        <TextField
-          label="添加账号"
-          variant="standard"
+        <input
+          className="px-2 py-1 border-b border-gray-300 bg-transparent focus:outline-none"
+          placeholder="添加账号"
           value={name}
           onChange={(event) => setName(event.target.value)}
-        ></TextField>
-        <IconButton className="button-add-account" onClick={handleAddAccount}>
+        />
+        <button
+          className="button-add-account p-1 rounded-full hover:bg-gray-700"
+          onClick={handleAddAccount}
+        >
           <PersonAddIcon />
-        </IconButton>
-        <IconButton className="button-add-account" onClick={addRandomAccount}>
+        </button>
+        <button
+          className="button-add-account p-1 rounded-full hover:bg-gray-700"
+          onClick={addRandomAccount}
+        >
           <CasinoIcon />
-        </IconButton>
+        </button>
       </div>
     </div>
   );
@@ -174,13 +172,17 @@ export function DataManager() {
     <div>
       <div className="data-manager-header">数据管理</div>
       <div className="grey-themed">
-        <Button component="label">
+        <label className="inline-block px-4 py-2 bg-blue-500 text-white rounded cursor-pointer hover:bg-blue-600">
           导入数据
-          <input type="file" hidden onChange={handleStateUpoad}></input>
-        </Button>
-        <Button href={exportLink} download>
+          <input type="file" className="hidden" onChange={handleStateUpoad} />
+        </label>
+        <a
+          href={exportLink}
+          download
+          className="inline-block ml-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+        >
           导出数据
-        </Button>
+        </a>
       </div>
     </div>
   );
@@ -190,18 +192,6 @@ export function SettingContent() {
   return (
     <div>
       <div className="data-manager-header">登陆用户</div>
-      {/*
-            <Authenticator>
-                {({ signOut }) => {
-                    return (
-                        <div className="grey-themed">
-                            <div className="container-add-account">你好</div>
-                            <Button onClick={signOut}>登出</Button>
-                        </div>
-                    );
-                }}
-            </Authenticator>
-            */}
     </div>
   );
 }

@@ -1,18 +1,8 @@
-import {
-  Button,
-  Checkbox,
-  FormControlLabel,
-  InputAdornment,
-  List,
-  ListItem,
-  ListItemText,
-  TextField,
-} from "@mui/material";
 import { AircraftData, ShipData, ShipTypes } from "./data/ship-data-types";
-import { TechIcon } from "./Icons/tech";
+import { TechIcon } from "./svg/tech-icon";
 import "./css/list-item-ship.css";
 import { stringToTech } from "../context/utils/tech-utils";
-import { useAcquiredBlueprint , useAppContext } from "../context";
+import { useAcquiredBlueprint, useAppContext } from "../context";
 import React, { useMemo } from "react";
 
 function ShipVariantCheckBox(props: {
@@ -24,7 +14,7 @@ function ShipVariantCheckBox(props: {
 
   const { state } = useAppContext();
   const accountId = state.selectedAccountId;
-  
+
   const {
     hasShipVariant,
     getShipVariantProgress,
@@ -35,10 +25,22 @@ function ShipVariantCheckBox(props: {
   } = useAcquiredBlueprint();
 
   // 使用useMemo缓存计算结果，避免重复调用，添加accountId作为依赖项
-  const checked = useMemo(() => hasShipVariant(shipId, variant), [hasShipVariant, shipId, variant, accountId]);
-  const shipProgress = useMemo(() => getShipVariantProgress(shipId, variant), [getShipVariantProgress, shipId, variant, accountId]);
-  const { showZeroPercent } = useMemo(() => getBlueprintSettingForSelectedAccount(), [getBlueprintSettingForSelectedAccount, accountId]);
-  const hasBaseVariant = useMemo(() => hasShipVariant(shipId, 0), [hasShipVariant, shipId, accountId]);
+  const checked = useMemo(
+    () => hasShipVariant(shipId, variant),
+    [hasShipVariant, shipId, variant, accountId],
+  );
+  const shipProgress = useMemo(
+    () => getShipVariantProgress(shipId, variant),
+    [getShipVariantProgress, shipId, variant, accountId],
+  );
+  const { showZeroPercent } = useMemo(
+    () => getBlueprintSettingForSelectedAccount(),
+    [getBlueprintSettingForSelectedAccount, accountId],
+  );
+  const hasBaseVariant = useMemo(
+    () => hasShipVariant(shipId, 0),
+    [hasShipVariant, shipId, accountId],
+  );
 
   // 计算是否显示进度按钮
   const showDisplay = useMemo(() => {
@@ -63,32 +65,24 @@ function ShipVariantCheckBox(props: {
   }
 
   return (
-    <div className="ship-checkbox">
+    <div className="ship-checkbox flex items-center">
       {showDisplay ? (
-        <Button
-          variant="text"
-          color="secondary"
-          size="small"
-          className="completation-button"
+        <button
+          className="completation-button text-purple-600 text-sm px-2 py-1 rounded hover:bg-purple-50"
           onClick={handleProgressChange}
         >
           {`${shipProgress}%`}
-        </Button>
+        </button>
       ) : null}
-      <FormControlLabel
-        value="start"
-        className="control-label-ship-variant"
-        control={
-          <Checkbox
-            checked={checked}
-            className="checkbox-ship-variant"
-            color="success"
-          />
-        }
-        label={label || ""}
-        labelPlacement="start"
-        onChange={handleChange}
-      />
+      <label className="control-label-ship-variant flex items-center cursor-pointer">
+        <span className="mr-2">{label || ""}</span>
+        <input
+          type="checkbox"
+          checked={checked}
+          className="checkbox-ship-variant w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500"
+          onChange={handleChange}
+        />
+      </label>
     </div>
   );
 }
@@ -98,9 +92,12 @@ function InputShipTechPoint(props: { shipId: string }): React.JSX.Element {
   const { state } = useAppContext();
   const accountId = state.selectedAccountId;
   const { techPointsByShip, addShipVariant } = useAcquiredBlueprint();
-  
+
   // 使用useMemo缓存计算结果，添加accountId作为依赖项
-  const points = useMemo(() => techPointsByShip(ShipTypes.destroyer, shipId), [techPointsByShip, shipId, accountId]);
+  const points = useMemo(
+    () => techPointsByShip(ShipTypes.destroyer, shipId),
+    [techPointsByShip, shipId, accountId],
+  );
   const checked = points >= 0;
 
   function handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
@@ -111,22 +108,21 @@ function InputShipTechPoint(props: { shipId: string }): React.JSX.Element {
   }
 
   return (
-    <TextField
-      id={`ship-tech-point-${shipId}`}
-      value={points <= 0 ? "" : points}
-      InputProps={{
-        startAdornment: (
-          <InputAdornment position="start">
-            <TechIcon className="svg-fill-tech-icon" />
-          </InputAdornment>
-        ),
-      }}
-      className="input-box-tech-point"
-      size="small"
-      color="primary"
-      variant="standard"
-      onChange={handleInputChange}
-    />
+    <div className="input-box-tech-point relative">
+      <div className="absolute inset-y-0 left-0 flex items-center pl-2 pointer-events-none">
+        <TechIcon
+          className="svg-fill-tech-icon text-blue-600"
+          width={18}
+          height={18}
+        />
+      </div>
+      <input
+        id={`ship-tech-point-${shipId}`}
+        value={points <= 0 ? "" : points}
+        className="pl-8 py-1 text-sm border-b border-gray-300 focus:border-blue-500 focus:outline-none w-full"
+        onChange={handleInputChange}
+      />
+    </div>
   );
 }
 
@@ -137,9 +133,12 @@ export function ListItemShip(props: {
   const { techPointsByShip } = useAcquiredBlueprint();
   const { state } = useAppContext();
   const accountId = state.selectedAccountId;
-  
+
   // 使用useMemo缓存计算结果，添加accountId作为依赖项
-  const points = useMemo(() => techPointsByShip(ShipTypes.destroyer, data.id), [techPointsByShip, data.id, accountId]);
+  const points = useMemo(
+    () => techPointsByShip(ShipTypes.destroyer, data.id),
+    [techPointsByShip, data.id, accountId],
+  );
   const checked = points >= 0;
 
   // 使用useMemo缓存子组件列表，避免不必要的重新渲染
@@ -161,27 +160,25 @@ export function ListItemShip(props: {
 
   if (data.variants.length === 1) {
     return (
-      <ListItem className="list-item-aircraft-data">
-        <ListItemText primary={data.name} />
+      <div className="list-item-aircraft-data flex items-center p-2">
+        <div className="flex-grow">{data.name}</div>
         {checked ? <InputShipTechPoint shipId={data.id} /> : null}
-        <List disablePadding>{shipList}</List>
-      </ListItem>
+        <div className="flex flex-col">{shipList}</div>
+      </div>
     );
   }
 
   return (
-    <ListItem className="list-item-ship-data">
-      <List disablePadding>
-        <ListItem disablePadding>
-          <ListItemText primary={data.name} className="ship-name-text" />
-        </ListItem>
+    <div className="list-item-ship-data flex p-2">
+      <div className="flex flex-col">
+        <div className="ship-name-text">{data.name}</div>
         {checked ? (
-          <ListItem disablePadding>
+          <div className="mt-1">
             <InputShipTechPoint shipId={data.id} />
-          </ListItem>
+          </div>
         ) : null}
-      </List>
-      <div className="ship-checkbox-area">{shipList}</div>
-    </ListItem>
+      </div>
+      <div className="ship-checkbox-area ml-auto">{shipList}</div>
+    </div>
   );
 }

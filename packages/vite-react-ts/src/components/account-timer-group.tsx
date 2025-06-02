@@ -1,4 +1,3 @@
-import { Card, Typography } from "@mui/material";
 import "./css/account-timer-group.css";
 import { TimerAdder } from "./timer-adder";
 import {
@@ -6,14 +5,14 @@ import {
   SubTimerCategory,
   TimerCategory,
 } from "./timer-category";
-import { useGameAccount, useTimerGroup, TimerType } from "../context";
+import { TimerType, useGameAccount, useTimerGroup } from "../context";
 import React from "react";
+import { Card } from "./ui/card";
+import { Typography } from "./ui/typography";
 
-export function AccountTimerGroup(
-  props: {
-    accountId: string;
-  }
-): React.JSX.Element {
+export function AccountTimerGroup(props: {
+  accountId: string;
+}): React.JSX.Element {
   const { accountId } = props;
   const { getTimerGroupByAccountId } = useTimerGroup();
   const { getAccountById } = useGameAccount();

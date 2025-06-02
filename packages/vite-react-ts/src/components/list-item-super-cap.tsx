@@ -1,15 +1,5 @@
-import {
-  Avatar,
-  Checkbox,
-  Chip,
-  InputAdornment,
-  List,
-  ListItem,
-  ListItemText,
-  TextField,
-} from "@mui/material";
 import React, { useMemo } from "react";
-import { TechIcon } from "./Icons/tech";
+import { TechIcon } from "./svg/tech-icon";
 import "./css/list-item-super-cap.css";
 import {
   ShipTypes,
@@ -29,9 +19,12 @@ function ModuleChip(props: {
   const { state } = useAppContext();
   const accountId = state.selectedAccountId;
   const { hasModule, addModule, removeModule } = useAcquiredBlueprint();
-  
+
   // 使用useMemo缓存计算结果，添加accountId作为依赖项
-  const checked = useMemo(() => hasModule(superCapId, superCapModule.id), [hasModule, superCapId, superCapModule.id, accountId]);
+  const checked = useMemo(
+    () => hasModule(superCapId, superCapModule.id),
+    [hasModule, superCapId, superCapModule.id, accountId],
+  );
 
   function handleClick() {
     if (!accountId) return;
@@ -44,19 +37,24 @@ function ModuleChip(props: {
     if (superCapModule.important && checked) return "primary";
     else if (checked) return "secondary";
     return "default";
-  }, [superCapModule.important, checked]) as "default" | "primary" | "secondary";
+  }, [superCapModule.important, checked]) as
+    | "default"
+    | "primary"
+    | "secondary";
 
   const label = moduleId.toUpperCase();
   return (
-    <Chip
-      variant={checked ? "filled" : "outlined"}
-      avatar={<Avatar>{label}</Avatar>}
-      label={superCapModule.shortName}
-      size={"small"}
-      onClick={handleClick}
-      color={chipColor}
-      disabled={superCapModule.isBase}
-    />
+    <div
+      className={`inline-flex items-center rounded-full px-2 py-1 text-xs mr-1 mb-1 cursor-pointer ${superCapModule.isBase ? "opacity-50 cursor-not-allowed" : ""} ${checked ? "bg-" + (chipColor === "primary" ? "blue" : chipColor === "secondary" ? "purple" : "gray") + "-100 text-" + (chipColor === "primary" ? "blue" : chipColor === "secondary" ? "purple" : "gray") + "-800 border-" + (chipColor === "primary" ? "blue" : chipColor === "secondary" ? "purple" : "gray") + "-300" : "bg-white border-gray-300 text-gray-700"} border`}
+      onClick={superCapModule.isBase ? undefined : handleClick}
+    >
+      <span
+        className={`flex items-center justify-center w-5 h-5 rounded-full mr-1 text-xs font-bold ${checked ? "bg-" + (chipColor === "primary" ? "blue" : chipColor === "secondary" ? "purple" : "gray") + "-500 text-white" : "bg-gray-200 text-gray-700"}`}
+      >
+        {label}
+      </span>
+      <span>{superCapModule.shortName}</span>
+    </div>
   );
 }
 
@@ -86,9 +84,9 @@ function ModuleListItems(props: {
       });
       if (moduleList.length <= 0) return null;
       return (
-        <ListItem disablePadding className="list-item-module-holder" key={type}>
+        <div className="list-item-module-holder flex flex-wrap p-1" key={type}>
           {moduleList}
-        </ListItem>
+        </div>
       );
     });
   }, [superCapModules, superCapId, accountId]);
@@ -100,11 +98,14 @@ function SuperCapCheckBox(props: { superCapId: string }): React.JSX.Element {
   const { superCapId } = props;
   const { state } = useAppContext();
   const accountId = state.selectedAccountId;
-  
+
   const { hasSuperCap, addSuperCap, removeSuperCap } = useAcquiredBlueprint();
-  
+
   // 使用useMemo缓存计算结果，添加accountId作为依赖项
-  const checked = useMemo(() => hasSuperCap(superCapId), [hasSuperCap, superCapId, accountId]);
+  const checked = useMemo(
+    () => hasSuperCap(superCapId),
+    [hasSuperCap, superCapId, accountId],
+  );
 
   function handleChange() {
     if (!accountId) return;
@@ -116,14 +117,14 @@ function SuperCapCheckBox(props: { superCapId: string }): React.JSX.Element {
   }
 
   return (
-    <ListItem disablePadding>
-      <Checkbox
+    <div className="py-1">
+      <input
+        type="checkbox"
         checked={checked}
-        className="checkbox-aircraft-variant"
-        color="success"
+        className="checkbox-aircraft-variant w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500"
         onChange={handleChange}
       />
-    </ListItem>
+    </div>
   );
 }
 
@@ -134,10 +135,16 @@ function InputSuperCapTechPoint(props: {
   const { state } = useAppContext();
   const accountId = state.selectedAccountId;
   const { hasSuperCap, techPointsByShip, addSuperCap } = useAcquiredBlueprint();
-  
+
   // 使用useMemo缓存计算结果，添加accountId作为依赖项
-  const checked = useMemo(() => hasSuperCap(superCapId), [hasSuperCap, superCapId, accountId]);
-  const points = useMemo(() => techPointsByShip(ShipTypes.carrier, superCapId), [techPointsByShip, superCapId, accountId]);
+  const checked = useMemo(
+    () => hasSuperCap(superCapId),
+    [hasSuperCap, superCapId, accountId],
+  );
+  const points = useMemo(
+    () => techPointsByShip(ShipTypes.carrier, superCapId),
+    [techPointsByShip, superCapId, accountId],
+  );
 
   function handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
     if (!checked || !accountId) return;
@@ -147,22 +154,21 @@ function InputSuperCapTechPoint(props: {
   }
 
   return (
-    <TextField
-      id={`super-cap-tech-point-${superCapId}`}
-      value={points <= 0 ? "" : points}
-      InputProps={{
-        startAdornment: (
-          <InputAdornment position="start">
-            <TechIcon className="svg-fill-tech-icon" />
-          </InputAdornment>
-        ),
-      }}
-      className="input-box-tech-point"
-      size="small"
-      color="primary"
-      variant="standard"
-      onChange={handleInputChange}
-    />
+    <div className="input-box-tech-point relative">
+      <div className="absolute inset-y-0 left-0 flex items-center pl-2 pointer-events-none">
+        <TechIcon
+          className="svg-fill-tech-icon text-blue-600"
+          width={18}
+          height={18}
+        />
+      </div>
+      <input
+        id={`super-cap-tech-point-${superCapId}`}
+        value={points <= 0 ? "" : points}
+        className="pl-8 py-1 text-sm border-b border-gray-300 focus:border-blue-500 focus:outline-none w-full"
+        onChange={handleInputChange}
+      />
+    </div>
   );
 }
 
@@ -173,19 +179,22 @@ export function ListItemSuperCap(props: {
   const { hasSuperCap } = useAcquiredBlueprint();
   const { state } = useAppContext();
   const accountId = state.selectedAccountId;
-  
+
   // 使用useMemo缓存计算结果，添加accountId作为依赖项
-  const checked = useMemo(() => hasSuperCap(data.id), [hasSuperCap, data.id, accountId]);
+  const checked = useMemo(
+    () => hasSuperCap(data.id),
+    [hasSuperCap, data.id, accountId],
+  );
 
   return (
     <React.Fragment>
-      <ListItem className="list-item-aircraft-data">
-        <ListItemText primary={data.name} />
+      <div className="list-item-aircraft-data flex items-center p-2">
+        <div className="flex-grow">{data.name}</div>
         {checked ? <InputSuperCapTechPoint superCapId={data.id} /> : null}
-        <List disablePadding>
+        <div className="flex">
           <SuperCapCheckBox superCapId={data.id} key={data.id} />
-        </List>
-      </ListItem>
+        </div>
+      </div>
       {checked ? (
         <ModuleListItems superCapModules={data.modules} superCapId={data.id} />
       ) : null}

@@ -1,20 +1,13 @@
-import {
-  Container,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-} from "@mui/material";
+import React from "react";
 import "./css/blue-print-report.css";
 import {
+  useAcquiredBlueprint,
   useAppContext,
   useGameAccount,
-  useAcquiredBlueprint,
 } from "../context";
-import React from "react";
+import { Container } from "./ui/container";
+import { Paper } from "./ui/paper";
+import { TableContainer } from "./ui/table-container";
 
 function BluePrintReport(): React.JSX.Element {
   const { state } = useAppContext();
@@ -25,24 +18,28 @@ function BluePrintReport(): React.JSX.Element {
   const frigates = getBlueprintReportByShipType("frigate");
   console.group(frigates);
   const headers = accounts.map((account) => (
-    <TableCell>{account.name}</TableCell>
+    <th key={account.id} className="px-4 py-2 border-b">
+      {account.name}
+    </th>
   ));
   return (
     <Container maxWidth={false} className="container-main-blue-print-report">
-      <TableContainer component={Paper}>
-        <Table size="small">
-          <TableHead>
-            <TableRow>
-              <TableCell></TableCell>
-              {headers}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            <TableRow>
-              <TableCell>Something</TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
+      <TableContainer>
+        <Paper>
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead>
+              <tr>
+                <th className="px-4 py-2 border-b"></th>
+                {headers}
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td className="px-4 py-2 border-b">Something</td>
+              </tr>
+            </tbody>
+          </table>
+        </Paper>
       </TableContainer>
     </Container>
   );

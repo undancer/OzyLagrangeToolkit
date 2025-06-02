@@ -6,4 +6,5 @@ onlyBuiltDependencies:
   - core-js
   - core-js-pure
   - esbuild
+  - sharp
   - unrs-resolver

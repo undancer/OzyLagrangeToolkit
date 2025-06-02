@@ -1,18 +1,8 @@
-import {
-  AppBar,
-  Box,
-  Button,
-  IconButton,
-  Toolbar,
-  Typography,
-} from "@mui/material";
 import React, { useState } from "react";
-import Menu from "@mui/material/Menu";
-import MenuIcon from "@mui/icons-material/Menu";
-import MenuItem from "@mui/material/MenuItem";
 import { Link as RouterLink } from "react-router-dom";
-import { ClosedPackageIcon } from "./Icons/closedpackage";
-import "./css/navigation-bar.css";
+import { MenuIcon } from "./svg/menu-icon";
+import { ClosedPackageIcon } from "./svg/closedpackage";
+import { ThemeToggle } from "./ui/theme-provider";
 
 const pages = [
   "蓝图档案",
@@ -29,89 +19,91 @@ const path: { [index: string]: string } = {
   探险地图: "angulum-map", // 修改为与路由定义一致
 };
 
-export function NavigationBar() {
-  const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
+export function NavigationBar(): React.JSX.Element {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  function openNavMenu(event: React.MouseEvent<HTMLElement>) {
-    setAnchorElNav(event.currentTarget);
+  function toggleMenu() {
+    setIsMenuOpen(!isMenuOpen);
   }
 
-  function closeNavMenu() {
-    setAnchorElNav(null);
+  function closeMenu() {
+    setIsMenuOpen(false);
   }
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static" color="default">
-        <Toolbar>
-          <ClosedPackageIcon />
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Ozy的拉格朗日工具组
-          </Typography>
+    <div className="w-full">
+      <nav className="navbar">
+        <div className="container mx-auto">
+          <div className="flex-between w-full">
+            {/* Logo and Title */}
+            <div className="flex-center">
+              <div className="text-[var(--text-primary)]">
+                <ClosedPackageIcon />
+              </div>
+              <h1 className="navbar-brand ml-2">Ozy的拉格朗日工具组</h1>
+            </div>
 
-          {/* mobile menu */}
-          <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
-            <IconButton
-              size="large"
-              aria-label="account of current user"
-              aria-controls="menu-appbar"
-              aria-haspopup="true"
-              onClick={openNavMenu}
-              color="inherit"
-            >
-              <MenuIcon />
-            </IconButton>
-            <Menu
-              id="menu-appbar"
-              anchorEl={anchorElNav}
-              anchorOrigin={{
-                vertical: "bottom",
-                horizontal: "left",
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "left",
-              }}
-              open={Boolean(anchorElNav)}
-              onClose={closeNavMenu}
-              sx={{
-                display: { xs: "block", md: "none" },
-              }}
-            >
-              {pages.map((page) => (
-                <MenuItem
-                  component={RouterLink}
-                  to={`/${path[page]}`}
-                  key={page}
-                  onClick={closeNavMenu}
+            {/* Mobile menu button and theme toggle */}
+            <div className="flex items-center space-x-2">
+              {/* Theme Toggle Button */}
+              <ThemeToggle className="text-[var(--text-primary)] hover:bg-[var(--table-row-hover)]" />
+              
+              {/* Mobile menu button */}
+              <div className="block md:hidden">
+                <button
+                  onClick={toggleMenu}
+                  className="text-[var(--text-primary)] hover:text-[var(--text-secondary)] focus:outline-none"
+                  aria-label="Toggle menu"
                 >
-                  <Typography textAlign="center">{page}</Typography>
-                </MenuItem>
-              ))}
-            </Menu>
-          </Box>
+                  <MenuIcon />
+                </button>
+              </div>
+            </div>
 
-          {/* desktop menu */}
-          <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-            {pages.map((page) => (
-              <Button
-                key={page}
-                component={RouterLink}
-                to={`/${path[page]}`}
-                onClick={closeNavMenu}
-                color="inherit"
-                sx={{ my: 2, display: "block" }}
+            {/* Desktop menu */}
+            <div className="hidden md:flex items-center space-x-2">
+              {pages.map((page) => (
+                <RouterLink
+                  key={page}
+                  to={`/${path[page]}`}
+                  className="navbar-item"
+                  onClick={closeMenu}
+                >
+                  {page}
+                </RouterLink>
+              ))}
+              <RouterLink to="/setting" className="navbar-item">
+                设置
+              </RouterLink>
+            </div>
+          </div>
+
+          {/* Mobile menu */}
+          <div
+            className={`${isMenuOpen ? "block" : "hidden"} md:hidden w-full mt-4`}
+          >
+            <div className="space-y-1">
+              {pages.map((page) => (
+                <RouterLink
+                  key={page}
+                  to={`/${path[page]}`}
+                  className="navbar-item block w-full"
+                  onClick={closeMenu}
+                >
+                  {page}
+                </RouterLink>
+              ))}
+              <RouterLink
+                to="/setting"
+                className="navbar-item block w-full"
+                onClick={closeMenu}
               >
-                {page}
-              </Button>
-            ))}
-          </Box>
-          <Button component={RouterLink} to={"/setting"} color="inherit">
-            设置
-          </Button>
-        </Toolbar>
-      </AppBar>
-    </Box>
+                设置
+              </RouterLink>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </div>
   );
 }

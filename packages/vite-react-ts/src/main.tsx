@@ -6,12 +6,15 @@ import { createRoot } from 'react-dom/client';
 // import App from './index-redux';
 
 // 2. 使用Context版本（新的）
-import App from './AppWithContext';
+import App from './App';
 
 // 3. 使用简单的Vite默认App
 // import App from './App';
 
 // import './index.css'
+// 导入UnoCSS样式
+import './styles/uno.css'
+import 'virtual:uno.css'
 
 const container = document.getElementById('root');
 if (!container) {

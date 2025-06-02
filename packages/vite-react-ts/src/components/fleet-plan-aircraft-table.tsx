@@ -1,22 +1,14 @@
-import {
-  IconButton,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-} from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
-import RemoveIcon from "@mui/icons-material/Remove";
-import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
-import MilitaryTechIcon from "@mui/icons-material/MilitaryTech";
-import ScienceIcon from "@mui/icons-material/Science";
+import React from "react";
+import { AddIcon } from "./svg/add-icon";
+import { RemoveIcon } from "./svg/remove-icon";
+import { DeleteOutlineIcon } from "./svg/delete-outline-icon";
+import { MilitaryTechIcon } from "./svg/military-tech-icon";
+import { ScienceIcon } from "./svg/science-icon";
 import "./css/fleet-plan.css";
 import { lookUpShipById } from "./data/ship-data";
 import { isShipData, ShipTypes } from "./data/ship-data-types";
-import { useAppContext, AircraftInFleet, Fleet, FleetType } from "../context";
+import { AircraftInFleet, Fleet, FleetType, useAppContext } from "../context";
 import { AirCapacity } from "./data/air-capacity";
-import React from "react";
 
 export function FleetPlanAircraftTable(props: {
   fleet: Fleet;
@@ -103,33 +95,31 @@ export function FleetPlanAircraftTable(props: {
   const maxAir = capacity.midAir + capacity.heavyAir;
 
   return (
-    <Table sx={{ width: 560 }} size="small">
-      <TableHead>
-        <TableCell colSpan={2} align="center">
-          空军
-        </TableCell>
-        <TableCell width={64}></TableCell>
-        <TableCell align="center" width={64}>
-          飞机
-        </TableCell>
-        <TableCell align="center" width={75}>
-          炮艇
-        </TableCell>
-      </TableHead>
-      <TableBody>
+    <table className="w-[560px] text-sm">
+      <thead>
+        <tr>
+          <th colSpan={2} className="text-center">
+            空军
+          </th>
+          <th className="w-16"></th>
+          <th className="text-center w-16">飞机</th>
+          <th className="text-center w-[75px]">炮艇</th>
+        </tr>
+      </thead>
+      <tbody>
         {aircraftRow}
-        <TableRow>
-          <TableCell colSpan={2} className="no-border"></TableCell>
-          <TableCell>合计</TableCell>
-          <TableCell align="center">
+        <tr>
+          <td colSpan={2} className="no-border"></td>
+          <td>合计</td>
+          <td className="text-center">
             {totalAir}/{maxAir}
-          </TableCell>
-          <TableCell align="center">
+          </td>
+          <td className="text-center">
             {totalAircraft.corvette}/{capacity.corvette}
-          </TableCell>
-        </TableRow>
-      </TableBody>
-    </Table>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   );
 }
 
@@ -177,34 +167,32 @@ function DisplayAircraftRow(props: {
   };
 
   const tagCell: React.JSX.Element = (
-    <TableCell width={88}>
-      <IconButton
-        size="small"
-        color={leveled ? "warning" : "default"}
+    <td className="w-[88px]">
+      <button
+        className={`p-1 rounded-full ${leveled ? "text-amber-500" : "text-gray-500"}`}
         onClick={handleLeveled}
       >
-        <MilitaryTechIcon fontSize="inherit" />
-      </IconButton>
-      <IconButton
-        size="small"
-        color={adjusted ? "primary" : "default"}
+        <MilitaryTechIcon className="text-sm" />
+      </button>
+      <button
+        className={`p-1 rounded-full ${adjusted ? "text-blue-500" : "text-gray-500"}`}
         onClick={handleAdjusted}
       >
-        <ScienceIcon fontSize="inherit" />
-      </IconButton>
-    </TableCell>
+        <ScienceIcon className="text-sm" />
+      </button>
+    </td>
   );
 
   return (
-    <TableRow>
+    <tr>
       {tagCell}
-      <TableCell>{`${data.name}${addOn}`}</TableCell>
-      <TableCell>
+      <td>{`${data.name}${addOn}`}</td>
+      <td>
         <div className={techDisplayData.type}>{techDisplayData.text}</div>
-      </TableCell>
-      <TableCell align="center">{isCorvette ? null : count}</TableCell>
-      <TableCell align="center">{isCorvette ? count : null}</TableCell>
-    </TableRow>
+      </td>
+      <td className="text-center">{isCorvette ? null : count}</td>
+      <td className="text-center">{isCorvette ? count : null}</td>
+    </tr>
   );
 }
 
@@ -252,35 +240,36 @@ function AircraftTableRow(props: {
     addOn = ` - ${data.variants[variant]}`;
 
   const controlCell: React.JSX.Element = (
-    <TableCell width={150}>
-      <IconButton
-        color="success"
-        size="small"
+    <td className="w-[150px]">
+      <button
+        className={`p-1 rounded-full text-green-600 ${count >= data.limit ? "opacity-50 cursor-not-allowed" : "hover:bg-green-100"}`}
         onClick={handleIncreaseCount}
         disabled={count >= data.limit}
       >
         <AddIcon />
-      </IconButton>
-      <IconButton
-        color="error"
-        size="small"
+      </button>
+      <button
+        className={`p-1 rounded-full text-red-600 ${count <= 0 ? "opacity-50 cursor-not-allowed" : "hover:bg-red-100"}`}
         onClick={handleDecreaseCount}
         disabled={count <= 0}
       >
         <RemoveIcon />
-      </IconButton>
-      <IconButton color="warning" size="small" onClick={handleRemoveAircraft}>
+      </button>
+      <button
+        className="p-1 rounded-full text-amber-600 hover:bg-amber-100"
+        onClick={handleRemoveAircraft}
+      >
         <DeleteOutlineIcon />
-      </IconButton>
-    </TableCell>
+      </button>
+    </td>
   );
 
   return (
-    <TableRow>
+    <tr>
       {controlCell}
-      <TableCell colSpan={2}>{`${data.name}${addOn}`}</TableCell>
-      <TableCell align="center">{isCorvette ? null : count}</TableCell>
-      <TableCell align="center">{isCorvette ? count : null}</TableCell>
-    </TableRow>
+      <td colSpan={2}>{`${data.name}${addOn}`}</td>
+      <td className="text-center">{isCorvette ? null : count}</td>
+      <td className="text-center">{isCorvette ? count : null}</td>
+    </tr>
   );
 }

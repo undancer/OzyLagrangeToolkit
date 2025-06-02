@@ -1,5 +1,4 @@
-import { useEffect, useState } from "react";
-import { Box, Container, Slider, Tab, Tabs } from "@mui/material";
+import React, { useEffect, useState } from "react";
 import { Circle, Layer, Line, Rect, Stage, Star, Text } from "react-konva";
 import { KonvaEventObject } from "konva/lib/Node";
 // import { getCurrentUser } from "aws-amplify/auth";
@@ -16,7 +15,10 @@ import {
 import { AddAngulumCity } from "./add-angulum-city";
 import { AngulumFullRecordTable } from "./angulum-full-record-table";
 import { AngulumSelectedCity } from "./angulum-selected-city";
-import React from "react";
+import { Box } from "./ui/box";
+import { Container } from "./ui/container";
+import { Slider } from "./ui/slider";
+import { Tab, Tabs } from "./ui/tabs";
 
 const BACK_GROUND_COLOR = "#14213d";
 const BORDER_LINE_COLOR = "#ffffff";
@@ -148,24 +150,36 @@ function Map() {
         </Stage>
       </div>
       <div className="map-selection">
-        <Box>
-          <Tabs
-            value={tabIndex}
-            onChange={(_e, newValue) => setTabIndex(newValue)}
-          >
-            <Tab label="城市报告" />
-            <Tab label="总数据" />
-            <Tab label="城市筛选" />
+        <Box className="border-b border-gray-200">
+          <Tabs value={tabIndex} onChange={(newValue) => setTabIndex(newValue)}>
+            <Tab
+              label="城市报告"
+              value={0}
+              selected={tabIndex === 0}
+              onChange={() => {}}
+            />
+            <Tab
+              label="总数据"
+              value={1}
+              selected={tabIndex === 1}
+              onChange={() => {}}
+            />
+            <Tab
+              label="城市筛选"
+              value={2}
+              selected={tabIndex === 2}
+              onChange={() => {}}
+            />
           </Tabs>
         </Box>
-        <div hidden={tabIndex !== 0}>
+        <div className={tabIndex !== 0 ? "hidden" : ""}>
           <AngulumSelectedCity />
         </div>
-        <div hidden={tabIndex !== 1}>
+        <div className={tabIndex !== 1 ? "hidden" : ""}>
           <AngulumFullRecordTable />
         </div>
-        <div hidden={tabIndex !== 2}>
-          <label>城市等级</label>
+        <div className={tabIndex !== 2 ? "hidden" : ""}>
+          <label className="block mb-2">城市等级</label>
           <Slider
             defaultValue={6}
             min={0}
@@ -176,7 +190,7 @@ function Map() {
             aria-valuetext="city-level-limit"
           />
         </div>
-        <div hidden={tabIndex > 1}>
+        <div className={tabIndex > 1 ? "hidden" : ""}>
           <AddAngulumCity />
         </div>
       </div>

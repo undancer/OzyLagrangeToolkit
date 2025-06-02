@@ -1,20 +1,12 @@
-import {
-  IconButton,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-} from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
-import RemoveIcon from "@mui/icons-material/Remove";
-import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
-import MilitaryTechIcon from "@mui/icons-material/MilitaryTech";
-import ScienceIcon from "@mui/icons-material/Science";
+import React from "react";
+import { AddIcon } from "./svg/add-icon";
+import { RemoveIcon } from "./svg/remove-icon";
+import { DeleteOutlineIcon } from "./svg/delete-outline-icon";
+import { MilitaryTechIcon } from "./svg/military-tech-icon";
+import { ScienceIcon } from "./svg/science-icon";
 import { lookUpShipById } from "./data/ship-data";
 import { isShipData, isSuperCap } from "./data/ship-data-types";
-import { useAppContext, Fleet, FleetType, ShipInFleet } from "../context";
-import React from "react";
+import { Fleet, FleetType, ShipInFleet, useAppContext } from "../context";
 
 export interface techPointDisplayData {
   text: string;
@@ -29,7 +21,9 @@ export function FleetPlanShipTable(props: {
   const { fleet, fleetIndex, type } = props;
   const { state } = useAppContext();
   const { selectedAccountId } = state;
-  const showControl = state.fleetPlanner[selectedAccountId ? selectedAccountId : ''].displayControl;
+  const showControl =
+    state.fleetPlanner[selectedAccountId ? selectedAccountId : ""]
+      .displayControl;
 
   const selectedFleet = type === "main" ? fleet.mainFleet : fleet.reinforcement;
   const fleetType = type === "main" ? FleetType.main : FleetType.reinforcement;
@@ -60,15 +54,15 @@ export function FleetPlanShipTable(props: {
   const title = type === "main" ? "主力部队" : "增援部队";
 
   return (
-    <Table sx={{ width: 545 }} size="small">
+    <table className="w-[545px] text-sm">
       <ShipTableHeader
         titles={[title, showControl ? "人口" : "", "数量", "总人口"]}
       />
-      <TableBody>
+      <tbody>
         {rows}
         <ShipTableFooter fleetIndex={fleetIndex} type={type} />
-      </TableBody>
-    </Table>
+      </tbody>
+    </table>
   );
 }
 
@@ -112,22 +106,20 @@ function DisplayShipRow(props: {
   }
 
   const tagCell: React.JSX.Element = (
-    <TableCell width={88}>
-      <IconButton
-        size="small"
-        color={leveled ? "warning" : "default"}
+    <td className="w-[88px]">
+      <button
+        className={`p-1 rounded-full ${leveled ? "text-amber-500" : "text-gray-500"}`}
         onClick={handleLeveled}
       >
-        <MilitaryTechIcon fontSize="inherit" />
-      </IconButton>
-      <IconButton
-        size="small"
-        color={adjusted ? "primary" : "default"}
+        <MilitaryTechIcon className="text-sm" />
+      </button>
+      <button
+        className={`p-1 rounded-full ${adjusted ? "text-blue-500" : "text-gray-500"}`}
         onClick={handleAdjusted}
       >
-        <ScienceIcon fontSize="inherit" />
-      </IconButton>
-    </TableCell>
+        <ScienceIcon className="text-sm" />
+      </button>
+    </td>
   );
 
   let addOn = "";
@@ -140,15 +132,15 @@ function DisplayShipRow(props: {
   };
 
   return (
-    <TableRow>
+    <tr>
       {tagCell}
-      <TableCell>{`${name}${addOn}`}</TableCell>
-      <TableCell>
+      <td>{`${name}${addOn}`}</td>
+      <td>
         <div className={techDisplayData.type}>{techDisplayData.text}</div>
-      </TableCell>
-      <TableCell align="center">{count}</TableCell>
-      <TableCell align="right">{totalPopulation}</TableCell>
-    </TableRow>
+      </td>
+      <td className="text-center">{count}</td>
+      <td className="text-right">{totalPopulation}</td>
+    </tr>
   );
 }
 
@@ -200,57 +192,54 @@ function EditShipRow(props: {
   if (isShipData(data) && data.variants[0] !== "")
     addOn = ` - ${data.variants[variant]}`;
   const controlCell: React.JSX.Element = (
-    <TableCell width={150}>
-      <IconButton
-        color="success"
-        size="small"
+    <td className="w-[150px]">
+      <button
+        className={`p-1 rounded-full text-green-600 ${count >= data.limit ? "opacity-50 cursor-not-allowed" : "hover:bg-green-100"}`}
         onClick={handleIncreaseCount}
         disabled={count >= data.limit}
       >
         <AddIcon />
-      </IconButton>
-      <IconButton
-        color="error"
-        size="small"
+      </button>
+      <button
+        className={`p-1 rounded-full text-red-600 ${count <= 0 ? "opacity-50 cursor-not-allowed" : "hover:bg-red-100"}`}
         onClick={handleDecreaseCount}
         disabled={count <= 0}
       >
         <RemoveIcon />
-      </IconButton>
-      <IconButton color="warning" size="small" onClick={handleRemoveShip}>
+      </button>
+      <button
+        className="p-1 rounded-full text-amber-600 hover:bg-amber-100"
+        onClick={handleRemoveShip}
+      >
         <DeleteOutlineIcon />
-      </IconButton>
-    </TableCell>
+      </button>
+    </td>
   );
 
   return (
-    <TableRow>
+    <tr>
       {controlCell}
-      <TableCell>{`${data.name}${addOn}`}</TableCell>
-      <TableCell align="center">{population}</TableCell>
-      <TableCell align="center">{count}</TableCell>
-      <TableCell align="right">{population * count}</TableCell>
-    </TableRow>
+      <td>{`${data.name}${addOn}`}</td>
+      <td className="text-center">{population}</td>
+      <td className="text-center">{count}</td>
+      <td className="text-right">{population * count}</td>
+    </tr>
   );
 }
 
 function ShipTableHeader(props: { titles: string[] }) {
   const { titles } = props;
   return (
-    <TableHead>
-      <TableCell colSpan={2} align="center">
-        {titles[0]}
-      </TableCell>
-      <TableCell width={64} align="center">
-        {titles[1]}
-      </TableCell>
-      <TableCell width={64} align="center">
-        {titles[2]}
-      </TableCell>
-      <TableCell width={75} align="center">
-        {titles[3]}
-      </TableCell>
-    </TableHead>
+    <thead>
+      <tr>
+        <th colSpan={2} className="text-center">
+          {titles[0]}
+        </th>
+        <th className="w-16 text-center">{titles[1]}</th>
+        <th className="w-16 text-center">{titles[2]}</th>
+        <th className="w-[75px] text-center">{titles[3]}</th>
+      </tr>
+    </thead>
   );
 }
 
@@ -283,11 +272,11 @@ function ShipTableFooter(props: {
   });
 
   return (
-    <TableRow>
-      <TableCell colSpan={2} className="no-border"></TableCell>
-      <TableCell>合计</TableCell>
-      <TableCell align="center">{totalCount}</TableCell>
-      <TableCell align="right">{totalPopulation}</TableCell>
-    </TableRow>
+    <tr>
+      <td colSpan={2} className="no-border"></td>
+      <td>合计</td>
+      <td className="text-center">{totalCount}</td>
+      <td className="text-right">{totalPopulation}</td>
+    </tr>
   );
 }

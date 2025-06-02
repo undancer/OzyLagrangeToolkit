@@ -1,14 +1,8 @@
 import React, { useState } from "react";
-import {
-  IconButton,
-  TextField,
-  ToggleButton,
-  ToggleButtonGroup,
-} from "@mui/material";
-import AlarmAddIcon from "@mui/icons-material/AlarmAdd";
-import { useTaskTimeStamp, TimerType } from "../context";
+import { TimerType, useTaskTimeStamp } from "../context";
 import "./css/timer-adder.css";
 import { TimerIcon } from "./timer-icon";
+import { AlarmAddIcon } from "./svg/alarm-add";
 
 interface timerAdder {
   accountId: string;
@@ -31,9 +25,13 @@ export function TimerAdder(props: timerAdder): React.JSX.Element {
 
   const timerChoiceButtons = timerTypes.map((timerType) => {
     return (
-      <ToggleButton value={timerType} key={timerType}>
+      <button
+        key={timerType}
+        className={`p-2 rounded border ${type === timerType ? "bg-gray-700 border-blue-500" : "bg-gray-800 border-gray-600 hover:bg-gray-700"}`}
+        onClick={(e) => handleTypeChange(e, timerType)}
+      >
         <TimerIcon type={timerType} />
-      </ToggleButton>
+      </button>
     );
   });
 
@@ -74,7 +72,6 @@ export function TimerAdder(props: timerAdder): React.JSX.Element {
   }
 
   function setTimeAndValidate(event: React.ChangeEvent<HTMLInputElement>) {
-
     const timeString = event.target.value
       .replaceAll(":", "")
       .replaceAll("d", "");
@@ -114,32 +111,32 @@ export function TimerAdder(props: timerAdder): React.JSX.Element {
   return (
     <div className="timer-adder">
       <div className="icon-choice-container">
-        <ToggleButtonGroup
-          value={type}
-          exclusive
-          onChange={handleTypeChange}
-          aria-label="timer type"
-          size="small"
-        >
+        <div className="flex space-x-1" role="group" aria-label="timer type">
           {timerChoiceButtons}
-        </ToggleButtonGroup>
+        </div>
       </div>
-      <div className="timer-input-container">
-        <TextField
-          label="Time"
-          variant="outlined"
-          value={time}
-          onChange={setTimeAndValidate}
-          onKeyPress={handleKeyPress}
-          size="small"
-        />
-        <IconButton
+      <div className="timer-input-container flex items-center space-x-2">
+        <div className="relative">
+          <input
+            type="text"
+            className="input px-4 py-2 bg-gray-700 rounded border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            value={time}
+            onChange={setTimeAndValidate}
+            onKeyPress={handleKeyPress}
+            placeholder="Time"
+            aria-label="Time"
+          />
+          <label className="absolute -top-2 left-2 px-1 text-xs bg-gray-700 text-gray-300">
+            Time
+          </label>
+        </div>
+        <button
           onClick={addTimerAndCleanUp}
-          color="primary"
+          className="p-2 rounded-full bg-blue-600 hover:bg-blue-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
           aria-label="add timer"
         >
-          <AlarmAddIcon />
-        </IconButton>
+          <AlarmAddIcon className="w-6 h-6" />
+        </button>
       </div>
     </div>
   );

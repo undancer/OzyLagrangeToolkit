@@ -1,16 +1,9 @@
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TablePagination,
-  TableRow,
-} from "@mui/material";
-import moment from "moment";
 import React, { useState } from "react";
+import moment from "moment";
 // import { Divider } from "@aws-amplify/ui-react";
 import { useAppContext } from "../context";
+import { TableContainer } from "./ui/table-container";
+import { TablePagination } from "./ui/table-pagination";
 
 export function AngulumSelectedCity(): React.JSX.Element {
   const [page, setPage] = useState(0);
@@ -77,10 +70,9 @@ export function AngulumSelectedCity(): React.JSX.Element {
       const className =
         index === selectedIndex ? "map-city selected-city" : "map-city";
       const result = (
-        <TableRow key={index}>
-          <TableCell
-            className={className}
-            align="center"
+        <tr key={index}>
+          <td
+            className={`${className} px-4 py-2 text-center`}
             onClick={() =>
               dispatch({
                 type: "ANGULUM_CITY_DATA/SELECT_CITY",
@@ -89,10 +81,9 @@ export function AngulumSelectedCity(): React.JSX.Element {
             }
           >
             {index}
-          </TableCell>
-          <TableCell
-            className={className}
-            align="center"
+          </td>
+          <td
+            className={`${className} px-4 py-2 text-center`}
             onClick={() =>
               dispatch({
                 type: "ANGULUM_CITY_DATA/SELECT_CITY",
@@ -101,10 +92,9 @@ export function AngulumSelectedCity(): React.JSX.Element {
             }
           >
             {city.submitter}
-          </TableCell>
-          <TableCell
-            className={className}
-            align="center"
+          </td>
+          <td
+            className={`${className} px-4 py-2 text-center`}
             onClick={() =>
               dispatch({
                 type: "ANGULUM_CITY_DATA/SELECT_CITY",
@@ -113,10 +103,9 @@ export function AngulumSelectedCity(): React.JSX.Element {
             }
           >
             {city.level === 0 ? "X" : city.level.toString()}
-          </TableCell>
-          <TableCell
-            className={className}
-            align="center"
+          </td>
+          <td
+            className={`${className} px-4 py-2 text-center`}
             onClick={() =>
               dispatch({
                 type: "ANGULUM_CITY_DATA/SELECT_CITY",
@@ -125,8 +114,8 @@ export function AngulumSelectedCity(): React.JSX.Element {
             }
           >
             {moment(city.updatedAt).fromNow()}
-          </TableCell>
-        </TableRow>
+          </td>
+        </tr>
       );
       filteredRow.push(result);
     }
@@ -161,20 +150,28 @@ export function AngulumSelectedCity(): React.JSX.Element {
             */}
       <div>
         <TableContainer>
-          <Table size="small">
-            <TableHead>
-              <TableRow>
-                <TableCell></TableCell>
-                <TableCell align="center">发现人</TableCell>
-                <TableCell align="center">等级</TableCell>
-                <TableCell align="center">更新日期</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>{resultRows}</TableBody>
-          </Table>
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="px-4 py-2 text-xs font-medium text-gray-500 uppercase tracking-wider"></th>
+                <th className="px-4 py-2 text-xs font-medium text-gray-500 uppercase tracking-wider text-center">
+                  发现人
+                </th>
+                <th className="px-4 py-2 text-xs font-medium text-gray-500 uppercase tracking-wider text-center">
+                  等级
+                </th>
+                <th className="px-4 py-2 text-xs font-medium text-gray-500 uppercase tracking-wider text-center">
+                  更新日期
+                </th>
+              </tr>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
+              {resultRows}
+            </tbody>
+          </table>
         </TableContainer>
         <TablePagination
-          count={resultRows.length}
+          count={filteredRow.length}
           page={page}
           onPageChange={handlePageChange}
           rowsPerPage={rowsPerPage}

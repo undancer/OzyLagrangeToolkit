@@ -1,7 +1,7 @@
 import "./css/debug.css";
-import { Container } from "@mui/material";
 import ReactJson from "react-json-view";
 import { useAppState } from "../context";
+import { Container } from "./ui/container";
 
 function DevelopmnentDebug() {
   const state = useAppState();

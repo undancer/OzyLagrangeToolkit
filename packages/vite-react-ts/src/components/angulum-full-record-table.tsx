@@ -1,15 +1,8 @@
 import React, { useState } from "react";
-import {
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TablePagination,
-  TableRow,
-} from "@mui/material";
 import { useAppContext } from "../context";
+import { Paper } from "./ui/paper";
+import { TableContainer } from "./ui/table-container";
+import { TablePagination } from "./ui/table-pagination";
 
 export function AngulumFullRecordTable(): React.JSX.Element {
   const [page, setPage] = useState(0);
@@ -51,28 +44,26 @@ export function AngulumFullRecordTable(): React.JSX.Element {
       const hourMinuteString = `${time.getHours()}:${time.getMinutes()}:${time.getSeconds()}`;
       const monthDayString = `${time.getMonth() + 1}/${time.getDate()}`;
       const result = (
-        <TableRow key={index}>
-          <TableCell
-            className={className}
-            align="center"
+        <tr key={index}>
+          <td
+            className={`${className} px-4 py-2 text-center`}
             onClick={() => handleSelectCity(index)}
           >
             {index}
-          </TableCell>
-          <TableCell
-            className={className}
-            align="center"
+          </td>
+          <td
+            className={`${className} px-4 py-2 text-center`}
             onClick={() => handleSelectCity(index)}
           >
             {city.level}
-          </TableCell>
-          <TableCell
-            className={className}
+          </td>
+          <td
+            className={`${className} px-4 py-2`}
             onClick={() => handleSelectCity(index)}
-          >{`(${city.pos.x},${city.pos.y})`}</TableCell>
-          <TableCell>{city.submitter}</TableCell>
-          <TableCell>{`${monthDayString} - ${hourMinuteString}`}</TableCell>
-        </TableRow>
+          >{`(${city.pos.x},${city.pos.y})`}</td>
+          <td className="px-4 py-2">{city.submitter}</td>
+          <td className="px-4 py-2">{`${monthDayString} - ${hourMinuteString}`}</td>
+        </tr>
       );
       resultRows.push(result);
     }
@@ -80,19 +71,31 @@ export function AngulumFullRecordTable(): React.JSX.Element {
 
   return (
     <div>
-      <TableContainer component={Paper}>
-        <Table size="small">
-          <TableHead>
-            <TableRow>
-              <TableCell></TableCell>
-              <TableCell>等级</TableCell>
-              <TableCell align="center">城市坐标</TableCell>
-              <TableCell align="center">发现人</TableCell>
-              <TableCell>发现日期</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>{resultRows}</TableBody>
-        </Table>
+      <TableContainer>
+        <Paper>
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="px-4 py-2 text-xs font-medium text-gray-500 uppercase tracking-wider"></th>
+                <th className="px-4 py-2 text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  等级
+                </th>
+                <th className="px-4 py-2 text-xs font-medium text-gray-500 uppercase tracking-wider text-center">
+                  城市坐标
+                </th>
+                <th className="px-4 py-2 text-xs font-medium text-gray-500 uppercase tracking-wider text-center">
+                  发现人
+                </th>
+                <th className="px-4 py-2 text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  发现日期
+                </th>
+              </tr>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
+              {resultRows}
+            </tbody>
+          </table>
+        </Paper>
       </TableContainer>
       <TablePagination
         count={cities.length}
